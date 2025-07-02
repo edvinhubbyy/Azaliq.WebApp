@@ -25,7 +25,7 @@ namespace Azaliq.Data.Configurations
             entity.HasOne(ci => ci.User)
                 .WithMany()       // no navigation property in ApplicationUser
                 .HasForeignKey(ci => ci.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Unique index to prevent duplicate CartItems for same user and product
             entity.HasIndex(ci => new { ci.UserId, ci.ProductId })

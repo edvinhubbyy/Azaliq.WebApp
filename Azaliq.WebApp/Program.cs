@@ -1,5 +1,6 @@
 using Azaliq.Data;
-using Azaliq.WebApp.Data;
+using Azaliq.Services.Core;
+using Azaliq.Services.Core.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
         options.Password.RequireLowercase = false;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllersWithViews();
 

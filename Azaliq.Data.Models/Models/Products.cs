@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Azaliq.Data.Configurations;
 using Azaliq.Data.Models.Models.Enum;
 
 namespace Azaliq.Data.Models.Models
@@ -23,7 +24,9 @@ namespace Azaliq.Data.Models.Models
 
         public bool IsAvailable { get; set; }
 
-        public FlowerCategory Category { get; set; }
+        public int CategoryId { get; set; }
+
+        public Category Category { get; set; } = null!;
 
         public bool IsSameDayDeliveryAvailable { get; set; }
 

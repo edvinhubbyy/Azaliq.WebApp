@@ -51,7 +51,7 @@ namespace Azaliq.Data.Configurations
             entity.HasMany(o => o.Products)
                 .WithOne(op => op.Order)
                 .HasForeignKey(op => op.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity
                 .HasQueryFilter(o => o.IsDeleted == false);

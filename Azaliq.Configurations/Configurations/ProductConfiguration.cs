@@ -32,8 +32,11 @@ namespace Azaliq.Data.Configurations
             entity.Property(p => p.IsAvailable)
                 .IsRequired();
 
-            entity.Property(p => p.Category)
-                .IsRequired();
+            entity
+                .HasOne(r => r.Category)
+                .WithMany(r => r.Products)
+                .HasForeignKey(r => r.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.Property(p => p.IsSameDayDeliveryAvailable)
                 .IsRequired();
