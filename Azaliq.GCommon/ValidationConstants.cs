@@ -28,5 +28,10 @@ namespace Azaliq.GCommon
             public const int PhoneMaxLength = 50;
         }
 
+        public static class Category
+        {
+            public const int NameMaxLength = 50;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Azaliq.Data.Configurations;
 using Azaliq.Data.Models.Models;
 
 namespace Azaliq.Data
@@ -15,6 +16,8 @@ namespace Azaliq.Data
         public virtual DbSet<CartItem> CartsItems { get; set; } = null!;
 
         public virtual DbSet<Order> Orders { get; set; } = null!;
+
+        public virtual DbSet<Category> Categories { get; set; } = null!;
 
         public virtual DbSet<OrderProduct> OrdersProducts { get; set; } = null!;
 

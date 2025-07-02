@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Azaliq.Configurations\Azaliq.Data.csproj" />
     <ProjectReference Include="..\Azaliq.Data.Models\Azaliq.Data.Models.csproj" />
     <ProjectReference Include="..\Azaliq.GCommon\Azaliq.GCommon.csproj" />
