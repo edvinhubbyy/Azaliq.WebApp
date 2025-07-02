@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Azaliq.Data.Models.Models.Enum;
 
 namespace Azaliq.Data.Models.Models
 {
@@ -12,11 +13,11 @@ namespace Azaliq.Data.Models.Models
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public decimal Price { get; set; }
 
