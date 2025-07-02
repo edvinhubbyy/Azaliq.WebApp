@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static Azaliq.GCommon.ValidationConstants.ProductTag;
 
 namespace Azaliq.Data.Configurations
 {
@@ -17,7 +18,7 @@ namespace Azaliq.Data.Configurations
 
             entity.Property(t => t.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(NameMaxLength);
 
             // Many-to-many with Product, using EF Core conventions
             entity.HasMany(t => t.Products)

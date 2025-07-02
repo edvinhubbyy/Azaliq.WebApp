@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.16" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.13" />
+    <Folder Include="Contracts\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Azaliq.Configurations\Azaliq.Data.csproj" />
+    <ProjectReference Include="..\Azaliq.Data.Models\Azaliq.Data.Models.csproj" />
     <ProjectReference Include="..\Azaliq.GCommon\Azaliq.GCommon.csproj" />
+    <ProjectReference Include="..\Azaliq.ViewModels\Azaliq.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

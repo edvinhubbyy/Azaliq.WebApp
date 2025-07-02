@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static Azaliq.GCommon.ValidationConstants.StoreLocation;
 
 namespace Azaliq.Data.Configurations
 {
@@ -17,18 +18,18 @@ namespace Azaliq.Data.Configurations
 
             entity.Property(sl => sl.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(NameMaxLength);
 
             entity.Property(sl => sl.GoogleMapsUrl)
                 .IsRequired()
-                .HasMaxLength(500);
+                .HasMaxLength(GoogleMapsUrlLength);
 
             entity.Property(sl => sl.Address)
                 .IsRequired()
-                .HasMaxLength(300);
+                .HasMaxLength(AddressMaxLength);
 
             entity.Property(sl => sl.Phone)
-                .HasMaxLength(50);
+                .HasMaxLength(PhoneMaxLength);
         }
     }
     
