@@ -29,5 +29,8 @@ namespace Azaliq.Data.Models.Models
 
         public ICollection<ProductTag> Tags { get; set; }
             = new HashSet<ProductTag>();
+
+        public bool IsDeleted { get; set; } = false;
+
     }
 }

@@ -19,7 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Azaliq.Configurations\Azaliq.Data.csproj" />
     <ProjectReference Include="..\Azaliq.Data.Models\Azaliq.Data.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>

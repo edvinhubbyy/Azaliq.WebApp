@@ -16,4 +16,5 @@ namespace Azaliq.Data.Models.Models
 
         public int Quantity { get; set; }
     }
+
 }

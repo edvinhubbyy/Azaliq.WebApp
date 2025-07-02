@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Azaliq.Data.Models.Models;
 
-namespace Azaliq.WebApp.Data
+namespace Azaliq.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

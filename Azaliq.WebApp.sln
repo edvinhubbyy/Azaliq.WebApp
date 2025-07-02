@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36121.58 d17.14
+VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azaliq.WebApp", "Azaliq.WebApp\Azaliq.WebApp.csproj", "{2DBE833E-0A89-4C33-A94A-70374BC2A6BF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azaliq.Data", "Azaliq.Data", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azaliq.Data.Models", "Azaliq.Data.Models", "{44791FDD-78F3-41AB-83D8-0A485CF32728}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{44791FDD-78F3-41AB-83D8-0A485CF32728}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azaliq.Data.Models", "Azaliq.Data.Models\Azaliq.Data.Models.csproj", "{5F20B84C-B50E-4BEE-AD6E-A08AC7FD9D65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azaliq.Data", "Azaliq.Configurations\Azaliq.Data.csproj", "{28C3B892-B469-4336-A17C-5E62E2B4524E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,12 +25,17 @@ Global
 		{5F20B84C-B50E-4BEE-AD6E-A08AC7FD9D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F20B84C-B50E-4BEE-AD6E-A08AC7FD9D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F20B84C-B50E-4BEE-AD6E-A08AC7FD9D65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28C3B892-B469-4336-A17C-5E62E2B4524E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28C3B892-B469-4336-A17C-5E62E2B4524E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28C3B892-B469-4336-A17C-5E62E2B4524E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28C3B892-B469-4336-A17C-5E62E2B4524E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5F20B84C-B50E-4BEE-AD6E-A08AC7FD9D65} = {44791FDD-78F3-41AB-83D8-0A485CF32728}
+		{28C3B892-B469-4336-A17C-5E62E2B4524E} = {44791FDD-78F3-41AB-83D8-0A485CF32728}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9CEF8D58-42C2-47ED-8D07-C4E38CFFC3F1}

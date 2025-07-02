@@ -27,6 +27,8 @@ namespace Azaliq.Data.Models.Models
         public bool IsDelivery { get; set; }
 
         public string? DeliveryAddress { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
     }
 
 }
