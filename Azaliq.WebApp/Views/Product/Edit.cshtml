@@ -1,13 +1,15 @@
-﻿@model Azaliq.ViewModels.Product.CreateProductInputModel
+﻿@model Azaliq.ViewModels.Product.EditProductInputModel
 
 @{
-    ViewData["Title"] = "Create Product";
+    ViewData["Title"] = "Edit Product";
 }
 
-<h2 class="text-center mt-4">Create Product</h2>
+<h2 class="text-center mt-4">Edit Product</h2>
 
 <div class="container">
-    <form asp-action="Create" method="post">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
         <div class="mb-3">
             <label asp-for="Name" class="form-label"></label>
             <input asp-for="Name" class="form-control" />
@@ -31,7 +33,6 @@
             <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" autocomplete="off" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
-
 
         <div class="mb-3">
             <label asp-for="CategoryId" class="form-label"></label>
@@ -59,12 +60,10 @@
             <label asp-for="IsSameDayDeliveryAvailable" class="form-check-label"></label>
         </div>
 
-        <button type="submit" class="btn btn-success">Add Product</button>
+        <button type="submit" class="btn btn-success">Save Changes</button>
     </form>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

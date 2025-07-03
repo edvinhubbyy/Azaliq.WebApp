@@ -15,5 +15,15 @@ namespace Azaliq.Services.Core.Contracts
         Task<ProductDetailsViewModel> GetProductDetailsAsync(int? id, string? userId);
 
         Task<bool> CreateProductAsync(string userId, CreateProductInputModel inputModel);
+
+        Task<EditProductInputModel?> EditProductAsync(string? userId, int? productId);
+
+        Task<bool> PersistUpdateProductAsync(string userId, EditProductInputModel inputModel);
+
+        Task<bool> SoftDeleteProductAsync(int productId);
+
+        Task<DeleteProductModel?> GetProductForDeletionAsync(int? productId);
+
+
     }
 }

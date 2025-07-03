@@ -39,6 +39,14 @@
             {
                 <p class="text-danger mt-3">Currently not available</p>
             }
+
+            <!-- Edit button below -->
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning mt-3">
+                <i class="fas fa-edit me-1"></i> Edit
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mt-3">
+                <i class="fas fa-edit me-1"></i> Delete
+            </a>
         </div>
     </div>
 </div>

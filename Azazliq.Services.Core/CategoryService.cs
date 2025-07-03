@@ -83,16 +83,22 @@ namespace Azaliq.Services.Core
 
         public async Task<bool> DeleteCategoryAsync(int? categoryId)
         {
-            if (categoryId == null)
-                return false;
+            const int deletedCategoryId = -1;
 
             var category = await _dbContext.Categories
-                .SingleOrDefaultAsync(c => c.Id == categoryId);
+                .Include(c => c.Products)
+                .SingleOrDefaultAsync(c => c.Id == categoryId && !c.IsDeleted && c.Id != deletedCategoryId);
 
             if (category == null)
                 return false;
 
-            _dbContext.Categories.Remove(category);
+            foreach (var product in category.Products.Where(p => !p.IsDeleted))
+            {
+                product.CategoryId = deletedCategoryId;
+            }
+
+            category.IsDeleted = true;
+
             await _dbContext.SaveChangesAsync();
 
             return true;
@@ -111,7 +117,6 @@ namespace Azaliq.Services.Core
 
             return (canDelete, products);
         }
-
 
     }
 }

@@ -118,5 +118,112 @@ namespace Azaliq.Services.Core
             }
             return opResult;
         }
+
+        public async Task<EditProductInputModel?> EditProductAsync(string? userId, int? productId)
+        {
+            if (productId == null)
+                return null;
+
+            var product = await _dbContext
+                .Products
+                .Include(p => p.Category)
+                .Include(p => p.Tags)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == productId);
+
+            if (product == null)
+                return null;
+
+            var allTags = await _dbContext
+                .ProductsTags
+                .Select(t => t.Name)
+                .Distinct()
+                .ToListAsync();
+
+            var allCategories = await _dbContext
+                .StoresLocations
+                .Select(c => new CreateProductDropDownCategory
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToListAsync();
+
+            return new EditProductInputModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                Price = product.Price,
+                IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
+                CategoryId = product.CategoryId,
+                SelectedTags = product.Tags.Select(t => t.Name).ToList(),
+                AllTags = allTags,
+                Categories = allCategories
+            };
+        }
+
+        public async Task<bool> PersistUpdateProductAsync(string userId, EditProductInputModel inputModel)
+        {
+            var product = await _dbContext.Products
+                .Include(p => p.Tags)
+                .FirstOrDefaultAsync(p => p.Id == inputModel.Id);
+
+            if (product == null)
+                return false;
+
+            product.Name = inputModel.Name;
+            product.Description = inputModel.Description;
+            product.ImageUrl = inputModel.ImageUrl;
+            product.Price = inputModel.Price;
+            product.IsSameDayDeliveryAvailable = inputModel.IsSameDayDeliveryAvailable;
+            product.CategoryId = inputModel.CategoryId;
+
+            // Update tags if you have them — remove unselected, add new ones
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+
+        public async Task<DeleteProductModel?> GetProductForDeletionAsync(int? productId)
+        {
+            if (productId == null)
+                return null;
+
+            var product = await _dbContext.Products
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.Id == productId);
+
+            if (product == null)
+                return null;
+
+            return new DeleteProductModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                Price = product.Price,
+                IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
+                CategoryId = product.CategoryId,
+                // fill other props if needed
+            };
+        }
+
+        public async Task<bool> SoftDeleteProductAsync(int productId)
+        {
+            var product = await _dbContext.Products.FindAsync(productId);
+
+            if (product == null)
+                return false;
+
+            product.IsDeleted = true;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
