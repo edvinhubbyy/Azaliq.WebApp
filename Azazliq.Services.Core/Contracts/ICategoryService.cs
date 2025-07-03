@@ -22,5 +22,11 @@ namespace Azaliq.Services.Core.Contracts
 
         Task<bool> DeleteCategoryAsync(int? categoryId);
 
+        Task<EditCategoryInputModel?> EditCategoryAsync(string? userId, int? categoryId);
+
+        Task<bool> PersistUpdateCategoryAsync(string userId, EditCategoryInputModel inputModel);
+
+
+
     }
 }

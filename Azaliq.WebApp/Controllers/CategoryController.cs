@@ -85,5 +85,44 @@ namespace Azaliq.WebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Categories/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var userId = User?.Identity?.Name; // or get user id from claims if needed
+
+            var model = await _categoryService.EditCategoryAsync(userId, id);
+
+            if (model == null)
+                return NotFound();
+
+            return View(model);
+        }
+
+        // POST: Categories/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EditCategoryInputModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(inputModel);
+            }
+
+            var userId = User?.Identity?.Name; // or get user id from claims
+
+            bool updated = await _categoryService.PersistUpdateCategoryAsync(userId, inputModel);
+
+            if (!updated)
+            {
+                ModelState.AddModelError(string.Empty, "Failed to update category.");
+                return View(inputModel);
+            }
+
+            return RedirectToAction(nameof(Index)); // Or wherever your categories list is
+        }
+
     }
 }

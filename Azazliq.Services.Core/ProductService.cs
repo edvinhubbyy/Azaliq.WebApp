@@ -86,17 +86,29 @@ namespace Azaliq.Services.Core
         {
             bool opResult = false;
 
-            IdentityUser? user = await this._userManager
-                .FindByIdAsync(userId);
+            IdentityUser? user = await this._userManager.FindByIdAsync(userId);
 
-            Category? category = await this._dbContext
-                .Categories
-                .FindAsync(inputModel.CategoryId);
-
+            Category? category = await this._dbContext.Categories.FindAsync(inputModel.CategoryId);
 
             if ((user != null) && (category != null))
             {
+                // Get existing tags from DB that match selected tag names
+                var existingTags = await _dbContext.ProductsTags
+                    .Where(t => inputModel.SelectedTags.Contains(t.Name))
+                    .ToListAsync();
 
+                // Find tag names that are new (not in existingTags)
+                var newTagNames = inputModel.SelectedTags
+                    .Except(existingTags.Select(t => t.Name))
+                    .Distinct();
+
+                // Create new tag entities for those new tag names
+                var newTags = newTagNames.Select(name => new ProductTag { Name = name }).ToList();
+
+                // Combine existing tags and new tags into one list
+                var allTags = existingTags.Concat(newTags).ToList();
+
+                // Create new product and assign tags collection
                 Product product = new Product()
                 {
                     Name = inputModel.Name,
@@ -105,28 +117,28 @@ namespace Azaliq.Services.Core
                     Description = inputModel.Description ?? string.Empty,
                     Price = inputModel.Price,
                     IsSameDayDeliveryAvailable = inputModel.IsSameDayDeliveryAvailable,
-                    Tags = inputModel.SelectedTags?.Select(t => new ProductTag
-                    {
-                        Name = t
-                    }).ToList() ?? new List<ProductTag>()
+                    Tags = allTags
                 };
 
+                // Add product (and new tags if any) to database
                 await this._dbContext.Products.AddAsync(product);
+
+                // Save changes
                 await this._dbContext.SaveChangesAsync();
 
                 opResult = true;
             }
+
             return opResult;
         }
+
 
         public async Task<EditProductInputModel?> EditProductAsync(string? userId, int? productId)
         {
             if (productId == null)
                 return null;
 
-            var product = await _dbContext
-                .Products
-                .Include(p => p.Category)
+            var product = await _dbContext.Products
                 .Include(p => p.Tags)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == productId);
@@ -134,22 +146,7 @@ namespace Azaliq.Services.Core
             if (product == null)
                 return null;
 
-            var allTags = await _dbContext
-                .ProductsTags
-                .Select(t => t.Name)
-                .Distinct()
-                .ToListAsync();
-
-            var allCategories = await _dbContext
-                .StoresLocations
-                .Select(c => new CreateProductDropDownCategory
-                {
-                    Id = c.Id,
-                    Name = c.Name
-                })
-                .ToListAsync();
-
-            return new EditProductInputModel
+            var model = new EditProductInputModel
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -158,10 +155,11 @@ namespace Azaliq.Services.Core
                 Price = product.Price,
                 IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
                 CategoryId = product.CategoryId,
-                SelectedTags = product.Tags.Select(t => t.Name).ToList(),
-                AllTags = allTags,
-                Categories = allCategories
+                SelectedTags = product.Tags.Select(t => t.Name).ToList(),  // Populate selected tags here
+                AllTags = await _dbContext.ProductsTags.Select(t => t.Name).ToListAsync(), // All possible tags
             };
+
+            return model;
         }
 
         public async Task<bool> PersistUpdateProductAsync(string userId, EditProductInputModel inputModel)
@@ -180,12 +178,48 @@ namespace Azaliq.Services.Core
             product.IsSameDayDeliveryAvailable = inputModel.IsSameDayDeliveryAvailable;
             product.CategoryId = inputModel.CategoryId;
 
-            // Update tags if you have them — remove unselected, add new ones
+            // --- Handle tag updates ---
+
+            // Normalize input selected tags list (avoid null)
+            var selectedTagNames = inputModel.SelectedTags?.Distinct().ToList() ?? new List<string>();
+
+            // Current tag names on product
+            var currentTagNames = product.Tags.Select(t => t.Name).ToList();
+
+            // Tags to remove (no longer selected)
+            var tagsToRemove = product.Tags.Where(t => !selectedTagNames.Contains(t.Name)).ToList();
+
+            // Remove unselected tags
+            foreach (var tag in tagsToRemove)
+            {
+                product.Tags.Remove(tag);
+            }
+
+            // Tags to add (newly selected)
+            var tagsToAddNames = selectedTagNames.Except(currentTagNames).ToList();
+
+            foreach (var tagName in tagsToAddNames)
+            {
+                // Check if the tag already exists in database (optional)
+                var existingTag = await _dbContext.ProductsTags.FirstOrDefaultAsync(t => t.Name == tagName);
+
+                if (existingTag != null)
+                {
+                    product.Tags.Add(existingTag);
+                }
+                else
+                {
+                    // Create new tag if it doesn't exist
+                    var newTag = new ProductTag { Name = tagName };
+                    product.Tags.Add(newTag);
+                }
+            }
 
             await _dbContext.SaveChangesAsync();
 
             return true;
         }
+
 
 
         public async Task<DeleteProductModel?> GetProductForDeletionAsync(int? productId)

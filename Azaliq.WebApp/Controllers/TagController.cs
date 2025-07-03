@@ -1,20 +1,25 @@
-﻿using Azaliq.Services.Core;
+﻿using Azaliq.Data;
+using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Category;
 using Azaliq.ViewModels.Tag;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.WebApp.Controllers
 {
     public class TagController : Controller
     {
 
+        private readonly ApplicationDbContext _dbContext;
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
         private readonly ITagService _tagService;
 
-        public TagController(ICategoryService categoryService, IProductService productService, ITagService tagService)
+        public TagController(ApplicationDbContext _dbContext, ICategoryService categoryService, IProductService productService, ITagService tagService)
         {
+            this._dbContext = _dbContext;
+
             this._categoryService = categoryService;
             this._productService = productService;
             this._tagService = tagService;
@@ -36,8 +41,18 @@ namespace Azaliq.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(CreateTagInputModel model)
         {
+
             if (!ModelState.IsValid)
                 return View(model);
+
+            bool tagExists = await _dbContext.ProductsTags
+                .AnyAsync(t => t.Name.ToLower() == model.Name.ToLower());
+
+            if (tagExists)
+            {
+                ModelState.AddModelError("Name", "Tag with this name already exists.");
+                return View(model);
+            }
 
             await _tagService.AddTagAsync(model);
             return RedirectToAction(nameof(Index));
@@ -96,5 +111,40 @@ namespace Azaliq.WebApp.Controllers
 
             }
         }
+
+
+        // GET: Tag/Delete/5
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return RedirectToAction(nameof(Index));
+
+            var model = await _tagService.GetTagForDeletionAsync(id);
+
+            if (model == null)
+                return RedirectToAction(nameof(Index));
+
+            return View(model);
+        }
+
+        // POST: Tag/DeleteConfirmed
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var result = await _tagService.DeleteTagAsync(id);
+
+            if (!result)
+            {
+                // Could reload model and show error if desired
+                ModelState.AddModelError(string.Empty, "Failed to delete tag.");
+                var model = await _tagService.GetTagForDeletionAsync(id);
+                return View("Delete", model);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

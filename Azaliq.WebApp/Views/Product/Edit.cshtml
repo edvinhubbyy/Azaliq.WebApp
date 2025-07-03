@@ -44,15 +44,22 @@
 
         <div class="mb-3">
             <label class="form-label">Tags</label><br />
-            @foreach (var tag in Model.AllTags)
-            {
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox"
-                           name="SelectedTags" value="@tag"
-                           @(Model.SelectedTags?.Contains(tag) == true ? "checked" : "") />
-                    <label class="form-check-label">@tag</label>
-                </div>
-            }
+            <div id="tags-container">
+                @foreach (var tag in Model.AllTags)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox"
+                               name="SelectedTags" value="@tag"
+                               @(Model.SelectedTags?.Contains(tag) == true ? "checked" : "") />
+                        <label class="form-check-label">@tag</label>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <input type="text" id="new-tag-input" class="form-control" placeholder="Add new tag" />
+            <button type="button" id="add-tag-btn" class="btn btn-outline-primary">Add Tag</button>
         </div>
 
         <div class="form-check mb-3">
@@ -66,4 +73,45 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        document.getElementById('add-tag-btn').addEventListener('click', function () {
+            const input = document.getElementById('new-tag-input');
+            const newTag = input.value.trim();
+
+            if (newTag === '') return;
+
+            // Check if tag already exists (case-insensitive)
+            const existingTags = Array.from(document.querySelectorAll('#tags-container input[type=checkbox]'))
+                .map(cb => cb.value.toLowerCase());
+            if (existingTags.includes(newTag.toLowerCase())) {
+                alert('Tag already exists!');
+                input.value = '';
+                return;
+            }
+
+            // Create checkbox input and label
+            const container = document.getElementById('tags-container');
+
+            const div = document.createElement('div');
+            div.className = 'form-check form-check-inline';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'form-check-input';
+            checkbox.name = 'SelectedTags';
+            checkbox.value = newTag;
+            checkbox.checked = true;
+
+            const label = document.createElement('label');
+            label.className = 'form-check-label';
+            label.textContent = newTag;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            container.appendChild(div);
+
+            input.value = '';
+        });
+    </script>
 }

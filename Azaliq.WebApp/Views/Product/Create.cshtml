@@ -1,70 +1,123 @@
 ﻿@model Azaliq.ViewModels.Product.CreateProductInputModel
 
 @{
-    ViewData["Title"] = "Create Product";
+    ViewData["Title"] = "Add Product";
 }
 
-<h2 class="text-center mt-4">Create Product</h2>
+<h2>@ViewData["Title"]</h2>
 
-<div class="container">
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+<form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="ImageUrl" class="form-label"></label>
-            <input asp-for="ImageUrl" class="form-control" />
-            <span asp-validation-for="ImageUrl" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="ImageUrl" class="form-label"></label>
+        <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="Price" class="form-label"></label>
-            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" autocomplete="off" />
-            <span asp-validation-for="Price" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
 
+    <div class="mb-3 form-check">
+        <input asp-for="IsSameDayDeliveryAvailable" class="form-check-input" />
+        <label asp-for="IsSameDayDeliveryAvailable" class="form-check-label"></label>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="CategoryId" class="form-label"></label>
-            <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
-                <option value="">-- Select Category --</option>
-            </select>
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
-        </div>
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label"></label>
+        <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" class="form-select">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label">Tags</label><br />
-            @foreach (var tag in Model.AllTags)
+    <fieldset class="mb-3">
+        <legend>Tags</legend>
+        <div id="tags-container">
+            @if (Model.AllTags != null && Model.AllTags.Any())
             {
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox"
-                           name="SelectedTags" value="@tag"
-                           @(Model.SelectedTags?.Contains(tag) == true ? "checked" : "") />
-                    <label class="form-check-label">@tag</label>
-                </div>
+                foreach (var tag in Model.AllTags)
+                {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox"
+                               name="SelectedTags"
+                               id="tag_@tag"
+                               value="@tag"
+                               @(Model.SelectedTags != null && Model.SelectedTags.Contains(tag) ? "checked" : "") />
+                        <label class="form-check-label" for="tag_@tag">@tag</label>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No tags available.</p>
             }
         </div>
+    </fieldset>
 
-        <div class="form-check mb-3">
-            <input asp-for="IsSameDayDeliveryAvailable" class="form-check-input" />
-            <label asp-for="IsSameDayDeliveryAvailable" class="form-check-label"></label>
-        </div>
+    <div class="mb-3 d-flex align-items-center gap-2">
+        <input type="text" id="new-tag-input" class="form-control" placeholder="Add new tag" />
+        <button type="button" id="add-tag-btn" class="btn btn-outline-primary">Add Tag</button>
+    </div>
 
-        <button type="submit" class="btn btn-success">Add Product</button>
-    </form>
-</div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        document.getElementById('add-tag-btn').addEventListener('click', function () {
+            const input = document.getElementById('new-tag-input');
+            const newTag = input.value.trim();
+
+            if (newTag === '') return;
+
+            // Check if tag already exists (case-insensitive)
+            const existingTags = Array.from(document.querySelectorAll('#tags-container input[type=checkbox]'))
+                .map(cb => cb.value.toLowerCase());
+            if (existingTags.includes(newTag.toLowerCase())) {
+                alert('Tag already exists!');
+                input.value = '';
+                return;
+            }
+
+            // Create checkbox input and label
+            const container = document.getElementById('tags-container');
+
+            const div = document.createElement('div');
+            div.className = 'form-check form-check-inline';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'form-check-input';
+            checkbox.name = 'SelectedTags';
+            checkbox.value = newTag;
+            checkbox.checked = true;
+
+            const label = document.createElement('label');
+            label.className = 'form-check-label';
+            label.textContent = newTag;
+
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            container.appendChild(div);
+
+            input.value = '';
+        });
+    </script>
 }

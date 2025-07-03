@@ -30,12 +30,3 @@ namespace Azaliq.ViewModels.Product
 
     }
 }
-
-
-//Id = product.Id,
-//Name = product.Name,
-//Description = product.Description,
-//ImageUrl = product.ImageUrl,
-//Price = product.Price,
-//IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
-//CategoryId = product.CategoryId,

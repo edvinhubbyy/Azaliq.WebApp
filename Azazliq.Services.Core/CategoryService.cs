@@ -118,5 +118,49 @@ namespace Azaliq.Services.Core
             return (canDelete, products);
         }
 
+
+
+        public async Task<EditCategoryInputModel?> EditCategoryAsync(string? userId, int? categoryId)
+        {
+            if (categoryId == null)
+                return null;
+
+            var category = await _dbContext.Categories
+                .Include(c => c.Products)   // If you really need products, otherwise remove Include
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
+
+            if (category == null)
+                return null;  // Handle category not found
+
+            var model = new EditCategoryInputModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                // Add other properties if needed
+            };
+
+            return model;
+        }
+
+
+        public async Task<bool> PersistUpdateCategoryAsync(string userId, EditCategoryInputModel inputModel)
+        {
+            var category = await _dbContext.Categories
+                .FirstOrDefaultAsync(c => c.Id == inputModel.Id);
+
+            if (category == null)
+                return false; // Could not find category to update
+
+            category.Name = inputModel.Name;
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+
+
+
     }
 }

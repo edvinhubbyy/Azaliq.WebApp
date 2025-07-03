@@ -2,6 +2,7 @@
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Tag;
+using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -106,6 +107,7 @@ namespace Azaliq.Services.Core
 
             var tag = await _dbContext.ProductsTags
                 .AsNoTracking()
+                .Include(t => t.Products) // Include related products
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (tag == null) return null;
@@ -113,7 +115,8 @@ namespace Azaliq.Services.Core
             return new DeleteTagInputModel()
             {
                 Id = tag.Id,
-                Name = tag.Name
+                Name = tag.Name,
+                ProductNames = tag.Products.Select(p => p.Name).ToList() // List of product names using this tag
             };
         }
 
@@ -136,5 +139,49 @@ namespace Azaliq.Services.Core
                 return false;
             }
         }
+
+
+        public async Task<bool> AddOrUpdateProductTagsAsync(Product product, List<string>? selectedTagNames)
+        {
+            if (selectedTagNames == null)
+            {
+                product.Tags.Clear();
+                return true;
+            }
+
+            // Normalize tag names (optional)
+            var normalizedTags = selectedTagNames.Select(t => t.Trim()).Where(t => t != "").Distinct().ToList();
+
+            // Load all tags in DB with these names
+            var existingTags = await _dbContext.ProductsTags
+                .Where(t => normalizedTags.Contains(t.Name))
+                .ToListAsync();
+
+            // Find names not existing yet
+            var newTagNames = normalizedTags
+                .Except(existingTags.Select(t => t.Name))
+                .ToList();
+
+            // Create new tag entities
+            var newTags = newTagNames.Select(name => new ProductTag() { Name = name }).ToList();
+
+            // Add new tags to DB
+            if (newTags.Any())
+            {
+                await _dbContext.ProductsTags.AddRangeAsync(newTags);
+                await _dbContext.SaveChangesAsync();
+                existingTags.AddRange(newTags);
+            }
+
+            // Clear current product tags and assign new list
+            product.Tags.Clear();
+            foreach (var tag in existingTags)
+            {
+                product.Tags.Add(tag);
+            }
+
+            return true;
+        }
+
     }
 }

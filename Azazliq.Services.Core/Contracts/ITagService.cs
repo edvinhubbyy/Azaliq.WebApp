@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Azaliq.Data.Models.Models;
 using Azaliq.ViewModels.Tag;
 
 namespace Azaliq.Services.Core.Contracts
@@ -22,6 +23,8 @@ namespace Azaliq.Services.Core.Contracts
         Task<DeleteTagInputModel?> GetTagForDeletionAsync(int? id);
 
         Task<bool> DeleteTagAsync(int id);
+
+        Task<bool> AddOrUpdateProductTagsAsync(Product product, List<string>? selectedTagNames);
 
     }
 }

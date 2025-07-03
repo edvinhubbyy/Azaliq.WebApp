@@ -1,18 +1,23 @@
-﻿using Azaliq.Services.Core.Contracts;
+﻿using Azaliq.Data;
+using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.WebApp.Controllers
 {
     public class ProductController : BaseController
     {
 
+        private readonly ApplicationDbContext _dbContext;
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
-        
-        public ProductController(ICategoryService categoryService, IProductService productService)
+
+        public ProductController(ApplicationDbContext _dbContext, ICategoryService categoryService, IProductService productService)
         {
+            this._dbContext = _dbContext;
+
             this._categoryService = categoryService;
             this._productService = productService;
         }
@@ -24,7 +29,6 @@ namespace Azaliq.WebApp.Controllers
             string? userId = GetUserId();
             var products = await _productService.GetAllProductsAsync(userId);
 
-            // TODO: Fix this
             return View(products);
         }
 
@@ -50,9 +54,7 @@ namespace Azaliq.WebApp.Controllers
                 Console.WriteLine(e.Message);
                 return this.RedirectToAction(nameof(Index), "Home");
             }
-
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -61,7 +63,9 @@ namespace Azaliq.WebApp.Controllers
             {
                 CreateProductInputModel inputModel = new CreateProductInputModel
                 {
-                    Categories = await this._categoryService.GetCategoryDropDownDataAsync()
+                    Categories = await this._categoryService.GetCategoryDropDownDataAsync(),
+                    AllTags = await _dbContext.ProductsTags.Select(t => t.Name).ToListAsync(),
+                    SelectedTags = new List<string>()
                 };
 
                 return this.View(inputModel);
@@ -73,8 +77,9 @@ namespace Azaliq.WebApp.Controllers
             }
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProductInputModel inputModel)
+        public async Task<IActionResult> Create(CreateProductInputModel inputModel, string? NewTags)
         {
             try
             {
@@ -83,6 +88,25 @@ namespace Azaliq.WebApp.Controllers
                     inputModel.Categories = await _categoryService.GetCategoryDropDownDataAsync();
                     return View(inputModel);
                 }
+
+                // Parse new tags (comma-separated), trim, and merge with selected tags
+                var newTagsList = new List<string>();
+                if (!string.IsNullOrWhiteSpace(NewTags))
+                {
+                    newTagsList = NewTags
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(t => t.Trim())
+                        .Where(t => !string.IsNullOrWhiteSpace(t))
+                        .ToList();
+                }
+
+                inputModel.SelectedTags = inputModel.SelectedTags ?? new List<string>();
+                inputModel.SelectedTags.AddRange(newTagsList);
+
+                // Remove duplicates ignoring case
+                inputModel.SelectedTags = inputModel.SelectedTags
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
 
                 bool isCreated = await this._productService.CreateProductAsync(this.GetUserId()!, inputModel);
 
@@ -102,42 +126,56 @@ namespace Azaliq.WebApp.Controllers
             }
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            try
-            {
-                string userId = GetUserId()!;
-
-                var editProductInput = await _productService.EditProductAsync(userId, id);
-
-                if (editProductInput == null)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-
-                // Load categories dropdown into the view model
-                editProductInput.Categories = await _categoryService.GetCategoryDropDownDataAsync();
-
-                return View(editProductInput);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+            if (id == null)
                 return RedirectToAction(nameof(Index));
-            }
+
+            var userId = GetUserId()!;
+
+            var editModel = await _productService.EditProductAsync(userId, id);
+
+            if (editModel == null)
+                return RedirectToAction(nameof(Index));
+
+            // Populate categories dropdown
+            editModel.Categories = await _categoryService.GetCategoryDropDownDataAsync();
+
+            // SelectedTags should already be populated in EditProductAsync
+
+            return View(editModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EditProductInputModel inputModel)
+        public async Task<IActionResult> Edit(EditProductInputModel inputModel, string? newTags)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    // If validation fails, reload categories dropdown to keep the view valid
                     inputModel.Categories = await _categoryService.GetCategoryDropDownDataAsync();
                     return View(inputModel);
+                }
+
+                // Merge newTags (comma separated string) with SelectedTags
+                if (!string.IsNullOrWhiteSpace(newTags))
+                {
+                    var newTagsList = newTags
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .ToList();
+
+                    inputModel.SelectedTags ??= new List<string>();
+
+                    // Add new tags if not already present
+                    foreach (var tag in newTagsList)
+                    {
+                        if (!inputModel.SelectedTags.Contains(tag, StringComparer.OrdinalIgnoreCase))
+                        {
+                            inputModel.SelectedTags.Add(tag);
+                        }
+                    }
                 }
 
                 bool editResult = await _productService.PersistUpdateProductAsync(GetUserId(), inputModel);
@@ -157,6 +195,7 @@ namespace Azaliq.WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
 
         // GET: Product/Delete/5
         [HttpGet]
@@ -211,10 +250,5 @@ namespace Azaliq.WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-
-
-
-
-
     }
 }

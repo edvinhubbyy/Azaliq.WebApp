@@ -7,7 +7,7 @@
 <h2 class="text-center mt-4">Add Tag</h2>
 
 <div class="container mt-4">
-    <form asp-action="Add" method="post">
+    <form asp-action="Add" method="post" novalidate>
         <div class="mb-3">
             <label asp-for="Name" class="form-label"></label>
             <input asp-for="Name" class="form-control" autocomplete="off" />
