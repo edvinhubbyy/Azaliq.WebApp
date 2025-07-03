@@ -1,0 +1,24 @@
+﻿@model Azaliq.ViewModels.Tag.CreateTagInputModel
+
+@{
+    ViewData["Title"] = "Add Tag";
+}
+
+<h2 class="text-center mt-4">Add Tag</h2>
+
+<div class="container mt-4">
+    <form asp-action="Add" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" autocomplete="off" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Create</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -17,5 +17,7 @@ namespace Azaliq.Data.Configurations
         public ICollection<Product> Products { get; set; }
             = new HashSet<Product>();
 
+        public bool IsDeleted { get; set; } = false;
+
     }
 }

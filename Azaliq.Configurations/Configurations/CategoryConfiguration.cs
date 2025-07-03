@@ -22,6 +22,16 @@ namespace Azaliq.Data.Configurations
                 .HasMaxLength(NameMaxLength)
                 .IsRequired();
 
+            entity
+                .HasQueryFilter(c => c.IsDeleted == false);
+
+            entity.HasData(new Category
+            {
+                Id = -1,
+                Name = "Deleted Category",
+                IsDeleted = true
+            });
+
         }
     }
 }

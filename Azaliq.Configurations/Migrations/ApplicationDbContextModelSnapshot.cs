@@ -30,6 +30,9 @@ namespace Azaliq.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -38,6 +41,14 @@ namespace Azaliq.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            IsDeleted = true,
+                            Name = "Deleted Category"
+                        });
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.CartItem", b =>
