@@ -30,10 +30,12 @@
 
             @if (Model.IsAvailable)
             {
-                <form method="post" asp-controller="Cart" asp-action="Add">
+                <form asp-controller="Cart" asp-action="Add" method="post" class="mt-2">
                     <input type="hidden" name="productId" value="@Model.Id" />
-                    <button type="submit" class="btn btn-primary mt-3">Add to Cart</button>
+                    <input type="number" name="quantity" value="1" min="1" class="form-control mb-1" style="width: 70px; display: inline-block;" />
+                    <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
                 </form>
+
             }
             else
             {

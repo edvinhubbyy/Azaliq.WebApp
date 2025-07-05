@@ -28,6 +28,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+
 
 builder.Services.AddControllersWithViews();
 

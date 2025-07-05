@@ -1,0 +1,24 @@
+﻿@model Azaliq.ViewModels.Store.StoreLocationViewModel
+
+@{
+    ViewData["Title"] = $"Map for {Model.Name}";
+}
+
+<h2>@Model.Name</h2>
+
+<div class="mb-3">
+    <p><strong>Address:</strong> @Model.Address</p>
+    <p><strong>Phone:</strong> @Model.Phone</p>
+</div>
+
+<iframe src="@Model.GoogleMapsUrl"
+        width="100%"
+        height="450"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Back to Stores List</a>

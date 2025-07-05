@@ -1,0 +1,44 @@
+﻿@model Azaliq.ViewModels.Store.StoreLocationViewModel
+
+@{
+    ViewData["Title"] = "Delete Store Location";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>Are you sure you want to delete this store?</h4>
+
+<div>
+    <h5>@Model.Name</h5>
+    <p><strong>Address:</strong> @Model.Address</p>
+    <p><strong>Phone:</strong> @Model.Phone</p>
+</div>
+
+<form id="delete-form" asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <!-- Button triggers modal instead of direct submit -->
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+        Yes, Delete
+    </button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+<!-- Bootstrap Modal for confirmation -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="finalDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: white;">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="finalDeleteLabel">FINAL DELETE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you absolutely sure you want to delete this store? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <!-- This button submits the form -->
+                <button type="submit" form="delete-form" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

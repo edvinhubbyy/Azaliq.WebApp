@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Azaliq.ViewModels.Store.StoreLocationViewModel>
+
+@{
+    ViewData["Title"] = "Store Locations";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add New Store</a>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Map</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach(var store in Model)
+    {
+        <tr>
+            <td>@store.Name</td>
+            <!-- Link to your internal Map page -->
+            <td>
+                <a asp-action="Map" asp-route-id="@store.Id" class="btn btn-info btn-sm">
+                    View Map
+                </a>
+            </td>
+            <td>@store.Address</td>
+            <td>@store.Phone</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@store.Id" class="btn btn-warning btn-sm me-1">Edit</a>
+                <a asp-action="Delete" asp-route-id="@store.Id" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

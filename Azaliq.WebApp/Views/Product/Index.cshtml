@@ -41,7 +41,15 @@
                         <span class="badge bg-success mb-2">Same-Day Delivery</span>
                     }
 
-                    <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-dark w-100">View</a>
+                    <div class="d-grid gap-2 mt-2">
+                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-dark">View</a>
+
+                        <form asp-controller="Cart" asp-action="Add" method="post" class="mt-2">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <input type="number" name="quantity" value="1" min="1" class="form-control mb-1" style="width: 70px; display: inline-block;" />
+                            <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

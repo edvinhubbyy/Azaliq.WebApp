@@ -1,0 +1,62 @@
+﻿@model Azaliq.ViewModels.Store.CreateStoreLocationInputModel
+
+@{
+    ViewData["Title"] = "Add Store Location";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="GoogleMapsUrl" class="form-label"></label>
+        <input asp-for="GoogleMapsUrl" class="form-control" />
+        <span asp-validation-for="GoogleMapsUrl" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Phone" class="form-label"></label>
+        <input asp-for="Phone"
+               type="tel"
+               class="form-control"
+               placeholder="+359 88 123 4567"
+               pattern="^\+?(\d[\d\s\-().]{7,}\d)$"
+               title="Enter a valid phone number, e.g. +359 88 123 4567"
+               autocomplete="tel" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+        <small id="phoneHelp" class="form-text text-muted">Format example: +359 88 123 4567</small>
+        <span id="phoneError" class="text-danger" style="display:none;">Invalid phone number format</span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Add Store</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        const phoneInput = document.querySelector('input[name="Phone"]');
+        const phoneError = document.getElementById('phoneError');
+
+        phoneInput.addEventListener('input', () => {
+            const pattern = /^\+?(\d[\d\s\-().]{7,}\d)$/;
+            if (phoneInput.value && !pattern.test(phoneInput.value)) {
+                phoneError.style.display = 'inline';
+            } else {
+                phoneError.style.display = 'none';
+            }
+        });
+    </script>
+}

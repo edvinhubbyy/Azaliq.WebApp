@@ -13,7 +13,7 @@ namespace Azaliq.Data
         {
         }
 
-        public virtual DbSet<CartItem> CartsItems { get; set; } = null!;
+        public virtual DbSet<CartItem> CartItems { get; set; } = null!;
 
         public virtual DbSet<Order> Orders { get; set; } = null!;
 

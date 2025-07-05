@@ -33,5 +33,13 @@ namespace Azaliq.GCommon
             public const int NameMaxLength = 50;
         }
 
+        public static class Store
+        {
+            public const int NameMaxLength = 50;
+            public const string PhoneNumberRegex = @"^\+?(\d[\d\s\-().]{7,}\d)$";
+            public const int GoogleMapsUrlLength = 1000;
+            public const int AddressMaxLength = 300;
+        }
+
     }
 }

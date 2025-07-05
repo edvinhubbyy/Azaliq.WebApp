@@ -31,8 +31,6 @@ namespace Azaliq.Data.Configurations
             entity.HasIndex(ci => new { ci.UserId, ci.ProductId })
                 .IsUnique();
 
-            entity
-                .HasQueryFilter(ci => ci.IsDeleted == false);
         }
     }
 }
