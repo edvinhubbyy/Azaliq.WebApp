@@ -40,6 +40,11 @@ namespace Azaliq.GCommon
             public const int GoogleMapsUrlLength = 1000;
             public const int AddressMaxLength = 300;
         }
+        
+        public static class General
+        {
+            public const string IsDeletedPropertyName = "IsDeleted";
+        }
 
     }
 }

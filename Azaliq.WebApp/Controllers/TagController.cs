@@ -3,11 +3,13 @@ using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Category;
 using Azaliq.ViewModels.Tag;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.WebApp.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class TagController : Controller
     {
 
@@ -25,6 +27,8 @@ namespace Azaliq.WebApp.Controllers
             this._tagService = tagService;
         }
 
+        [HttpGet]
+        [AllowAnonymous] // Allow anonymous access to the index page
         public async Task<IActionResult> Index()
         {
             var tags = await _tagService.GetAllTagsAsync(); // or pass userId if needed

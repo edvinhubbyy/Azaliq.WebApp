@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Azaliq.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250705183612_Cart")]
-    partial class Cart
+    [Migration("20250716203558_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,6 +80,58 @@ namespace Azaliq.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("CartItems");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.Favorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Favorites");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.Manager", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Manager identifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasComment("Manager's user entity");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Manager", t =>
+                        {
+                            t.HasComment("Manager in the system");
+                        });
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.Order", b =>
@@ -183,6 +235,9 @@ namespace Azaliq.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -208,7 +263,7 @@ namespace Azaliq.Data.Migrations
                     b.ToTable("ProductsTags");
                 });
 
-            modelBuilder.Entity("Azaliq.Data.Models.Models.StoreLocation", b =>
+            modelBuilder.Entity("Azaliq.Data.Models.Models.Store", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -226,6 +281,9 @@ namespace Azaliq.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<Guid?>("ManagerId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -236,6 +294,8 @@ namespace Azaliq.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.ToTable("StoresLocations");
                 });
@@ -501,6 +561,36 @@ namespace Azaliq.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Azaliq.Data.Models.Models.Favorite", b =>
+                {
+                    b.HasOne("Azaliq.Data.Models.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.Manager", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithOne()
+                        .HasForeignKey("Azaliq.Data.Models.Models.Manager", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Azaliq.Data.Models.Models.Order", b =>
                 {
                     b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", null)
@@ -544,6 +634,16 @@ namespace Azaliq.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.Store", b =>
+                {
+                    b.HasOne("Azaliq.Data.Models.Models.Manager", "Manager")
+                        .WithMany("ManagedStores")
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -615,6 +715,11 @@ namespace Azaliq.Data.Migrations
             modelBuilder.Entity("Azaliq.Data.Configurations.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.Manager", b =>
+                {
+                    b.Navigation("ManagedStores");
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.Order", b =>

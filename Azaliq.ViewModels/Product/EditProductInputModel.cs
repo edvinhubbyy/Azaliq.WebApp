@@ -26,6 +26,10 @@ namespace Azaliq.ViewModels.Product
         [Range(0.01, 100_000)]
         public decimal Price { get; set; }
 
+        [Required]
+        [Range(1, 10_000)]
+        public int Quantity { get; set; }
+
         public bool IsSameDayDeliveryAvailable { get; set; }
 
         [Required]

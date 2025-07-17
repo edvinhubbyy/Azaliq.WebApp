@@ -7,34 +7,56 @@
 <h2>@ViewData["Title"]</h2>
 
 <p>
-    @if (User?.Identity?.IsAuthenticated == true)
+    @if (User?.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
     {
         <a asp-action="Create" class="btn btn-primary">Add Category</a>
     }
 </p>
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th style="width: 150px;">Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var category in Model)
-    {
+@if (User.IsInRole("User"))
+{
+    <table class="table table-striped">
+        <thead>
         <tr>
-            <td>@category.Name</td>
-            <td class="d-flex gap-2">
-                <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-warning flex-fill">
-                    <i class="fas fa-edit me-1"></i> Edit
-                </a>
-                <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" 
-                   class="btn btn-sm btn-danger flex-fill">
-                    <i class="fas fa-trash me-1"></i> Delete
-                </a>
-            </td>
+            <th>Name</th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+                <th style="width: 150px;">Actions</th> <!-- Empty header cell to keep layout -->
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-warning flex-fill">
+                            <i class="fas fa-edit me-1"></i> Edit
+                        </a>
+                        <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id"
+                           class="btn btn-sm btn-danger flex-fill">
+                            <i class="fas fa-trash me-1"></i> Delete
+                        </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

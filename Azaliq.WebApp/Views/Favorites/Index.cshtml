@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Azaliq.ViewModels.Product.ProductIndexViewModel>
+@{
+    ViewData["Title"] = "My Favorites";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                <div class="card-body text-center">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">@product.Price лв</p>
+                    <form method="post" asp-controller="Favorites" asp-action="Add">
+                        <input type="hidden" name="productId" value="@product.Id" />
+                        <button class="btn btn-danger">Remove from Favorites</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

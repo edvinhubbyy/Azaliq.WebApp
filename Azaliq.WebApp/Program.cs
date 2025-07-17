@@ -1,4 +1,5 @@
 using Azaliq.Data;
+using Azaliq.Data.Configurations;
 using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -16,25 +17,40 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     {
+        options.SignIn.RequireConfirmedEmail = false;
         options.SignIn.RequireConfirmedAccount = false;
+        options.SignIn.RequireConfirmedPhoneNumber = false;
 
-        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 3;
         options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
+        options.Password.RequireDigit = false;
         options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredUniqueChars = 0;
     })
+    //.AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
+//    RoleSeeder.AssignRoles(services);
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -53,6 +69,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+//app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllerRoute(

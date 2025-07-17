@@ -12,15 +12,15 @@ namespace Azaliq.WebApp.Controllers
 {
     public class CartController : BaseController
     {
-
         private readonly ApplicationDbContext _dbContext;
         private readonly ICartService _cartService;
+        private readonly IOrderService _orderService;
 
-        public CartController(ApplicationDbContext _dbContext, ICartService cartService)
+        public CartController(ApplicationDbContext dbContext, ICartService cartService, IOrderService orderService)
         {
-            this._dbContext = _dbContext;
-
-            this._cartService = cartService;
+            _dbContext = dbContext;
+            _cartService = cartService;
+            _orderService = orderService;
         }
 
         // GET: /Cart
@@ -30,7 +30,6 @@ namespace Azaliq.WebApp.Controllers
 
             var cartItems = await _cartService.GetCartItemsAsync(userId);
 
-            // if GetCartItemsAsync returns List<CartItemViewModel>, wrap it:
             var model = new CartIndexViewModel
             {
                 Items = cartItems ?? new List<CartItemViewModel>()
@@ -69,6 +68,7 @@ namespace Azaliq.WebApp.Controllers
             return RedirectToAction("Index", "Cart");
         }
 
+        // POST: /Cart/UpdateQuantities
         [HttpPost]
         public async Task<IActionResult> UpdateQuantities(string action, Dictionary<int, int> quantities)
         {
@@ -83,7 +83,6 @@ namespace Azaliq.WebApp.Controllers
                 {
                     if (parts[0] == "increase")
                     {
-                        // Increase quantity by 1
                         if (quantities.TryGetValue(productId, out int currentQty))
                         {
                             await _cartService.AddToCartAsync(userId, productId, 1);
@@ -91,12 +90,10 @@ namespace Azaliq.WebApp.Controllers
                     }
                     else if (parts[0] == "decrease")
                     {
-                        // Decrease quantity by 1, or remove if 1
                         if (quantities.TryGetValue(productId, out int currentQty))
                         {
                             if (currentQty > 1)
                             {
-                                // Update to new quantity (currentQty - 1)
                                 await _cartService.UpdateQuantityAsync(userId, productId, currentQty - 1);
                             }
                             else
@@ -111,5 +108,37 @@ namespace Azaliq.WebApp.Controllers
             return RedirectToAction("Index");
         }
 
+        // GET: /Cart/Checkout
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var cartItems = await _cartService.GetCartItemsAsync(userId);
+
+            if (!cartItems.Any())
+            {
+                TempData["ErrorMessage"] = "Your cart is empty.";
+                return RedirectToAction("Index");
+            }
+
+            var model = new CartIndexViewModel
+            {
+                Items = cartItems
+            };
+
+            return View(model);
+        }
+
+        // POST: /Cart/PlaceOrder
+        [HttpPost]
+        public async Task<IActionResult> PlaceOrder(string FullName, string Email, string Phone, bool isDelivery, string? deliveryAddress)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            await _orderService.PlaceOrderAsync(userId, isDelivery, deliveryAddress);
+
+            TempData["SuccessMessage"] = "Order placed successfully!";
+            return RedirectToAction("Index");
+        }
     }
 }

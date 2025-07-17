@@ -66,7 +66,7 @@ namespace Azaliq.Services.Core
 
         public async Task AddAsync(CreateStoreLocationInputModel inputModel)
         {
-            var store = new StoreLocation
+            var store = new Store
             {
                 Name = inputModel.Name,
                 GoogleMapsUrl = inputModel.GoogleMapsUrl,

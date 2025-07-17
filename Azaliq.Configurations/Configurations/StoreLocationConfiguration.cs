@@ -10,9 +10,9 @@ using static Azaliq.GCommon.ValidationConstants.StoreLocation;
 
 namespace Azaliq.Data.Configurations
 {
-    public class StoreLocationConfiguration : IEntityTypeConfiguration<StoreLocation>
+    public class StoreLocationConfiguration : IEntityTypeConfiguration<Store>
     {
-        public void Configure(EntityTypeBuilder<StoreLocation> entity)
+        public void Configure(EntityTypeBuilder<Store> entity)
         {
             entity.HasKey(sl => sl.Id);
 

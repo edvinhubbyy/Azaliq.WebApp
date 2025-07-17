@@ -2,15 +2,8 @@
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Tag;
-using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Azaliq.Services.Core
 {
@@ -18,12 +11,11 @@ namespace Azaliq.Services.Core
     {
 
         private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<IdentityUser> _userManager;
+        //private readonly UserManager<ApplicationUserProduct> _userManager;
 
-        public TagService(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
+        public TagService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-            _userManager = userManager;
         }
 
         public async Task<IEnumerable<TagIndexViewModel>> GetAllTagsAsync()

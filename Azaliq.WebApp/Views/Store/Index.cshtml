@@ -6,8 +6,10 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<a asp-action="Create" class="btn btn-primary mb-3">Add New Store</a>
-
+@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+{
+    <a asp-action="Create" class="btn btn-primary mb-3">Add New Store</a>
+}
 <table class="table">
     <thead>
     <tr>
@@ -31,10 +33,13 @@
             </td>
             <td>@store.Address</td>
             <td>@store.Phone</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@store.Id" class="btn btn-warning btn-sm me-1">Edit</a>
-                <a asp-action="Delete" asp-route-id="@store.Id" class="btn btn-danger btn-sm">Delete</a>
-            </td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@store.Id" class="btn btn-warning btn-sm me-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@store.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                }
         </tr>
     }
     </tbody>

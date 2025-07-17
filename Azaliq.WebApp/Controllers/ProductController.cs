@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.WebApp.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class ProductController : BaseController
     {
 
@@ -23,7 +24,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [AllowAnonymous] // Allow anonymous access to the index page
         public async Task<IActionResult> Index()
         {
             string? userId = GetUserId();

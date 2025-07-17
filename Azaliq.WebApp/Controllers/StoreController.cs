@@ -2,11 +2,13 @@
 using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Store;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.WebApp.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class StoreController : BaseController
     {
         private readonly IStoreService _storeService;
@@ -19,6 +21,8 @@ namespace Azaliq.WebApp.Controllers
         }
 
         // GET: /Store
+        [HttpGet]
+        [AllowAnonymous] // Allow anonymous access to the index page
         public async Task<IActionResult> Index()
         {
             var stores = await _storeService.GetAllAsync();
@@ -118,6 +122,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         // GET: /Store/Map/5
+        [AllowAnonymous]
         public async Task<IActionResult> Map(int id)
         {
             var store = await _storeService.GetByIdAsync(id);

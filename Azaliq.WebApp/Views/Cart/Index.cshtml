@@ -51,10 +51,18 @@ else
         </tfoot>
     </table>
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#confirmClearCartModal">
-        Clear Cart
-    </button>
+    <!-- Button row below table -->
+    <div class="d-flex gap-2">
+        <!-- Clear Cart button with modal trigger -->
+        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#confirmClearCartModal">
+            Clear Cart
+        </button>
+
+        <!-- Checkout button -->
+        <a asp-action="Checkout" class="btn btn-success">
+            Proceed to Checkout
+        </a>
+    </div>
 }
 
 <!-- Clear Cart Confirmation Modal -->

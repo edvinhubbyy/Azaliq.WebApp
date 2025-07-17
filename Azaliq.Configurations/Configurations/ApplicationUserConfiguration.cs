@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,6 +8,7 @@ namespace Azaliq.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> entity)
         {
+            
             // Configure FullName as required with max length
             entity.Property(u => u.FullName)
                 .IsRequired()
@@ -23,7 +19,8 @@ namespace Azaliq.Data.Configurations
                 .HasMaxLength(300);
 
             // One-to-many relation with Orders
-            entity.HasMany(u => u.Orders)
+            entity
+                .HasMany(u => u.Orders)
                 .WithOne(o => o.User)
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Restrict);

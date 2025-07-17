@@ -18,12 +18,11 @@ namespace Azaliq.Services.Core
     {
 
         private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<IdentityUser> _userManager;
+        //private readonly UserManager<ApplicationUserProduct> _userManager;
 
-        public ProductService(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
+        public ProductService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
-            _userManager = userManager;
         }
 
         public async Task<IEnumerable<ProductIndexViewModel>> GetAllProductsAsync(string? userId)
@@ -40,6 +39,7 @@ namespace Azaliq.Services.Core
                     Description = p.Description,
                     ImageUrl = p.ImageUrl,
                     Price = p.Price,
+                    Quantity = p.Quantity,
                     IsSameDayDeliveryAvailable = p.IsSameDayDeliveryAvailable
                 })
                 .ToArrayAsync();
@@ -72,6 +72,7 @@ namespace Azaliq.Services.Core
                         Category = product.Category.Name,
                         Description = product.Description,
                         Price = product.Price.ToString("F2"),
+                        Quantity = product.Quantity,
                         IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable
                     };
 
@@ -86,11 +87,9 @@ namespace Azaliq.Services.Core
         {
             bool opResult = false;
 
-            IdentityUser? user = await this._userManager.FindByIdAsync(userId);
-
             Category? category = await this._dbContext.Categories.FindAsync(inputModel.CategoryId);
 
-            if ((user != null) && (category != null))
+            if (category != null)
             {
                 // Get existing tags from DB that match selected tag names
                 var existingTags = await _dbContext.ProductsTags
@@ -116,6 +115,7 @@ namespace Azaliq.Services.Core
                     CategoryId = inputModel.CategoryId,
                     Description = inputModel.Description ?? string.Empty,
                     Price = inputModel.Price,
+                    Quantity = inputModel.Quantity,
                     IsSameDayDeliveryAvailable = inputModel.IsSameDayDeliveryAvailable,
                     Tags = allTags
                 };
@@ -153,6 +153,7 @@ namespace Azaliq.Services.Core
                 Description = product.Description,
                 ImageUrl = product.ImageUrl,
                 Price = product.Price,
+                Quantity = product.Quantity,
                 IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
                 CategoryId = product.CategoryId,
                 SelectedTags = product.Tags.Select(t => t.Name).ToList(),  // Populate selected tags here
@@ -175,6 +176,7 @@ namespace Azaliq.Services.Core
             product.Description = inputModel.Description;
             product.ImageUrl = inputModel.ImageUrl;
             product.Price = inputModel.Price;
+            product.Quantity = inputModel.Quantity;
             product.IsSameDayDeliveryAvailable = inputModel.IsSameDayDeliveryAvailable;
             product.CategoryId = inputModel.CategoryId;
 
@@ -241,6 +243,7 @@ namespace Azaliq.Services.Core
                 Description = product.Description,
                 ImageUrl = product.ImageUrl,
                 Price = product.Price,
+                Quantity = product.Quantity,
                 IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
                 CategoryId = product.CategoryId,
                 // fill other props if needed

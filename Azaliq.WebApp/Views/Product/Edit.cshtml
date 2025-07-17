@@ -27,6 +27,12 @@
             <input asp-for="ImageUrl" class="form-control" />
             <span asp-validation-for="ImageUrl" class="text-danger"></span>
         </div>
+        
+        <div class="mb-3">
+            <label asp-for="Quantity" class="form-label"></label>
+            <input asp-for="Quantity" class="form-control" type="number" min="0" autocomplete="off" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
 
         <div class="mb-3">
             <label asp-for="Price" class="form-label"></label>

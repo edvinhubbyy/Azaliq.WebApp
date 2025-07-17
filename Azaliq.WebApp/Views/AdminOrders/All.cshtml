@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Azaliq.ViewModels.Order.OrderViewModel>
+
+@{
+    ViewData["Title"] = "All";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Items</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.UserId</td> <!-- You may need to add UserId to OrderViewModel -->
+                <td>@TimeZoneInfo.ConvertTimeBySystemTimeZoneId(order.OrderDate, "Europe/Sofia").ToString("g")</td>
+                <td>
+                    <form asp-action="ChangeStatus" method="post" class="d-flex gap-2 align-items-center">
+                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                        <select name="newStatus" class="form-select form-select-sm" style="width: auto;">
+                            @foreach (var status in Enum.GetValues(typeof(Azaliq.Data.Models.Models.Enum.OrderStatus)).Cast<Azaliq.Data.Models.Models.Enum.OrderStatus>())
+                            {
+                                <option value="@status" selected="@(order.Status == status.ToString() ? "selected" : null)">@status</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Change</button>
+                    </form>
+                </td>
+                <td>@order.TotalAmount.ToString("C")</td>
+                <td>
+                    <ul>
+                        @foreach (var item in order.Items)
+                        {
+                            <li>@item.ProductName (x@item.Quantity)</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete order #@order.OrderId?');">
+                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

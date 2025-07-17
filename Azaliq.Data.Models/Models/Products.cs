@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Configurations;
-using Azaliq.Data.Models.Models.Enum;
+﻿using Azaliq.Data.Configurations;
 
 namespace Azaliq.Data.Models.Models
 {
@@ -21,6 +13,8 @@ namespace Azaliq.Data.Models.Models
         public string? ImageUrl { get; set; }
 
         public decimal Price { get; set; }
+        
+        public int Quantity { get; set; }
 
         public bool IsAvailable { get; set; }
 

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Azaliq.WebApp.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
@@ -16,6 +17,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous] // Allow anonymous access to the index page
         public async Task<IActionResult> Index()
         {
             string? userId = GetUserId();
