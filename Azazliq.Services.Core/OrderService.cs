@@ -1,21 +1,17 @@
 ﻿using Azaliq.Data;
-using Azaliq.Services.Core.Contracts;
-using Azaliq.ViewModels.Order;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Azaliq.Data.Models.Models;
 using Azaliq.Data.Models.Models.Enum;
+using Azaliq.Services.Core.Contracts;
+using Azaliq.ViewModels.Order;
 using Microsoft.EntityFrameworkCore;
+using static Azaliq.GCommon.ValidationConstants.General;
 
 namespace Azaliq.Services.Core
 {
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
-
+        
         public OrderService(ApplicationDbContext context)
         {
             _context = context;
@@ -34,8 +30,9 @@ namespace Azaliq.Services.Core
                     Status = o.Status.ToString(),
                     Items = o.Products.Select(i => new OrderItemViewModel
                     {
+                        
                         ProductName = i.Product.Name,
-                        ImageUrl = i.Product.ImageUrl,
+                        ImageUrl = i.Product.ImageUrl ?? NoImageUrl,
                         Price = i.Product.Price,
                         Quantity = i.Quantity
                     }).ToList()
@@ -90,7 +87,7 @@ namespace Azaliq.Services.Core
                     Items = o.Products.Select(i => new OrderItemViewModel
                     {
                         ProductName = i.Product.Name,
-                        ImageUrl = i.Product.ImageUrl,
+                        ImageUrl = i.Product.ImageUrl ?? NoImageUrl,
                         Price = i.Product.Price,
                         Quantity = i.Quantity
                     }).ToList()
@@ -113,16 +110,45 @@ namespace Azaliq.Services.Core
             return false;
         }
 
-        public async Task<bool> DeleteOrderAsync(int orderId)
+        public async Task<DeleteOrderModel?> GetOrderByIdForDeleteAsync(int orderId)
         {
-            var order = await _context.Orders.FindAsync(orderId);
+            var order = await _context.Orders
+                .Include(o => o.Products)
+                .ThenInclude(op => op.Product)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null) return null;
+
+            return new DeleteOrderModel
+            {
+                OrderId = order.Id,
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                Status = order.Status.ToString(),
+                Items = order.Products.Select(op => new OrderItemViewModel
+                {
+                    ProductName = op.Product.Name,
+                    ImageUrl = op.Product.ImageUrl ?? "/images/no-image.jpg",
+                    Price = op.Product.Price,
+                    Quantity = op.Quantity
+                }).ToList()
+            };
+        }
+
+        public async Task<bool> SoftDeleteOrderAsync(int orderId)
+        {
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
             if (order == null)
                 return false;
 
-            _context.Orders.Remove(order);
+            order.IsDeleted = true;
+
             await _context.SaveChangesAsync();
             return true;
         }
+
     }
 
 }

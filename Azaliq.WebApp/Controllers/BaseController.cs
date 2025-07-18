@@ -9,17 +9,24 @@ namespace Azaliq.WebApp.Controllers
     {
         protected bool IsUserAuthenticated()
         {
-            return this.User.Identity?.IsAuthenticated ?? false;
+            bool retRes = false;
+            if (this.User.Identity != null)
+            {
+                retRes = this.User.Identity.IsAuthenticated;
+            }
+
+            return retRes;
         }
+
         protected string? GetUserId()
         {
             string? userId = null;
-            bool isAuthenticated = IsUserAuthenticated();
-            if (isAuthenticated)
+            if (this.IsUserAuthenticated())
             {
                 userId = this.User
                     .FindFirstValue(ClaimTypes.NameIdentifier);
             }
+
             return userId;
         }
     }

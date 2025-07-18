@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,7 +19,8 @@ namespace Azaliq.Data.Configurations
             entity
                 .HasOne(op => op.Product)
                 .WithMany()
-                .HasForeignKey(op => op.ProductId);
+                .HasForeignKey(op => op.ProductId)
+                .IsRequired(false);
 
             entity
                 .Property(op => op.Quantity)

@@ -18,7 +18,10 @@ namespace Azaliq.Services.Core.Contracts
 
         Task<bool> ChangeStatusAsync(int orderId, string newStatus);
 
-        Task<bool> DeleteOrderAsync(int orderId);
+        Task<DeleteOrderModel?> GetOrderByIdForDeleteAsync(int orderId);
+        Task<bool> SoftDeleteOrderAsync(int orderId);
+
+
     }
 
 }

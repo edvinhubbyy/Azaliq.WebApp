@@ -28,9 +28,8 @@ namespace Azaliq.Data
         public virtual DbSet<Store> StoresLocations { get; set; } = null!;
 
         public virtual DbSet<Favorite> Favorites { get; set; } = null!;
-        
-        //public virtual DbSet<Manager> Managers { get; set; } = null!;
 
+        public virtual DbSet<Manager> Managers { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder builder)

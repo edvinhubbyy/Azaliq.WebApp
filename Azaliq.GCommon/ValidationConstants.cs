@@ -44,6 +44,8 @@ namespace Azaliq.GCommon
         public static class General
         {
             public const string IsDeletedPropertyName = "IsDeleted";
+            public const string NoImageUrl = "no-image.jpg";
+
         }
 
     }

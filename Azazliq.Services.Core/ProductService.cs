@@ -1,16 +1,9 @@
 ﻿using Azaliq.Data;
-using Azaliq.Data.Models.Models;
-using Azaliq.ViewModels.Product;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Azaliq.Data.Configurations;
+using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
+using Azaliq.ViewModels.Product;
+using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.Services.Core
 {

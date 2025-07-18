@@ -19,7 +19,8 @@ namespace Azaliq.Data.Configurations
             entity.HasOne(ci => ci.Product)
                 .WithMany()       // no navigation property in Product
                 .HasForeignKey(ci => ci.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
 
             // Relation to ApplicationUser: many CartItems can reference one User
             entity.HasOne(ci => ci.User)

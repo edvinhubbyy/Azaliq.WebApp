@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,7 +21,8 @@ namespace Azaliq.Data.Configurations
                 .HasOne(f => f.Product)
                 .WithMany()
                 .HasForeignKey(f => f.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false);
         }
         
     }

@@ -1,5 +1,4 @@
 ﻿using Azaliq.Services.Core.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -21,6 +20,7 @@ namespace Azaliq.WebApp.Controllers
             var orders = await _orderService.GetOrdersByUserIdAsync(userId);
             return View(orders);
         }
+
     }
 
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using static Azaliq.GCommon.ValidationConstants.Product;
@@ -19,6 +14,10 @@ namespace Azaliq.Data.Configurations
             entity.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(NameMaxLength);
+            
+            entity
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
 
             entity.Property(p => p.Description)
                 .HasMaxLength(DescriptionMaxLength);

@@ -40,7 +40,7 @@ namespace Azaliq.WebApp.Controllers
             try
             {
                 string? userId = GetUserId();
-                ProductDetailsViewModel detailsVm =
+                ProductDetailsViewModel? detailsVm =
                     await this._productService.GetProductDetailsAsync(id, userId);
 
                 if (detailsVm == null)

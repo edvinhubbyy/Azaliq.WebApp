@@ -13,7 +13,7 @@
     }
 </p>
 
-@if (User.IsInRole("User"))
+@if (!User.IsInRole("Admin") || !User.IsInRole("Manager"))
 {
     <table class="table table-striped">
         <thead>

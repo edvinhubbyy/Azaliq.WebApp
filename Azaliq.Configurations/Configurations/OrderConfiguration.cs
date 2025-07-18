@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,16 +8,23 @@ namespace Azaliq.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> entity)
         {
-            entity.HasKey(o => o.Id);
+            entity
+                .HasKey(o => o.Id);
 
             // Relationship with User
-            entity.HasOne(o => o.User)
+            entity
+                .HasOne(o => o.User)
                 .WithMany() // or .WithMany(u => u.Orders) if you add navigation property in ApplicationUser
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            entity
+                .Property(o => o.TotalAmount)
+                .HasColumnType("decimal(18,2)");
 
             // OrderDate is required
-            entity.Property(o => o.OrderDate)
+            entity
+                .Property(o => o.OrderDate)
                 .IsRequired();
 
             // PickupTime optional
@@ -55,6 +57,7 @@ namespace Azaliq.Data.Configurations
 
             entity
                 .HasQueryFilter(o => o.IsDeleted == false);
+
         }
     }
 }

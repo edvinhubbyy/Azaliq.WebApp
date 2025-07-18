@@ -13,31 +13,33 @@
     </p>
 }
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    @if (Model != null && Model.Any())
-    {
-        foreach (var tag in Model)
+@if (!User.IsInRole("Admin") || !User.IsInRole("Manager"))
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var tag in Model)
+            {
+                <tr>
+                    <td>@tag.Name</td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@tag.Name</td>
+                <td colspan="2" class="text-center">No tags found.</td>
             </tr>
         }
-    }
-    else
-    {
-        <tr>
-            <td colspan="2" class="text-center">No tags found.</td>
-        </tr>
-    }
-    </tbody>
-</table>
-
+        </tbody>
+    </table>
+}
 
 
 

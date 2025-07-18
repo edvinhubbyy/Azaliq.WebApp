@@ -28,7 +28,7 @@
         {
             <tr>
                 <td>@order.OrderId</td>
-                <td>@order.UserId</td> <!-- You may need to add UserId to OrderViewModel -->
+                <td>@order.UserId</td>
                 <td>@TimeZoneInfo.ConvertTimeBySystemTimeZoneId(order.OrderDate, "Europe/Sofia").ToString("g")</td>
                 <td>
                     <form asp-action="ChangeStatus" method="post" class="d-flex gap-2 align-items-center">
@@ -47,15 +47,15 @@
                     <ul>
                         @foreach (var item in order.Items)
                         {
-                            <li>@item.ProductName (x@item.Quantity)</li>
+                            <li>@item.ProductName (@item.Quantity)</li>
                         }
                     </ul>
                 </td>
                 <td>
-                    <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete order #@order.OrderId?');">
-                        <input type="hidden" name="orderId" value="@order.OrderId" />
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
+                    <a asp-controller="AdminOrders" asp-action="Delete" asp-route-id="@order.OrderId"
+                       class="btn btn-sm btn-danger flex-fill">
+                        <i class="fas fa-trash me-1"></i> Delete
+                    </a>
                 </td>
             </tr>
         }

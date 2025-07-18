@@ -12,10 +12,12 @@ namespace Azaliq.Data.Models.Models
         
         public string Address { get; set; } = null!;
 
+        public string? Phone { get; set; }
+
         public Guid? ManagerId { get; set; }
 
         public virtual Manager? Manager { get; set; }
 
-        public string? Phone { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

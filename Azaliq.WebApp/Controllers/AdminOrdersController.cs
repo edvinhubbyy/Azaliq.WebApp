@@ -1,4 +1,5 @@
-﻿using Azaliq.Services.Core.Contracts;
+﻿using Azaliq.Services.Core;
+using Azaliq.Services.Core.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,16 +33,30 @@ namespace Azaliq.WebApp.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        // POST: /AdminOrders/Delete
-        [HttpPost]
-        public async Task<IActionResult> Delete(int orderId)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)  // parameter name should match route param
         {
-            var success = await _orderService.DeleteOrderAsync(orderId);
+            var model = await _orderService.GetOrderByIdForDeleteAsync(id);
+            if (model == null)
+                return RedirectToAction("All");
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int orderId)
+        {
+            var success = await _orderService.SoftDeleteOrderAsync(orderId);
             if (!success)
             {
-                TempData["Error"] = "Could not delete order.";
+                TempData["DeleteError"] = "Order could not be deleted.";
+                var model = await _orderService.GetOrderByIdForDeleteAsync(orderId);
+                return View("Delete", model);
             }
-            return RedirectToAction(nameof(All));
+
+            TempData["SuccessMessage"] = "Order deleted successfully.";
+            return RedirectToAction("All");
         }
     }
 }

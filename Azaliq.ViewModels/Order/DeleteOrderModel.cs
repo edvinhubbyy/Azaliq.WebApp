@@ -1,14 +1,12 @@
 ﻿namespace Azaliq.ViewModels.Order
 {
-    public class OrderViewModel
+    public class DeleteOrderModel
     {
-        public int OrderNumber { get; set; }
-        public int UserId { get; set; }
         public int OrderId { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = null!;
-
+        
         public List<OrderItemViewModel> Items { get; set; } = new();
     }
 }
