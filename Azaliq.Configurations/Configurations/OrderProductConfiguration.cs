@@ -14,7 +14,8 @@ namespace Azaliq.Data.Configurations
             entity
                 .HasOne(op => op.Order)
                 .WithMany(o => o.Products)
-                .HasForeignKey(op => op.OrderId);
+                .HasForeignKey(op => op.OrderId)
+                .IsRequired(false);
 
             entity
                 .HasOne(op => op.Product)

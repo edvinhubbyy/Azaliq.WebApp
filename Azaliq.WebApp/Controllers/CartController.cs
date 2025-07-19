@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace Azaliq.WebApp.Controllers
 {
+    [Authorize]
     public class CartController : BaseController
     {
         private readonly ApplicationDbContext _dbContext;
@@ -68,45 +69,32 @@ namespace Azaliq.WebApp.Controllers
             return RedirectToAction("Index", "Cart");
         }
 
-        // POST: /Cart/UpdateQuantities
+        // POST: /Cart/UpdateAndCheckout
         [HttpPost]
-        public async Task<IActionResult> UpdateQuantities(string action, Dictionary<int, int> quantities)
+        public async Task<IActionResult> UpdateAndCheckout(List<CartItemViewModel> Items)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
                 return RedirectToAction("Index");
 
-            if (action != null)
+            if (Items != null)
             {
-                var parts = action.Split('-');
-                if (parts.Length == 2 && int.TryParse(parts[1], out int productId))
+                foreach (var item in Items)
                 {
-                    if (parts[0] == "increase")
+                    if (item.Quantity > 0)
                     {
-                        if (quantities.TryGetValue(productId, out int currentQty))
-                        {
-                            await _cartService.AddToCartAsync(userId, productId, 1);
-                        }
+                        await _cartService.UpdateQuantityAsync(userId, item.ProductId, item.Quantity);
                     }
-                    else if (parts[0] == "decrease")
+                    else
                     {
-                        if (quantities.TryGetValue(productId, out int currentQty))
-                        {
-                            if (currentQty > 1)
-                            {
-                                await _cartService.UpdateQuantityAsync(userId, productId, currentQty - 1);
-                            }
-                            else
-                            {
-                                await _cartService.RemoveFromCartAsync(userId, productId);
-                            }
-                        }
+                        await _cartService.RemoveFromCartAsync(userId, item.ProductId);
                     }
                 }
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Checkout");
         }
+
 
         // GET: /Cart/Checkout
         [HttpGet]
@@ -115,7 +103,7 @@ namespace Azaliq.WebApp.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var cartItems = await _cartService.GetCartItemsAsync(userId);
 
-            if (!cartItems.Any())
+            if (cartItems == null || !cartItems.Any())
             {
                 TempData["ErrorMessage"] = "Your cart is empty.";
                 return RedirectToAction("Index");

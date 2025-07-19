@@ -43,6 +43,11 @@ namespace Azaliq.Data.Configurations
             entity.HasMany(p => p.Tags)
                 .WithMany(t => t.Products);
 
+            entity.HasMany(p => p.Reviews)
+                .WithOne(r => r.Product)
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             entity
                 .HasQueryFilter(p => p.IsDeleted == false);
 

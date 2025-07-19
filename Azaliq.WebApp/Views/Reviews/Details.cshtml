@@ -1,0 +1,52 @@
+﻿@model Azaliq.ViewModels.Product.ProductDetailsViewModel
+
+<h2>@Model.Name</h2>
+
+<!-- other product info -->
+
+<h3>Reviews</h3>
+
+@if (Model.Reviews.Any())
+{
+    foreach (var review in Model.Reviews)
+    {
+        <div class="review border rounded p-2 mb-2">
+            <strong>@review.UserName</strong> - <small>@review.CreatedOn.ToString("g")</small><br />
+            <span>Rating: @review.Rating / 5</span>
+            <p>@review.Comment</p>
+
+            @* Delete button example - show only for authorized users *@
+            @if (User.Identity?.Name == review.UserName) 
+            {
+                <form asp-controller="Reviews" asp-action="Delete" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="@review.Id" />
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            }
+        </div>
+    }
+}
+else
+{
+    <p>No reviews yet.</p>
+}
+
+<hr />
+
+<h4>Add a Review</h4>
+
+<form asp-controller="Reviews" asp-action="AddReview" method="post">
+    <input type="hidden" asp-for="Id" name="ProductId" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="Rating" class="form-label">Rating (1-5)</label>
+        <input type="number" name="Rating" min="1" max="5" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label for="Comment" class="form-label">Comment</label>
+        <textarea name="Comment" rows="3" class="form-control" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>

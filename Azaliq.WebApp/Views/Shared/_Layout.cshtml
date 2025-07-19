@@ -60,6 +60,14 @@
                                 <a class="nav-link" asp-controller="AdminOrders" asp-action="All">Admin Page</a>
                             </li>
                         }
+
+                        @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="ManagementTools" asp-action="UserList">Management</a>
+                                </li>
+                            }
+                        
                     </ul>
 
                     <partial name="_LoginPartial" />

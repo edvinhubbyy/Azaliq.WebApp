@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Shopping Cart";
+
+    // Conversion rate from BGN to EUR
+    decimal BgnToEurRate = 0.51129m;
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -12,81 +15,179 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Image</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Subtotal</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Items)
-            {
+    <form asp-action="UpdateAndCheckout" asp-controller="Cart" method="post" id="cartForm">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.ProductName</td>
-                    <td>
-                        <img src="@item.ProductImageUrl" alt="@item.ProductName" style="height: 50px; width: 50px; object-fit: cover;" />
-                    </td>
-                    <td>@item.Quantity</td>
-                    <td>@item.Price.ToString("C")</td>
-                    <td>@item.Subtotal.ToString("C")</td>
-                    <td>
-                        <form asp-action="Delete" method="post">
-                            <input type="hidden" name="productId" value="@item.ProductId" />
-                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                        </form>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    var priceBgn = Model.Items[i].Price;
+                    var subtotalBgn = Model.Items[i].Subtotal;
+                    var priceEur = priceBgn * BgnToEurRate;
+                    var subtotalEur = subtotalBgn * BgnToEurRate;
+
+                    <tr>
+                        <td>@Model.Items[i].ProductName</td>
+                        <td>
+                            <img src="@Model.Items[i].ProductImageUrl" alt="@Model.Items[i].ProductName" style="height: 50px; width: 50px; object-fit: cover;" />
+                        </td>
+                        <td>
+                            <input type="number"
+                                   name="Items[@i].Quantity"
+                                   value="@Model.Items[i].Quantity"
+                                   min="1"
+                                   max="500"
+                                   class="form-control form-control-sm quantity-input"
+                                   data-index="@i"
+                                   style="width: 70px;" />
+                            <input type="hidden" name="Items[@i].ProductId" value="@Model.Items[i].ProductId" />
+                            <div class="text-danger small mt-1" id="error-@i" style="display:none;">
+                                Quantity must be between 1 and 500.
+                            </div>
+                        </td>
+                        <td>
+                            <div>@priceBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                            <div class="text-muted small">€@priceEur.ToString("F2")</div>
+                        </td>
+                        <td class="subtotal" id="subtotal-@i">
+                            <div>@subtotalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                            <div class="text-muted small">€@subtotalEur.ToString("F2")</div>
+                        </td>
+                        <td>
+                            <form asp-action="Delete" method="post" style="display:inline;">
+                                <input type="hidden" name="productId" value="@Model.Items[i].ProductId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                @{
+                    var totalBgn = Model.Total;
+                    var totalEur = totalBgn * BgnToEurRate;
+                }
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Total:</td>
+                    <td colspan="2" class="fw-bold" id="totalAmount">
+                        <div>@totalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                        <div class="text-muted small">€@totalEur.ToString("F2")</div>
                     </td>
                 </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="4" class="text-end fw-bold">Total:</td>
-                <td colspan="2" class="fw-bold">@Model.Total.ToString("C")</td>
-            </tr>
-        </tfoot>
-    </table>
+            </tfoot>
+        </table>
 
-    <!-- Button row below table -->
-    <div class="d-flex gap-2">
-        <!-- Clear Cart button with modal trigger -->
-        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#confirmClearCartModal">
-            Clear Cart
-        </button>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success" id="checkoutButton">Proceed to Checkout</button>
 
-        <!-- Checkout button -->
-        <a asp-action="Checkout" class="btn btn-success">
-            Proceed to Checkout
-        </a>
-    </div>
-}
+            <!-- Clear Cart Modal Trigger Button -->
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#confirmClearCartModal">
+                Clear Cart
+            </button>
 
-<!-- Clear Cart Confirmation Modal -->
-<div class="modal fade" id="confirmClearCartModal" tabindex="-1" aria-labelledby="clearCartLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background-color: white;">
-            <div class="modal-header">
-                <h5 class="modal-title text-danger" id="clearCartLabel">Confirm Clear Cart</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you absolutely sure you want to clear your shopping cart? This action cannot be undone.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form asp-action="Clear" method="post" class="d-inline">
-                    <button type="submit" class="btn btn-danger">Clear Cart</button>
-                </form>
+            <!-- Clear Cart Confirmation Modal -->
+            <div class="modal fade" id="confirmClearCartModal" tabindex="-1" aria-labelledby="clearCartLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="background-color: white;">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger" id="clearCartLabel">Confirm Clear Cart</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you absolutely sure you want to clear your shopping cart? This action cannot be undone.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form asp-action="Clear" asp-controller="Cart" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger">Clear Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </form>
+}
 
 @section Scripts {
-    <!-- Bootstrap Bundle with Popper for modal functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const bgnToEurRate = 0.51129;
+
+        function formatCurrencyBGN(value) {
+            return new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'BGN' }).format(value);
+        }
+        function formatCurrencyEUR(value) {
+            return '€' + value.toFixed(2);
+        }
+
+        function validateAndUpdate() {
+            const inputs = document.querySelectorAll('.quantity-input');
+            let total = 0;
+            let formValid = true;
+
+            inputs.forEach(input => {
+                const index = input.dataset.index;
+                const errorDiv = document.getElementById('error-' + index);
+                const priceBgnText = input.closest('tr').querySelector('td:nth-child(4) div:first-child').textContent;
+                const priceBgn = parseFloat(priceBgnText.replace(/[^\d.,-]/g, '').replace(',', '.'));
+                let quantity = parseInt(input.value);
+
+                if (isNaN(quantity) || quantity < 1 || quantity > 500) {
+                    errorDiv.style.display = 'block';
+                    formValid = false;
+                } else {
+                    errorDiv.style.display = 'none';
+                }
+
+                const subtotalBgn = (isNaN(quantity) || quantity < 1 || quantity > 500) ? 0 : quantity * priceBgn;
+                const subtotalTd = document.getElementById('subtotal-' + index);
+                subtotalTd.innerHTML = `
+                    <div>${formatCurrencyBGN(subtotalBgn)}</div>
+                    <div class="text-muted small">${formatCurrencyEUR(subtotalBgn * bgnToEurRate)}</div>
+                `;
+                total += subtotalBgn;
+            });
+
+            const totalAmountTd = document.getElementById('totalAmount');
+            totalAmountTd.innerHTML = `
+                <div>${formatCurrencyBGN(total)}</div>
+                <div class="text-muted small">${formatCurrencyEUR(total * bgnToEurRate)}</div>
+            `;
+
+            // Disable checkout button if invalid inputs exist
+            document.getElementById('checkoutButton').disabled = !formValid;
+        }
+
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('input', (e) => {
+                let val = input.value;
+
+                // Prevent leading zeros
+                if (/^0/.test(val)) {
+                    input.value = val.replace(/^0+/, '');
+                }
+
+                // Prevent entering more than 500
+                if (parseInt(val) > 500) {
+                    input.value = val.substring(0, val.length - 1);
+                }
+
+                validateAndUpdate();
+            });
+        });
+
+        // Run once on page load
+        validateAndUpdate();
+    </script>
 }

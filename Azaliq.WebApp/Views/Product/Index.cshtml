@@ -2,6 +2,20 @@
 
 @{
     ViewData["Title"] = "All Flowers";
+
+    // Currency conversion rate from BGN to EUR
+    decimal bgnToEurRate = 0.51129m;
+
+    string FormatBGN(decimal amount)
+    {
+        return string.Format(System.Globalization.CultureInfo.GetCultureInfo("bg-BG"), "{0:C}", amount);
+    }
+
+    string FormatEUR(decimal amount)
+    {
+        // Format as Euro with German culture (uses € and comma decimals)
+        return string.Format(System.Globalization.CultureInfo.GetCultureInfo("de-DE"), "€{0:N2}", amount);
+    }
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 20px;">
@@ -20,6 +34,8 @@
 <div class="row row-cols-1 row-cols-md-3 g-4 text-center">
     @foreach (var product in Model)
     {
+        var priceEUR = product.Price * bgnToEurRate;
+
         <div class="col">
             <div class="card h-100 shadow-sm">
                 @if (!string.IsNullOrEmpty(product.ImageUrl))
@@ -35,8 +51,10 @@
                     <h5 class="card-title">@product.Name</h5>
                     <p class="card-text text-muted">@product.Description</p>
                     <p class="card-text text-muted">@product.Quantity</p>
-                    <p class="fw-bold text-primary">@product.Price.ToString("C")</p>
-                    
+                    <p class="fw-bold text-primary">
+                        @FormatBGN(product.Price) <br />
+                        <small class="text-secondary">@FormatEUR(priceEUR)</small>
+                    </p>
 
                     @if (product.IsSameDayDeliveryAvailable)
                     {
@@ -45,12 +63,19 @@
 
                     <div class="d-grid gap-2 mt-2">
                         <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-dark">View</a>
-                        
+
                         @if (User.IsInRole("User"))
                         {
                             <form asp-controller="Cart" asp-action="Add" method="post" class="mt-2">
-                                <input type="hidden" name="productId" value="@product.Id"/>
-                                <input type="number" name="quantity" value="1" min="1" class="form-control mb-1" style="width: 70px; display: inline-block;"/>
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <input type="number"
+                                       name="quantity"
+                                       value="1"
+                                       min="1"
+                                       max="500"
+                                       class="form-control mb-1"
+                                       style="width: 70px; display: inline-block;"
+                                       onkeydown="return eventAllowsNumberInput(event, this);" />
                                 <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
                             </form>
 
@@ -67,3 +92,39 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function eventAllowsNumberInput(event, input) {
+            const allowedKeys = [
+                "Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab", "Home", "End"
+            ];
+
+            if (allowedKeys.includes(event.key)) {
+                return true; // Allow control keys
+            }
+
+            // Allow digits only
+            if (!/\d/.test(event.key)) {
+                event.preventDefault();
+                return false;
+            }
+
+            // Calculate the new value if this key is added
+            let currentValue = input.value;
+            const selectionStart = input.selectionStart;
+            const selectionEnd = input.selectionEnd;
+
+            // If user has text selected, it will be replaced
+            const newValue = currentValue.substring(0, selectionStart) + event.key + currentValue.substring(selectionEnd);
+
+            // Block if newValue > 500 or starts with 0
+            if (parseInt(newValue, 10) > 500) {
+                event.preventDefault();
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+}

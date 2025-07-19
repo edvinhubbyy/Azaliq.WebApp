@@ -3,6 +3,7 @@ using Azaliq.Data.Configurations;
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Product;
+using Azaliq.ViewModels.Review;
 using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.Services.Core
@@ -46,17 +47,17 @@ namespace Azaliq.Services.Core
 
             if (id.HasValue)
             {
-
-                Product? product = await this._dbContext
+                var product = await this._dbContext
                     .Products
                     .Include(p => p.Category)
                     .Include(p => p.Tags)
+                    .Include(p => p.Reviews)            // include reviews navigation
+                    .ThenInclude(r => r.User)       // include user navigation inside reviews
                     .AsNoTracking()
-                    .SingleOrDefaultAsync(r => r.Id == id.Value);
+                    .SingleOrDefaultAsync(r => r.Id == id.Value && !r.IsDeleted);
 
                 if (product != null)
                 {
-
                     detailsVm = new ProductDetailsViewModel()
                     {
                         Id = product.Id.ToString(),
@@ -66,15 +67,28 @@ namespace Azaliq.Services.Core
                         Description = product.Description,
                         Price = product.Price.ToString("F2"),
                         Quantity = product.Quantity,
-                        IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable
+                        IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
+
+                        Tags = product.Tags.Select(t => t.Name).ToList(),
+
+                        Reviews = product.Reviews
+                            .Where(r => !r.IsDeleted)
+                            .Select(r => new ReviewViewModel
+                            {
+                                Id = r.Id,
+                                UserName = r.User.UserName,  // from navigation User
+                                Comment = r.Comment,
+                                Rating = r.Rating,
+                                CreatedOn = r.CreatedOn
+                            })
+                            .ToList()
                     };
-
                 }
-
             }
 
-            return detailsVm;
+            return detailsVm!;
         }
+
 
         public async Task<bool> CreateProductAsync(string userId, CreateProductInputModel inputModel)
         {

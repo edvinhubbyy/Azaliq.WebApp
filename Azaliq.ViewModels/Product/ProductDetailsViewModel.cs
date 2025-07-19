@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azaliq.ViewModels.Review;
 
 namespace Azaliq.ViewModels.Product
 {
@@ -28,5 +24,9 @@ namespace Azaliq.ViewModels.Product
 
         public ICollection<string> Tags { get; set; }
             = new HashSet<string>();
+
+        public ICollection<ReviewViewModel> Reviews { get; set; } 
+            = new HashSet<ReviewViewModel>();
+
     }
 }

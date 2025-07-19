@@ -1,0 +1,36 @@
+﻿@model Azaliq.ViewModels.Review.ProductReviewsViewModel
+
+@{
+    ViewData["Title"] = "Product Reviews";
+}
+
+<div class="container mt-4">
+    <h2>Reviews for Product #@Model.ProductId</h2>
+
+    @if (Model.Reviews != null && Model.Reviews.Any())
+    {
+        foreach (var review in Model.Reviews)
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@review.UserName</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@review.CreatedOn.ToString("g")</h6>
+                    <p><strong>Rating:</strong> @review.Rating / 5</p>
+                    <p>@review.Comment</p>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No reviews available for this product.</p>
+    }
+
+    <a asp-controller="Reviews" asp-action="AddReview" asp-route-productId="@Model.ProductId" class="btn btn-primary mt-3">
+        Add a Review
+    </a>
+
+    <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-secondary mt-3 ms-2">
+        Back to Product Details
+    </a>
+</div>

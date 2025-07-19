@@ -30,31 +30,53 @@
 
     <table class="table">
         <thead>
-        <tr>
-            <th>Product</th>
-            <th>Image</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Subtotal</th>
-        </tr>
+            <tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.Items)
-        {
-            <tr>
-                <td>@item.ProductName</td>
-                <td>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>
                         <img src="@item.ProductImageUrl" alt="@item.ProductName" style="height: 50px; width: 50px; object-fit: cover;" />
-                <td>@item.Quantity</td>
-                <td>@item.Price.ToString("C")</td>
-                <td>@item.Subtotal.ToString("C")</td>
-            </tr>
-        }
+                    </td>
+                    <td>@item.Quantity</td>
+                    <td>
+                        @item.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
+                        <br />
+                        <small class="text-muted">
+                            @ConvertToEuro(item.Price).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
+                        </small>
+                    </td>
+                    <td>
+                        @item.Subtotal.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
+                        <br />
+                        <small class="text-muted">
+                            @ConvertToEuro(item.Subtotal).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
+                        </small>
+                    </td>
+                </tr>
+            }
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="3" class="text-end fw-bold">Total:</td>
-            <td class="fw-bold">@Model.Total.ToString("C")</td>
+            <td colspan="3" class="text-end fw-bold align-middle" style="vertical-align: middle;">Total:</td>
+            <td colspan="2" class="fw-bold">
+                <div>
+                    @Model.Total.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
+                </div>
+                <div>
+                    <small class="text-muted">
+                        @ConvertToEuro(Model.Total).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
+                    </small>
+                </div>
+            </td>
         </tr>
         </tfoot>
     </table>
@@ -63,3 +85,18 @@
 
     <button type="submit" class="btn btn-success w-100 mt-3">Place Order</button>
 </form>
+
+@section Scripts {
+    <script>
+        // Any scripts if needed
+    </script>
+}
+
+@functions {
+    private decimal ConvertToEuro(decimal amountInLev)
+    {
+        // Fixed BGN to EUR rate (1 EUR = 1.95583 BGN)
+        decimal exchangeRate = 1.95583m;
+        return decimal.Round(amountInLev / exchangeRate, 2);
+    }
+}

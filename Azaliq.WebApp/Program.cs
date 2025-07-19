@@ -39,6 +39,10 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+
+
 
 
 builder.Services.AddControllersWithViews();
@@ -62,6 +66,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+//app.UseStatusCodePagesWithReExecute("/Home/Error", "?id={0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

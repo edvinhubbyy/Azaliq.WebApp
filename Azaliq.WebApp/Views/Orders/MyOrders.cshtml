@@ -2,6 +2,19 @@
 
 @{
     ViewData["Title"] = "My Orders";
+
+    // Currency conversion rate from BGN to EUR
+    decimal bgnToEurRate = 0.51129m;
+
+    string FormatBGN(decimal amount)
+    {
+        return string.Format(System.Globalization.CultureInfo.GetCultureInfo("bg-BG"), "{0:C}", amount);
+    }
+
+    string FormatEUR(decimal amount)
+    {
+        return string.Format(System.Globalization.CultureInfo.GetCultureInfo("de-DE"), "€{0:N2}", amount);
+    }
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -14,37 +27,51 @@ else
 {
     foreach (var order in Model)
     {
-        <div class="card-body">
+        <div class="card-body mb-4">
             <div class="table-responsive">
                 <table class="table table-sm table-bordered align-middle text-center">
                     <thead class="table-light">
-                    <tr>
-                        <th style="width: 30%;">Product</th>
-                        <th style="width: 15%;">Image</th>
-                        <th style="width: 10%;">Quantity</th>
-                        <th style="width: 15%;">Price</th>
-                        <th style="width: 15%;">Subtotal</th>
-                    </tr>
+                        <tr>
+                            <th style="width: 30%;">Product</th>
+                            <th style="width: 15%;">Image</th>
+                            <th style="width: 10%;">Quantity</th>
+                            <th style="width: 15%;">Price</th>
+                            <th style="width: 15%;">Subtotal</th>
+                            <th style="width: 15%;">Status</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @foreach (var item in order.Items)
-                    {
-                        <tr>
-                            <td class="text-start" style="white-space: normal; word-wrap: break-word;">
-                                @item.ProductName
-                            </td>
-                            <td>
-                                <img src="@item.ImageUrl" alt="@item.ProductName" style="height: 40px; max-width: 100%;" />
-                            </td>
-                            <td>@item.Quantity</td>
-                            <td>@item.Price.ToString("C")</td>
-                            <td>@item.Subtotal.ToString("C")</td>
-                        </tr>
-                    }
+                        @foreach (var item in order.Items)
+                        {
+                            var priceEUR = item.Price * bgnToEurRate;
+                            var subtotalEUR = item.Subtotal * bgnToEurRate;
+
+                            <tr>
+                                <td class="text-center" style="white-space: normal; word-wrap: break-word;">
+                                    @item.ProductName
+                                </td>
+                                <td>
+                                    <img src="@item.ImageUrl" alt="@item.ProductName" style="height: 40px; max-width: 100%;" />
+                                </td>
+                                <td>@item.Quantity</td>
+                                <td>
+                                    @FormatBGN(item.Price) <br />
+                                    <small class="text-secondary">@FormatEUR(priceEUR)</small>
+                                </td>
+                                <td>
+                                    @FormatBGN(item.Subtotal) <br />
+                                    <small class="text-secondary">@FormatEUR(subtotalEUR)</small>
+                                </td>
+                                <td>@order.Status</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
-            <p class="fw-bold text-end mb-0">Total: @order.TotalAmount.ToString("C")</p>
+            <p class="fw-bold text-end mb-0">
+                Total: @FormatBGN(order.TotalAmount) <br />
+                <small class="text-secondary">(@FormatEUR(order.TotalAmount * bgnToEurRate))</small>
+            </p>
         </div>
     }
 }
