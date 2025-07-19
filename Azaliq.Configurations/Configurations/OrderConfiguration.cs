@@ -1,6 +1,7 @@
 ﻿using Azaliq.Data.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static Azaliq.GCommon.ValidationConstants.Cart;
 
 namespace Azaliq.Data.Configurations
 {
@@ -54,6 +55,34 @@ namespace Azaliq.Data.Configurations
                 .WithOne(op => op.Order)
                 .HasForeignKey(op => op.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+            entity.Property(o => o.FullName)
+                .IsRequired()
+                .HasMaxLength(FullNameMaxLength); // Use your validation constants here
+
+            entity.Property(o => o.Email)
+                .IsRequired()
+                .HasMaxLength(EmailMaxLength);
+
+            entity.Property(o => o.Phone)
+                .IsRequired()
+                .HasMaxLength(PhoneMaxLength);
+
+            entity.Property(o => o.City)
+                .IsRequired()
+                .HasMaxLength(CityMaxLength);
+
+            entity.Property(o => o.ZipCode)
+                .IsRequired()
+                .HasMaxLength(ZipCodeMaxLength);
+
+            entity.Property(o => o.CountryCode)
+                .IsRequired();
+
+            entity.Property(o => o.OrderDate)
+                .IsRequired();
+
 
             entity
                 .HasQueryFilter(o => o.IsDeleted == false);

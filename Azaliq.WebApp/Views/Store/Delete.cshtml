@@ -1,4 +1,6 @@
 ﻿@model Azaliq.ViewModels.Store.StoreLocationViewModel
+@using Azaliq.Data.Models.Models.Enum
+@using Azaliq.Data.Models.Models.Enum.Phone
 
 @{
     ViewData["Title"] = "Delete Store Location";
@@ -11,7 +13,7 @@
 <div>
     <h5>@Model.Name</h5>
     <p><strong>Address:</strong> @Model.Address</p>
-    <p><strong>Phone:</strong> @Model.Phone</p>
+    <p><strong>Phone:</strong> @(Model.CountryCode.ToPhonePrefix()) @Model.Phone</p>
 </div>
 
 <form id="delete-form" asp-action="Delete" method="post">

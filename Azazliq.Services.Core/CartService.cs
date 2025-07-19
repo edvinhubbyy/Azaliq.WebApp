@@ -45,12 +45,12 @@ namespace Azaliq.Services.Core
 
         public async Task<List<CartItemViewModel>> GetCartItemsAsync(string userId)
         {
+            // Example implementation
             return await _context.CartItems
                 .Where(ci => ci.UserId == userId)
-                .Include(ci => ci.Product)
                 .Select(ci => new CartItemViewModel
                 {
-                    Id = ci.Id,  // <-- include CartItem ID here
+                    Id = ci.Id,
                     ProductId = ci.ProductId,
                     ProductName = ci.Product.Name,
                     ProductImageUrl = ci.Product.ImageUrl,
@@ -59,6 +59,8 @@ namespace Azaliq.Services.Core
                 })
                 .ToListAsync();
         }
+        // Implement other methods as needed
+
 
         public async Task RemoveFromCartAsync(string userId, int productId)
         {

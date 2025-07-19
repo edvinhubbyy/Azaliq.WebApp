@@ -2,12 +2,6 @@
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Store;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.Services.Core
@@ -30,7 +24,8 @@ namespace Azaliq.Services.Core
                     Name = s.Name,
                     GoogleMapsUrl = s.GoogleMapsUrl,
                     Address = s.Address,
-                    Phone = s.Phone
+                    Phone = s.PhoneNumber,
+                    CountryCode = s.CountryCode
                 })
                 .ToListAsync();
         }
@@ -47,7 +42,8 @@ namespace Azaliq.Services.Core
                 Name = store.Name,
                 GoogleMapsUrl = store.GoogleMapsUrl,
                 Address = store.Address,
-                Phone = store.Phone
+                Phone = store.PhoneNumber,
+                CountryCode = store.CountryCode
             };
         }
 
@@ -71,7 +67,8 @@ namespace Azaliq.Services.Core
                 Name = inputModel.Name,
                 GoogleMapsUrl = inputModel.GoogleMapsUrl,
                 Address = inputModel.Address,
-                Phone = inputModel.Phone
+                PhoneNumber = inputModel.PhoneNumber,
+                CountryCode = inputModel.CountryCode
             };
 
             _context.StoresLocations.Add(store);
@@ -87,7 +84,8 @@ namespace Azaliq.Services.Core
             store.Name = inputModel.Name;
             store.GoogleMapsUrl = inputModel.GoogleMapsUrl;
             store.Address = inputModel.Address;
-            store.Phone = inputModel.Phone;
+            store.PhoneNumber = inputModel.Phone;
+            store.CountryCode = inputModel.CountryCode;
 
             await _context.SaveChangesAsync();
             return true;

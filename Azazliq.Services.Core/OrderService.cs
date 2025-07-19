@@ -2,6 +2,7 @@
 using Azaliq.Data.Models.Models;
 using Azaliq.Data.Models.Models.Enum;
 using Azaliq.Services.Core.Contracts;
+using Azaliq.ViewModels.CartItems;
 using Azaliq.ViewModels.Order;
 using Microsoft.EntityFrameworkCore;
 using static Azaliq.GCommon.ValidationConstants.General;
@@ -26,7 +27,6 @@ namespace Azaliq.Services.Core
                 {
                     OrderId = o.Id,
                     OrderDate = o.OrderDate,
-                    TotalAmount = o.TotalAmount,
                     Status = o.Status.ToString(),
                     Items = o.Products.Select(i => new OrderItemViewModel
                     {
@@ -42,35 +42,83 @@ namespace Azaliq.Services.Core
             return order;
         }
 
-        public async Task PlaceOrderAsync(string userId, bool isDelivery, string? deliveryAddress)
+        public async Task<OrderDetailsViewModel?> GetOrderByIdAsync(int orderId)
         {
-            var cartItems = await _context.CartItems
-                .Include(ci => ci.Product)
-                .Where(ci => ci.UserId == userId)
-                .ToListAsync();
+            var order = await _context.Orders
+                .Include(o => o.Products)
+                .ThenInclude(oi => oi.Product)
+                .Include(o => o.User) // assuming ApplicationUser has the extra properties
+                .FirstOrDefaultAsync(o => o.Id == orderId);
 
-            if (!cartItems.Any()) return;
+            if (order == null) return null;
 
-            var order = new Order
+            var model = new OrderDetailsViewModel
             {
-                UserId = userId,
-                OrderDate = DateTime.Now,
-                Status = OrderStatus.Pending,
-                IsDelivery = isDelivery,
-                DeliveryAddress = isDelivery ? deliveryAddress : null,
-                TotalAmount = cartItems.Sum(i => i.Product.Price * i.Quantity),
-                Products = cartItems.Select(i => new OrderProduct
+                OrderId = order.Id,
+                OrderNumber = order.Id,
+                OrderDate = order.OrderDate,
+                Status = order.Status.ToString(),
+                TotalAmount = order.TotalAmount,
+                IsDelivery = order.IsDelivery,
+                DeliveryAddress = order.DeliveryAddress,
+
+                FullName = order.FullName ?? order.User.FullName,  // from order or user
+                Email = order.Email ?? order.User.Email,
+                Phone = order.Phone,
+                CountryCode = order.CountryCode.ToString(),
+                Address = order.DeliveryAddress,
+                City = order.City,
+                ZipCode = order.ZipCode,
+
+                Items = order.Products.Select(oi => new OrderItemViewModel
                 {
-                    ProductId = i.ProductId,
-                    Quantity = i.Quantity
+                    OrderItemId = oi.ProductId,
+                    ProductName = oi.Product.Name,
+                    Quantity = oi.Quantity,
+                    Price = oi.Product.Price,
+                    ImageUrl = oi.Product.ImageUrl ?? NoImageUrl,
                 }).ToList()
             };
 
-            await _context.Orders.AddAsync(order);
+            return model;
+        }
 
-            // Clear cart
+
+        public async Task PlaceOrderAsync(OrderDetailsViewModel inputModel)
+        {
+            var cartItems = await _context.CartItems
+                .Include(ci => ci.Product)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+            {
+                return; // No items in cart
+            }
+
+            var order = new Order
+            {
+                FullName = inputModel.FullName,
+                Email = inputModel.Email,
+                Phone = inputModel.Phone,
+                DeliveryAddress = inputModel.Address,
+                City = inputModel.City,
+                ZipCode = inputModel.ZipCode,
+                OrderDate = DateTime.UtcNow,
+                IsDeleted = false,
+                Status = OrderStatus.Pending
+            };
+
+            foreach (var item in cartItems)
+            {
+                order.Products.Add(new OrderProduct
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity
+                });
+            }
+
+            _context.Orders.Add(order);
             _context.CartItems.RemoveRange(cartItems);
-
             await _context.SaveChangesAsync();
         }
 
@@ -82,7 +130,6 @@ namespace Azaliq.Services.Core
                 {
                     OrderId = o.Id,
                     OrderDate = o.OrderDate,
-                    TotalAmount = o.TotalAmount,
                     Status = o.Status.ToString(),
                     Items = o.Products.Select(i => new OrderItemViewModel
                     {
@@ -93,6 +140,7 @@ namespace Azaliq.Services.Core
                     }).ToList()
                 }).ToListAsync();
         }
+
 
         public async Task<bool> ChangeStatusAsync(int orderId, string newStatus)
         {

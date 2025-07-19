@@ -1,7 +1,9 @@
 ﻿using Azaliq.Data;
 using Azaliq.Data.Models.Models;
+using Azaliq.Data.Models.Models.Enum;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.CartItems;
+using Azaliq.ViewModels.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -96,37 +98,51 @@ namespace Azaliq.WebApp.Controllers
         }
 
 
-        // GET: /Cart/Checkout
-        [HttpGet]
         public async Task<IActionResult> Checkout()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var cartItems = await _cartService.GetCartItemsAsync(userId);
 
-            if (cartItems == null || !cartItems.Any())
+            var model = new CartInputViewModel
             {
-                TempData["ErrorMessage"] = "Your cart is empty.";
-                return RedirectToAction("Index");
-            }
-
-            var model = new CartIndexViewModel
-            {
-                Items = cartItems
+                Items = cartItems ?? new List<CartItemViewModel>(),
+                
+                // Optionally initialize form fields
+                FullName = "",
+                Email = "",
+                Phone = "",
+                CountryCode = CountryCode.Bulgaria,
+                Address = "",
+                City = "",
+                ZipCode = ""
             };
 
             return View(model);
         }
 
-        // POST: /Cart/PlaceOrder
-        [HttpPost]
-        public async Task<IActionResult> PlaceOrder(string FullName, string Email, string Phone, bool isDelivery, string? deliveryAddress)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _orderService.PlaceOrderAsync(userId, isDelivery, deliveryAddress);
+        [HttpPost]
+        public async Task<IActionResult> Checkout(OrderDetailsViewModel inputModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                // If model validation failed, return to the same view with model errors
+                return View(inputModel);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            // Call the service method, pass the full input model so service can save all data
+            await _orderService.PlaceOrderAsync(inputModel);
 
             TempData["SuccessMessage"] = "Order placed successfully!";
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Cart");
         }
+
     }
 }

@@ -47,7 +47,10 @@
                     <ul>
                         @foreach (var item in order.Items)
                         {
-                            <li>@item.ProductName (@item.Quantity)</li>
+                            var subtotal = item.Price * item.Quantity;
+                            <li>
+                                @item.ProductName (@item.Quantity × @item.Price.ToString("C")) = <strong>@subtotal.ToString("C")</strong>
+                            </li>
                         }
                     </ul>
                 </td>

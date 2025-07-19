@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Azaliq.GCommon
+﻿namespace Azaliq.GCommon
 {
     public static class ValidationConstants
     {
@@ -25,7 +19,7 @@ namespace Azaliq.GCommon
             public const int NameMaxLength = 100;
             public const int GoogleMapsUrlLength = 500;
             public const int AddressMaxLength = 300;
-            public const int PhoneMaxLength = 50;
+            public const int PhoneMaxLength = 13;
         }
 
         public static class Category
@@ -39,8 +33,19 @@ namespace Azaliq.GCommon
             public const string PhoneNumberRegex = @"^\+?(\d[\d\s\-().]{7,}\d)$";
             public const int GoogleMapsUrlLength = 1000;
             public const int AddressMaxLength = 300;
+            public const int PhoneMaxLength = 9;
         }
         
+        public static class Cart
+        {
+            public const int FullNameMaxLength = 100;
+            public const int EmailMaxLength = 255;
+            public const int PhoneMaxLength = 9;
+            public const int AddressMaxLength = 200;
+            public const int CityMaxLength = 100;
+            public const int ZipCodeMaxLength = 20;
+        }
+
         public static class General
         {
             public const string IsDeletedPropertyName = "IsDeleted";

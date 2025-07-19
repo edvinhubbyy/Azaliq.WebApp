@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azaliq.Data.Models.Models.Enum;
 
 namespace Azaliq.Data.Models.Models
 {
@@ -12,7 +12,9 @@ namespace Azaliq.Data.Models.Models
         
         public string Address { get; set; } = null!;
 
-        public string? Phone { get; set; }
+        public string PhoneNumber { get; set; } = null!;
+
+        public CountryCode CountryCode { get; set; }
 
         public Guid? ManagerId { get; set; }
 

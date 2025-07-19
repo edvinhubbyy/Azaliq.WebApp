@@ -1,5 +1,6 @@
 ﻿using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Review;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -52,11 +53,6 @@ namespace Azaliq.WebApp.Controllers
             model.UserName = User.Identity?.Name ?? "Anonymous";
             model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             await _reviewService.AddReviewAsync(model);
 
             return RedirectToAction("Details", "Product", new { id = model.ProductId });
@@ -65,6 +61,7 @@ namespace Azaliq.WebApp.Controllers
 
         // POST: Reviews/Delete
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, int productId)
         {
@@ -75,7 +72,8 @@ namespace Azaliq.WebApp.Controllers
                 TempData["Error"] = "Review not found or already deleted.";
             }
 
-            return RedirectToAction("Details", "Product", new { id = productId });
+            return RedirectToAction("ProductReviews", new { productId });
         }
+
     }
 }

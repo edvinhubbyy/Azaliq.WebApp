@@ -30,6 +30,20 @@ namespace Azaliq.Data.Models.Models
 
         public bool IsDeleted { get; set; } = false;
 
+        // Added customer/order details:
+        public string FullName { get; set; } = null!;
+        
+        public string Email { get; set; } = null!;
+        
+        public string Phone { get; set; } = null!;
+        
+        public CountryCode CountryCode { get; set; }
+        
+        public string City { get; set; } = null!;
+        
+        public string ZipCode { get; set; } = null!;
+
+
     }
 
 }

@@ -17,13 +17,21 @@ namespace Azaliq.Data.Configurations
                 .HasKey(r => r.Id);
 
             builder
-                .Property(r => r.Comment).HasMaxLength(1000);
+                .Property(r => r.Comment)
+                .HasMaxLength(1000);
 
             builder
-                .Property(r => r.Rating).IsRequired();
+                .Property(r => r.Rating)
+                .IsRequired();
 
             builder
-                .Property(r => r.CreatedOn).IsRequired();
+                .Property(r => r.CreatedOn)
+                .IsRequired();
+
+            builder
+                .HasOne(r => r.Product)
+                .WithMany(p => p.Reviews);
+
 
             builder
                 .HasOne(r => r.Product)

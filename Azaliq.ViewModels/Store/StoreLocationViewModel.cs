@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azaliq.Data.Models.Models.Enum;
 
 namespace Azaliq.ViewModels.Store
 {
@@ -13,5 +9,7 @@ namespace Azaliq.ViewModels.Store
         public string GoogleMapsUrl { get; set; } = null!;
         public string Address { get; set; } = null!;
         public string? Phone { get; set; }
+
+        public CountryCode CountryCode { get; set; }
     }
 }

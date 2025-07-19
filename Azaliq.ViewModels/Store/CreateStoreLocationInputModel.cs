@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Azaliq.Data.Models.Models.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,7 +25,11 @@ namespace Azaliq.ViewModels.Store
         public string Address { get; set; } = null!;
 
         [Required]
-        public string? Phone { get; set; }
+        [MaxLength(PhoneMaxLength)]
+        public string PhoneNumber { get; set; } = null!;
+
+        [Required(ErrorMessage = "Please select a country code")]
+        public CountryCode CountryCode { get; set; }
     }
 
 }

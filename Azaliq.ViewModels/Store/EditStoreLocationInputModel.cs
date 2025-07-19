@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Azaliq.Data.Models.Models.Enum;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Azaliq.GCommon.ValidationConstants.Store;
 
 namespace Azaliq.ViewModels.Store
@@ -26,6 +22,11 @@ namespace Azaliq.ViewModels.Store
         public string Address { get; set; } = null!;
 
         [Required]
-        public string? Phone { get; set; }
+        [MaxLength(PhoneMaxLength)]
+        public string Phone { get; set; } = null!;
+
+        [Required]
+        [EnumDataType(typeof(CountryCode))]
+        public CountryCode CountryCode { get; set; }
     }
 }
