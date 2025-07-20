@@ -7,6 +7,10 @@ namespace Azaliq.Services.Core.Contracts
 
         Task<IEnumerable<ProductIndexViewModel>> GetAllProductsAsync(string? userId);
 
+        Task<IEnumerable<ProductListItemViewModel>> GetProductsByCategoryAsync(int categoryId);
+
+        Task<IEnumerable<ProductDetailsViewModel>> GetProductsByTagAsync(string tagName);
+
         Task<ProductDetailsViewModel> GetProductDetailsAsync(int? id, string? userId);
 
         Task<bool> CreateProductAsync(string userId, CreateProductInputModel inputModel);

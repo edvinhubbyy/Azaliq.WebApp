@@ -6,7 +6,6 @@
         UnitedKingdom = 44,
         Germany = 49,
         France = 33,
-        Canada = 1,
         Australia = 61,
         India = 91,
         Brazil = 55,
@@ -36,8 +35,6 @@
         Israel = 972,
         Malaysia = 60,
         Bulgaria = 359,
-        Nigeria = 234,
-        Pakistan = 92,
         Peru = 51,
         Philippines = 63,
         Poland = 48,
@@ -45,11 +42,9 @@
         SaudiArabia = 966,
         Singapore = 65,
         SouthKorea = 82,
-        Taiwan = 886,
         Thailand = 66,
         Turkey = 90,
         Ukraine = 380,
-        UnitedArabEmirates = 971,
         Vietnam = 84
     }
 

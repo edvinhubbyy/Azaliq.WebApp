@@ -4,6 +4,7 @@ using Azaliq.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Azaliq.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250720105833_CommentsAddedToModels")]
+    partial class CommentsAddedToModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,66 +57,6 @@ namespace Azaliq.Data.Migrations
                             Id = -1,
                             IsDeleted = true,
                             Name = "Deleted Category"
-                        },
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            Name = "Roses"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            Name = "Tulips"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsDeleted = false,
-                            Name = "Lilies"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            IsDeleted = false,
-                            Name = "Orchids"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            IsDeleted = false,
-                            Name = "Sunflowers"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            IsDeleted = false,
-                            Name = "Carnations"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            IsDeleted = false,
-                            Name = "Daisies"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            IsDeleted = false,
-                            Name = "Peonies"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            IsDeleted = false,
-                            Name = "Chrysanthemums"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            IsDeleted = false,
-                            Name = "Gardenias"
                         });
                 });
 
@@ -379,138 +322,6 @@ namespace Azaliq.Data.Migrations
                         {
                             t.HasComment("Product entity represents a product in the system.");
                         });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            Description = "A beautiful bouquet of red roses",
-                            ImageUrl = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Red Rose Bouquet",
-                            Price = 49.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 2,
-                            Description = "Bright and cheerful yellow tulips",
-                            ImageUrl = "https://images.unsplash.com/photo-1499744937866-d9e8f7e0ecf4?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Yellow Tulips",
-                            Price = 39.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 3,
-                            Description = "Elegant white lilies perfect for any occasion",
-                            ImageUrl = "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "White Lilies",
-                            Price = 44.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 4,
-                            Description = "Delicate pink orchids",
-                            ImageUrl = "https://images.unsplash.com/photo-1497551060073-4c5ab6435f5f?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Pink Orchids",
-                            Price = 59.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryId = 5,
-                            Description = "Bright sunflower basket",
-                            ImageUrl = "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Sunflower Basket",
-                            Price = 35.00m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CategoryId = 6,
-                            Description = "Colorful mix of carnations",
-                            ImageUrl = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Carnation Mix",
-                            Price = 29.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CategoryId = 7,
-                            Description = "Fresh daisies",
-                            ImageUrl = "https://images.unsplash.com/photo-1465188035480-ff3f285f3bce?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Daisy Delight",
-                            Price = 24.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CategoryId = 8,
-                            Description = "Soft pink peonies",
-                            ImageUrl = "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Peony Love",
-                            Price = 54.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CategoryId = 9,
-                            Description = "Charming chrysanthemums",
-                            ImageUrl = "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Chrysanthemum Charm",
-                            Price = 27.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CategoryId = 10,
-                            Description = "Fragrant gardenias",
-                            ImageUrl = "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Gardenia Glow",
-                            Price = 39.99m,
-                            Quantity = 0
-                        });
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.ProductTag", b =>
@@ -533,58 +344,6 @@ namespace Azaliq.Data.Migrations
                     b.ToTable("ProductsTags", t =>
                         {
                             t.HasComment("ProductTags");
-                        });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Fresh"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Popular"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Seasonal"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Gift"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Fragrant"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Wedding"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Decor"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Romantic"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Exotic"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Cheap"
                         });
                 });
 

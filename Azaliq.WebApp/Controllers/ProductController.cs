@@ -33,6 +33,57 @@ namespace Azaliq.WebApp.Controllers
             return View(products);
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> ByCategory(int categoryId)
+        {
+            if (categoryId <= 0)
+            {
+                return BadRequest("Invalid category ID.");
+            }
+
+            var categoryName = await _categoryService.GetCategoryNameAsync(categoryId);
+            if (categoryName == "Unknown")
+            {
+                return NotFound("Category not found.");
+            }
+
+            var products = await _productService.GetProductsByCategoryAsync(categoryId);
+
+            if (products == null || !products.Any())
+            {
+                return View("NotFoundProducts"); // Optional: a view to show “No products found”
+            }
+
+            var model = new ProductListViewModel
+            {
+                CategoryId = categoryId,
+                CategoryName = categoryName,
+                Products = products
+            };
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ByTag(string tagName)
+        {
+            if (string.IsNullOrWhiteSpace(tagName))
+            {
+                return RedirectToAction("Index"); // Or return empty view
+            }
+
+            var products = await _productService.GetProductsByTagAsync(tagName);
+
+            if (products == null || !products.Any())
+            {
+                return View("NotFoundTags"); // Optional: a view to show “No products found”
+            }
+
+            ViewBag.TagName = tagName;
+            return View(products);
+        }
+
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)

@@ -12,6 +12,8 @@ namespace Azaliq.Services.Core.Contracts
     {
         Task<IEnumerable<CreateProductDropDownCategory>> GetCategoryDropDownDataAsync();
 
+        Task<string> GetCategoryNameAsync(int categoryId);
+
         Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync(string? userId);
 
         Task AddCategoryAsync(AddCategoryViewModel model);

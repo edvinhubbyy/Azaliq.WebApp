@@ -4,59 +4,52 @@
     ViewData["Title"] = "Categories";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="mb-4">@ViewData["Title"]</h2>
 
-<p>
-    @if (User?.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
-    {
-        <a asp-action="Create" class="btn btn-primary">Add Category</a>
-    }
-</p>
-
-@if (!User.IsInRole("Admin") && !User.IsInRole("Manager"))
+@if (User?.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager")))
 {
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var category in Model)
-        {
-            <tr>
-                <td>@category.Name</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Add Category
+        </a>
+    </p>
 }
 
-@if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+@if (!Model.Any())
 {
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Name</th>
-                <th style="width: 150px;">Actions</th> <!-- Empty header cell to keep layout -->
-        </tr>
-        </thead>
-        <tbody>
+    <div class="alert alert-info">
+        No categories available.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var category in Model)
         {
-            <tr>
-                <td>@category.Name</td>
-                <td class="d-flex gap-2">
-                        <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-warning flex-fill">
-                            <i class="fas fa-edit me-1"></i> Edit
-                        </a>
-                        <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id"
-                           class="btn btn-sm btn-danger flex-fill">
-                            <i class="fas fa-trash me-1"></i> Delete
-                        </a>
-                </td>
-            </tr>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <h5 class="card-title mb-3">
+                            <a class="stretched-link text-decoration-none text-dark fw-semibold"
+                               asp-controller="Product" asp-action="ByCategory" asp-route-categoryId="@category.Id">
+                                @category.Name
+                            </a>
+                        </h5>
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <div class="mt-auto d-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-warning flex-fill">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </a>
+                                <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-sm btn-danger flex-fill">
+                                    <i class="fas fa-trash me-1"></i> Delete
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         }
-        </tbody>
-    </table>
+    </div>
 }

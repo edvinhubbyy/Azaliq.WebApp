@@ -41,6 +41,47 @@ namespace Azaliq.Services.Core
             return allProducts;
         }
 
+        public async Task<IEnumerable<ProductDetailsViewModel>> GetProductsByTagAsync(string tagName)
+        {
+            return await _dbContext.Products
+                .Where(p => p.Tags.Any(t => t.Name == tagName))
+                .Select(p => new ProductDetailsViewModel
+                {
+                    Id = p.Id.ToString(),
+                    Name = p.Name,
+                    Description = p.Description,
+                    ImageUrl = p.ImageUrl,
+                    Price = p.Price.ToString("F2"),
+                    Quantity = p.Quantity,
+                    Category = p.Category.Name,
+                    IsAvailable = p.IsAvailable,
+                    IsSameDayDeliveryAvailable = p.IsSameDayDeliveryAvailable,
+                    Tags = p.Tags.Select(t => t.Name).ToList(),
+                    Reviews = p.Reviews.Select(r => new ReviewViewModel
+                    {
+                        // map review properties here
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+
+        public async Task<IEnumerable<ProductListItemViewModel>> GetProductsByCategoryAsync(int categoryId)
+        {
+            return await _dbContext.Products
+                .Where(p => p.CategoryId == categoryId && !p.IsDeleted)
+                .Select(p => new ProductListItemViewModel
+                {
+                    Id = p.Id.ToString(),
+                    Name = p.Name,
+                    ImageUrl = p.ImageUrl,
+                    Price = p.Price.ToString("F2"),  // Format price as string with 2 decimals
+                    IsAvailable = p.Quantity > 0
+                })
+                .ToListAsync();
+        }
+
+
         public async Task<ProductDetailsViewModel> GetProductDetailsAsync(int? id, string? userId)
         {
             ProductDetailsViewModel? detailsVm = null;
@@ -257,16 +298,14 @@ namespace Azaliq.Services.Core
             };
         }
 
+        // Soft delete method:
         public async Task<bool> SoftDeleteProductAsync(int productId)
         {
             var product = await _dbContext.Products.FindAsync(productId);
-
-            if (product == null)
-                return false;
+            if (product == null) return false;
 
             product.IsDeleted = true;
             await _dbContext.SaveChangesAsync();
-
             return true;
         }
     }

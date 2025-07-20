@@ -36,6 +36,12 @@ namespace Azaliq.Services.Core
             return categories;
         }
 
+        public async Task<string> GetCategoryNameAsync(int categoryId)
+        {
+            var category = await _dbContext.Categories.FindAsync(categoryId);
+            return category?.Name ?? "Unknown";
+        }
+
         public async Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync(string? userId)
         {
             var categories =  await _dbContext
@@ -60,7 +66,6 @@ namespace Azaliq.Services.Core
             _dbContext.Categories.Add(category);
             await _dbContext.SaveChangesAsync();
         }
-
 
         public async Task<DeleteCategoryModel?> GetCategoryForDeletionAsync(int? categoryId)
         {

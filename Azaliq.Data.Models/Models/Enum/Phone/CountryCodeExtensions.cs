@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Azaliq.Data.Models.Models.Enum.Phone
+﻿namespace Azaliq.Data.Models.Models.Enum.Phone
 {
     public static class CountryCodeExtensions
     {

@@ -12,9 +12,12 @@ namespace Azaliq.Data.Configurations
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
             EnsureRoleExists(roleManager, "Admin");
+            EnsureRoleExists(roleManager, "Manager");
+            EnsureRoleExists(roleManager, "User"); 
 
             SeedUser(userManager, "admin@example.com", "Admin@123", "Admin");
         }
+
 
         private static void EnsureRoleExists(RoleManager<IdentityRole> roleManager, string roleName)
         {

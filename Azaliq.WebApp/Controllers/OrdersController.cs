@@ -1,13 +1,10 @@
 ﻿using Azaliq.Services.Core.Contracts;
-using Azaliq.ViewModels.CartItems;
 using Azaliq.ViewModels.Order;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Azaliq.WebApp.Controllers
 {
-
     public class OrdersController : BaseController
     {
         private readonly IOrderService _orderService;
@@ -17,7 +14,7 @@ namespace Azaliq.WebApp.Controllers
             _orderService = orderService;
         }
 
-        // GET: /Order/Details/{id}
+        // GET: /Orders/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);
@@ -25,24 +22,11 @@ namespace Azaliq.WebApp.Controllers
             {
                 return NotFound();
             }
+            // Return the order details view with OrderDetailsViewModel
             return View(order);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Details(OrderDetailsViewModel model)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return View(model); // Show errors if form invalid
-            }
-
-            await _orderService.PlaceOrderAsync(model);
-
-            TempData["Success"] = "Order placed successfully!";
-            return RedirectToAction("MyOrders");
-        }
-
+        // GET: /Orders/MyOrders
         public async Task<IActionResult> MyOrders()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -50,6 +34,34 @@ namespace Azaliq.WebApp.Controllers
             return View(orders);
         }
 
-    }
+        // POST: /Orders/Reorder
+        [HttpPost]
+        public async Task<IActionResult> Reorder(int orderId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var success = await _orderService.ReorderAsync(orderId, userId);
 
+            if (!success)
+            {
+                TempData["Error"] = "Reorder failed. Product(s) may no longer be available.";
+                return RedirectToAction("MyOrders");
+            }
+
+            TempData["Success"] = "Previous order added to your cart!";
+            return RedirectToAction("Index", "Cart");
+        }
+
+        // GET: /Orders/History
+        public async Task<IActionResult> History()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var orders = await _orderService.GetOrdersByUserIdAsync(userId);
+
+            var completedOrders = orders
+                .Where(o => o.Status == "Delivered" || o.Status == "Completed" || o.Status == "Cancelled")
+                .ToList();
+
+            return View(completedOrders);
+        }
+    }
 }

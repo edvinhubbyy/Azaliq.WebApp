@@ -5,68 +5,25 @@
     decimal bgnToEurRate = 0.51129m;
     string FormatBGN(decimal amount) => string.Format(System.Globalization.CultureInfo.GetCultureInfo("bg-BG"), "{0:C}", amount);
     string FormatEUR(decimal amount) => string.Format(System.Globalization.CultureInfo.GetCultureInfo("de-DE"), "€{0:N2}", amount);
+
+    var activeOrders = Model.Where(o => o.Status == "Pending" || o.Status == "Processing").ToList();
 }
 
 <h2>@ViewData["Title"]</h2>
 
-@if (!Model.Any())
+<p class="mb-4">
+    <a asp-action="History" class="btn btn-outline-secondary btn-sm">📜 View Order History</a>
+</p>
+
+@if (!Model.Any() || !activeOrders.Any())
 {
-    <p>You have no orders yet.</p>
+    <p>You have no active orders.</p>
 }
 else
 {
-    foreach (var order in Model)
-    {
-        <div class="card-body mb-4">
-            <h4>
-                <a asp-action="Details" asp-route-id="@order.OrderId" class="text-decoration-none">
-                    Order #@order.OrderId - @order.OrderDate.ToString("dd MMM yyyy")
-                </a>
-            </h4>
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 30%;">Product</th>
-                            <th style="width: 15%;">Image</th>
-                            <th style="width: 10%;">Quantity</th>
-                            <th style="width: 15%;">Price</th>
-                            <th style="width: 15%;">Subtotal</th>
-                            <th style="width: 15%;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in order.Items)
-                        {
-                            var priceEUR = item.Price * bgnToEurRate;
-                            var subtotalEUR = item.Subtotal * bgnToEurRate;
 
-                            <tr>
-                                <td class="text-center" style="white-space: normal; word-wrap: break-word;">
-                                    @item.ProductName
-                                </td>
-                                <td>
-                                    <img src="@item.ImageUrl" alt="@item.ProductName" style="height: 40px; max-width: 100%;" />
-                                </td>
-                                <td>@item.Quantity</td>
-                                <td>
-                                    @FormatBGN(item.Price) <br />
-                                    <small class="text-secondary">@FormatEUR(priceEUR)</small>
-                                </td>
-                                <td>
-                                    @FormatBGN(item.Subtotal) <br />
-                                    <small class="text-secondary">@FormatEUR(subtotalEUR)</small>
-                                </td>
-                                <td>@order.Status</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <p class="fw-bold text-end mb-0">
-                Total: @FormatBGN(order.TotalAmount) <br />
-                <small class="text-secondary">(@FormatEUR(order.TotalAmount * bgnToEurRate))</small>
-            </p>
-        </div>
+    foreach (var order in activeOrders)
+    {
+        <partial name="_OrderCard" model="order" />
     }
 }

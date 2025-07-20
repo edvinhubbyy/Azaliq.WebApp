@@ -14,5 +14,6 @@ namespace Azaliq.Data.Models.Models.Enum
         OutForDelivery = 3,  // In delivery van (if IsDelivery = true)
         Completed = 4,       // Picked up or delivered
         Cancelled = 5,       // Cancelled by customer or florist
+        ForInStorePickup = 6, // Ready for in-store pickup
     }
 }

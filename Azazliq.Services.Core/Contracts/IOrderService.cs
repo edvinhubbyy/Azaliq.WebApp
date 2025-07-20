@@ -1,10 +1,4 @@
-﻿using Azaliq.ViewModels.CartItems;
-using Azaliq.ViewModels.Order;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azaliq.ViewModels.Order;
 
 namespace Azaliq.Services.Core.Contracts
 {
@@ -14,9 +8,12 @@ namespace Azaliq.Services.Core.Contracts
 
         Task<OrderDetailsViewModel?> GetOrderByIdAsync(int orderId);
 
-        Task PlaceOrderAsync(OrderDetailsViewModel inputModel);
+        Task PlaceOrderAsync(OrderDetailsViewModel inputModel, string userId);
+        
         // Admins controls
         Task<List<OrderViewModel>> GetAllOrdersAsync();
+
+        Task<bool> ReorderAsync(int orderId, string userId);
 
         Task<bool> ChangeStatusAsync(int orderId, string newStatus);
 

@@ -1,0 +1,59 @@
+﻿@model Azaliq.ViewModels.Order.OrderViewModel
+
+@{
+    decimal bgnToEurRate = 0.51129m;
+    string FormatBGN(decimal amount) => string.Format(System.Globalization.CultureInfo.GetCultureInfo("bg-BG"), "{0:C}", amount);
+    string FormatEUR(decimal amount) => string.Format(System.Globalization.CultureInfo.GetCultureInfo("de-DE"), "€{0:N2}", amount);
+}
+
+<div class="card-body mb-4 border rounded p-3 shadow-sm">
+    <h5>
+        <a asp-action="Details" asp-route-id="@Model.OrderId" class="text-decoration-none">
+            Order #@Model.OrderId - @Model.OrderDate.ToString("dd MMM yyyy")
+        </a>
+    </h5>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-bordered align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 30%;">Product</th>
+                    <th style="width: 15%;">Image</th>
+                    <th style="width: 10%;">Quantity</th>
+                    <th style="width: 15%;">Price</th>
+                    <th style="width: 15%;">Subtotal</th>
+                    <th style="width: 15%;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    var priceEUR = item.Price * bgnToEurRate;
+                    var subtotalEUR = item.Subtotal * bgnToEurRate;
+
+                    <tr>
+                        <td style="white-space: normal;">@item.ProductName</td>
+                        <td>
+                            <img src="@item.ImageUrl" alt="@item.ProductName" style="height: 40px; max-width: 100%;" />
+                        </td>
+                        <td>@item.Quantity</td>
+                        <td>
+                            @FormatBGN(item.Price) <br />
+                            <small class="text-secondary">@FormatEUR(priceEUR)</small>
+                        </td>
+                        <td>
+                            @FormatBGN(item.Subtotal) <br />
+                            <small class="text-secondary">@FormatEUR(subtotalEUR)</small>
+                        </td>
+                        <td>@Model.Status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <p class="fw-bold text-end mb-0">
+        Total: @FormatBGN(Model.TotalAmount) <br />
+        <small class="text-secondary">(@FormatEUR(Model.TotalAmount * bgnToEurRate))</small>
+    </p>
+</div>

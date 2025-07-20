@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.Data.Models.Models
 {
+    [Comment("ProductTags")]
     public class ProductTag
     {
+        [Comment("ID of the ProductTag")]
         public int Id { get; set; }
 
+        [Comment("Name of the ProductTag")]
         public string Name { get; set; } = null!;
 
+        [Comment("Products associated with this tag")]
         public ICollection<Product> Products { get; set; }
             = new HashSet<Product>();
     }

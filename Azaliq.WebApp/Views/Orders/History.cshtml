@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Azaliq.ViewModels.Order.OrderViewModel>
+
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a asp-action="MyOrders" class="btn btn-link mb-3">← Back to My Orders</a>
+
+@if (!Model.Any())
+{
+    <p>You have no past orders yet.</p>
+}
+else
+{
+    foreach (var order in Model)
+    {
+        <partial name="_OrderCard" model="order" />
+        <form asp-action="Reorder" method="post" class="text-end mb-4">
+            <input type="hidden" name="orderId" value="@order.OrderId" />
+            <button type="submit" class="btn btn-outline-primary btn-sm">Reorder</button>
+        </form>
+    }
+}

@@ -98,17 +98,21 @@ namespace Azaliq.WebApp.Controllers
         }
 
 
+        [HttpGet]
         public async Task<IActionResult> Checkout()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var cartItems = await _cartService.GetCartItemsAsync(userId);
+
+            if (cartItems == null || !cartItems.Any())
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction("Index");
+            }
 
             var model = new CartInputViewModel
             {
-                Items = cartItems ?? new List<CartItemViewModel>(),
-                
-                // Optionally initialize form fields
+                Items = cartItems,
                 FullName = "",
                 Email = "",
                 Phone = "",
@@ -121,28 +125,42 @@ namespace Azaliq.WebApp.Controllers
             return View(model);
         }
 
-
+        // POST: /Cart/Checkout
         [HttpPost]
-        public async Task<IActionResult> Checkout(OrderDetailsViewModel inputModel)
+        public async Task<IActionResult> Checkout(CartInputViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                // If model validation failed, return to the same view with model errors
-                return View(inputModel);
+                return View(model);
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
+            if (string.IsNullOrEmpty(userId))
             {
-                return Unauthorized();
+                // Handle error: user not logged in or user id missing
+                ModelState.AddModelError("", "User must be logged in to place an order.");
+                return View(model);
             }
 
-            // Call the service method, pass the full input model so service can save all data
-            await _orderService.PlaceOrderAsync(inputModel);
+            var orderModel = new OrderDetailsViewModel
+            {
+                FullName = model.FullName,
+                Email = model.Email,
+                Phone = model.Phone,
+                CountryCode = model.CountryCode.ToString(),
+                Address = model.Address,
+                City = model.City,
+                ZipCode = model.ZipCode,
+                // Items will be loaded inside PlaceOrderAsync from the cart by userId
+            };
 
-            TempData["SuccessMessage"] = "Order placed successfully!";
-            return RedirectToAction("Index", "Cart");
+            await _orderService.PlaceOrderAsync(orderModel, userId);
+
+            TempData["Success"] = "Order placed successfully!";
+            return RedirectToAction("MyOrders", "Orders");
         }
 
     }
+
 }
+
