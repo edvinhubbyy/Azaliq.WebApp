@@ -1,7 +1,9 @@
 ﻿@model Azaliq.ViewModels.CartItems.CartInputViewModel
 @using Azaliq.Data.Models.Models.Enum
+@using Microsoft.AspNetCore.Mvc.Rendering
 @{
     ViewData["Title"] = "Checkout";
+
     // Create SelectList for CountryCode enum
     var countryCodeList = Enum.GetValues(typeof(CountryCode))
         .Cast<CountryCode>()
@@ -11,116 +13,129 @@
             Text = $"{cc} (+{(int)cc})"
         }).ToList();
 }
-<h2>Checkout</h2>
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
 <form asp-action="Checkout" method="post" novalidate>
-    <h4 class="mt-4 mb-3">Billing Details</h4>
-    <div class="mb-3">
-        <label asp-for="FullName" class="form-label"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" type="email" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Address" class="form-label"></label>
-        <input asp-for="Address" class="form-control" />
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="City" class="form-label"></label>
-        <input asp-for="City" class="form-control" />
-        <span asp-validation-for="City" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="ZipCode" class="form-label"></label>
-        <input asp-for="ZipCode" class="form-control" />
-        <span asp-validation-for="ZipCode" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="Phone" class="form-label"></label>
-        <div class="input-group">
-            <select asp-for="CountryCode" asp-items="countryCodeList" class="form-select" style="max-width: 120px;">
-            </select>
-            <input asp-for="Phone"
-                   type="tel"
-                   class="form-control"
-                   placeholder="88 123 4567"
-                   pattern="^\d[\d\s\-().]{7,}\d$"
-                   title="Enter a valid phone number, e.g. 88 123 4567"
-                   autocomplete="tel" />
+    <div class="row g-4">
+        <div class="col-md-6">
+            <h4 class="mb-3">Billing Details</h4>
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" type="email" autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label"></label>
+                <input asp-for="Address" class="form-control" autocomplete="street-address" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="City" class="form-label"></label>
+                <input asp-for="City" class="form-control" autocomplete="address-level2" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ZipCode" class="form-label"></label>
+                <input asp-for="ZipCode" class="form-control" autocomplete="postal-code" />
+                <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Phone" class="form-label"></label>
+                <div class="input-group">
+                    <select asp-for="CountryCode" asp-items="countryCodeList" class="form-select" style="max-width: 180px;">
+                    </select>
+                    <input asp-for="Phone"
+                           type="tel"
+                           class="form-control"
+                           placeholder="88 123 4567"
+                           pattern="^\d[\d\s\-().]{7,}\d$"
+                           title="Enter a valid phone number, e.g. 88 123 4567"
+                           autocomplete="tel" />
+                </div>
+                <span asp-validation-for="CountryCode" class="text-danger"></span>
+                <span asp-validation-for="Phone" class="text-danger"></span>
+                <small class="form-text text-muted">Format example: 88 123 4567</small>
+            </div>
         </div>
-        <span asp-validation-for="CountryCode" class="text-danger"></span>
-        <span asp-validation-for="Phone" class="text-danger"></span>
-        <small id="phoneHelp" class="form-text text-muted">Format example: 88 123 4567</small>
-        <span id="phoneError" class="text-danger" style="display:none;">Invalid phone number format</span>
+
+        <div class="col-md-6">
+            <h4 class="mb-3">Order Summary</h4>
+
+            <div class="table-responsive shadow rounded">
+                <table class="table align-middle mb-0 bg-white">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Image</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>
+                                    <img src="@item.ProductImageUrl" alt="@item.ProductName" class="rounded" style="height: 50px; width: 50px; object-fit: cover;" />
+                                </td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">
+                                    @item.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
+                                    <br />
+                                    <small class="text-muted">
+                                        @ConvertToEuro(item.Price).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
+                                    </small>
+                                </td>
+                                <td class="text-end fw-semibold">
+                                    @item.Subtotal.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
+                                    <br />
+                                    <small class="text-muted">
+                                        @ConvertToEuro(item.Subtotal).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
+                                    </small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-secondary fw-bold">
+                            <td colspan="3"></td>
+                            <td class="text-end">Total:</td>
+                            <td class="text-end">
+                                <div>@Model.Total.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                                <div><small class="text-muted">@ConvertToEuro(Model.Total).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</small></div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
     </div>
-    <hr />
-    <h4 class="mb-3">Order Summary</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Image</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-                    <td>@item.ProductName</td>
-                    <td>
-                        <img src="@item.ProductImageUrl" alt="@item.ProductName" style="height: 50px; width: 50px; object-fit: cover;" />
-                    </td>
-                    <td>@item.Quantity</td>
-                    <td>
-                        @item.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
-                        <br />
-                        <small class="text-muted">
-                            @ConvertToEuro(item.Price).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
-                        </small>
-                    </td>
-                    <td>
-                        @item.Subtotal.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
-                        <br />
-                        <small class="text-muted">
-                            @ConvertToEuro(item.Subtotal).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
-                        </small>
-                    </td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="text-end fw-bold align-middle" style="vertical-align: middle;">Total:</td>
-                <td colspan="2" class="fw-bold">
-                    <div>
-                        @Model.Total.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
-                    </div>
-                    <div>
-                        <small class="text-muted">
-                            @ConvertToEuro(Model.Total).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
-                        </small>
-                    </div>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-    <hr />
-    <button type="submit" class="btn btn-success w-100 mt-3">Place Order</button>
+
+    <button type="submit" class="btn btn-success btn-lg w-100 mt-4">Place Order</button>
 </form>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
 @functions {
     private decimal ConvertToEuro(decimal amountInLev)
     {
-        decimal exchangeRate = 1.95583m;
+        const decimal exchangeRate = 1.95583m;
         return decimal.Round(amountInLev / exchangeRate, 2);
     }
 }
