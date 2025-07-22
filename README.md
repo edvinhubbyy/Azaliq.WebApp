@@ -1,6 +1,6 @@
 # 🌸 Azaliq.WebApp
 
-![.NET](https://img.shields.io/badge/.NET-7.0-blueviolet?logo=dotnet&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-8.0-blueviolet?logo=dotnet&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-ASP.NET%20Core%20MVC-lightgrey?logo=visualstudio)
 ![Status](https://img.shields.io/badge/status-in%20development-orange)
 ![License](https://img.shields.io/badge/license-Apache--2.0-green)
