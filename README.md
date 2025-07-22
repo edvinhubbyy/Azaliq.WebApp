@@ -51,7 +51,7 @@ Azaliq.WebApp.sln
 ## ⚙️ Prerequisites
 
 ```bash
-✅ .NET 7 SDK or later
+✅ .NET 8 SDK or later
 ✅ Visual Studio 2022 or VS Code
 ✅ SQL Server (Express/Developer)
 ```
