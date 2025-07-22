@@ -13,6 +13,12 @@
         {
             public const int NameMaxLength = 50;
         }
+        
+        public static class Archives
+        {
+            public const int EmailMaxLength = 256;
+            public const int UserNameMaxLength = 256;
+        }
 
         public static class StoreLocation
         {

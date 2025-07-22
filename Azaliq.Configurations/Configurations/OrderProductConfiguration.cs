@@ -15,6 +15,7 @@ namespace Azaliq.Data.Configurations
                 .HasOne(op => op.Order)
                 .WithMany(o => o.Products)
                 .HasForeignKey(op => op.OrderId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(false);
 
             entity

@@ -2,7 +2,53 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-120 text-center px-3 pt-5">
+    <h1 class="display-3 fw-bold mb-3 text-primary animate-fade-in">
+        Welcome to Azaliya
+    </h1>
+    <a href="/Product" class="btn btn-lg btn-gradient-primary px-5 py-3 shadow animate-fade-in delay-2">
+        Explore Our Flowers
+    </a>
 </div>
+
+
+<style>
+    /* Fade-in animation */
+    @@keyframes fadeIn {
+        from {opacity: 0; transform: translateY(15px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease forwards;
+    }
+    .delay-1 {
+        animation-delay: 0.4s;
+    }
+    .delay-2 {
+        animation-delay: 0.8s;
+    }
+
+    .custom-top-padding {
+        padding-top: 100px;
+    }
+
+    /* Gradient button */
+    .btn-gradient-primary {
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        border: none;
+        color: white;
+        transition: background 0.3s ease;
+        border-radius: 0.4rem;
+    }
+    .btn-gradient-primary:hover,
+    .btn-gradient-primary:focus {
+        background: linear-gradient(45deg, #2575fc, #6a11cb);
+        color: white;
+        box-shadow: 0 0 15px rgba(37,117,252,0.6);
+    }
+
+    /* Link underline on hover */
+    .hover-underline:hover {
+        text-decoration: underline;
+    }
+</style>

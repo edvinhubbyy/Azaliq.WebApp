@@ -1,0 +1,54 @@
+﻿@using Azaliq.Data.Models.Models
+@model ArchivedUser
+
+@{
+    ViewData["Title"] = "Archived User Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <h4>User: @Model.UserName (@Model.Email)</h4>
+</div>
+
+@if (Model.Orders == null || !Model.Orders.Any())
+{
+    <p><em>No orders found for this user.</em></p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+        <tr>
+            <th>Order Date</th>
+            <th>Pickup Time</th>
+            <th>Status</th>
+            <th>Total Amount</th>
+            <th>Delivery</th>
+            <th>Products</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model.Orders)
+        {
+            <tr>
+                <td>@order.OrderDate.ToLocalTime().ToString("g")</td>
+                <td>@order.Status</td>
+                <td>@order.TotalAmount.ToString("C")</td>
+                <td>
+                    <ul>
+                        @foreach (var product in order.Products)
+                        {
+                            <li>@product.ProductName (Qty: @product.Quantity) - @product.Price.ToString("C") each</li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Back to Archived Users</a>
+</p>

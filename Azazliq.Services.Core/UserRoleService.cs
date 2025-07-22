@@ -1,15 +1,19 @@
-﻿using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data;
+using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Admin;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 public class UserRoleService : IUserRoleService
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ApplicationDbContext _context; // Inject your DbContext
 
-    public UserRoleService(UserManager<ApplicationUser> userManager)
+    public UserRoleService(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
     {
         _userManager = userManager;
+        _context = context;
     }
 
     private const string AdminEmail = "admin@example.com";
@@ -19,7 +23,8 @@ public class UserRoleService : IUserRoleService
 
     public async Task<List<UserWithRoleViewModel>> GetAllUsersWithManagerStatusAsync()
     {
-        var allUsers = _userManager.Users.ToList();
+        var allUsers = await _userManager.Users
+            .ToListAsync();
 
         var filteredUsers = allUsers
             .Where(u => !IsAdminUser(u))
@@ -42,6 +47,7 @@ public class UserRoleService : IUserRoleService
 
         return result;
     }
+
 
     public async Task<bool> PromoteToManagerAsync(string userId)
     {
@@ -74,7 +80,31 @@ public class UserRoleService : IUserRoleService
         if (user == null || IsAdminUser(user))
             return false;
 
+        // Load orders including their order products
+        var orders = await _context.Orders
+            .Where(o => o.UserId == userId)
+            .ToListAsync();
+
+        // Collect all order product IDs related to these orders
+        var orderIds = orders.Select(o => o.Id).ToList();
+
+        // Delete all related order products first
+        var orderProducts = await _context.OrdersProducts
+            .Where(op => orderIds.Contains(op.OrderId))
+            .ToListAsync();
+
+        _context.OrdersProducts.RemoveRange(orderProducts);
+
+        // Now delete orders
+        _context.Orders.RemoveRange(orders);
+
+        await _context.SaveChangesAsync();
+
+        // Finally delete the user
         var result = await _userManager.DeleteAsync(user);
+
         return result.Succeeded;
     }
+
+
 }

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Azaliq.Data.Configurations;
+using Azaliq.Data.Models.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using Azaliq.Data.Configurations;
-using Azaliq.Data.Models.Models;
 
 namespace Azaliq.Data
 {
@@ -32,6 +32,12 @@ namespace Azaliq.Data
         public virtual DbSet<Manager> Managers { get; set; } = null!;
         
         public virtual DbSet<Review> Reviews { get; set; } = null!;
+
+        // Archives
+
+        public DbSet<ArchivedUser> ArchivedUsers { get; set; } = null!;
+        public DbSet<ArchivedOrder> ArchivedOrders { get; set; } = null!;
+        public DbSet<ArchivedOrderProduct> ArchivedOrderProducts { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder builder)

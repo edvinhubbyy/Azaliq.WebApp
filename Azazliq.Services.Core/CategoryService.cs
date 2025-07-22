@@ -1,5 +1,4 @@
-﻿using Azaliq.Data;
-using Azaliq.ViewModels.Product;
+﻿using Azaliq.ViewModels.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using Azaliq.Data.Configurations;
 using Azaliq.Services.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Azaliq.ViewModels.Category;
+using Azaliq.Data;
 
 namespace Azaliq.Services.Core
 {

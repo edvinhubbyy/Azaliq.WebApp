@@ -43,7 +43,7 @@ namespace Azaliq.Data.Configurations
                 .HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasQueryFilter(r => r.IsDeleted == false);

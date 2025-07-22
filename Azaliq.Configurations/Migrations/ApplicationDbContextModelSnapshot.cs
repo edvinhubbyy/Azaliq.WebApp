@@ -117,6 +117,113 @@ namespace Azaliq.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Unique identifier for the ArchivedOrder.");
+
+                    b.Property<Guid>("ArchivedUserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Foreign key to the ArchivedUser who placed the ArchivedOrder.");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2")
+                        .HasComment("Date and time when the ArchivedOrder was placed.");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasComment("Status of the ArchivedOrder, indicating its current state in the order lifecycle.");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasComment("Total amount for the ArchivedOrder, calculated based on the products and their quantities.");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArchivedUserId");
+
+                    b.ToTable("ArchivedOrders", t =>
+                        {
+                            t.HasComment("ArchivedOrder entity represents a snapshot of a customer's order when the user is deleted.");
+                        });
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrderProduct", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ArchivedOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArchivedOrderId");
+
+                    b.ToTable("ArchivedOrderProducts");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("OriginalUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArchivedUsers");
+                });
+
             modelBuilder.Entity("Azaliq.Data.Models.Models.CartItem", b =>
                 {
                     b.Property<int>("Id")
@@ -936,12 +1043,37 @@ namespace Azaliq.Data.Migrations
                         .HasColumnType("nvarchar(150)")
                         .HasComment("Full name of the user.");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.ToTable(t =>
                         {
                             t.HasComment("ApplicationUser represents a user in the application.");
                         });
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrder", b =>
+                {
+                    b.HasOne("Azaliq.Data.Models.Models.ArchivedUser", "ArchivedUser")
+                        .WithMany("Orders")
+                        .HasForeignKey("ArchivedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArchivedUser");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrderProduct", b =>
+                {
+                    b.HasOne("Azaliq.Data.Models.Models.ArchivedOrder", "ArchivedOrder")
+                        .WithMany("Products")
+                        .HasForeignKey("ArchivedOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArchivedOrder");
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.CartItem", b =>
@@ -954,7 +1086,7 @@ namespace Azaliq.Data.Migrations
                     b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
@@ -1011,7 +1143,7 @@ namespace Azaliq.Data.Migrations
                     b.HasOne("Azaliq.Data.Models.Models.Order", "Order")
                         .WithMany("Products")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Azaliq.Data.Models.Models.Product", "Product")
                         .WithMany()
@@ -1048,7 +1180,7 @@ namespace Azaliq.Data.Migrations
                     b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
@@ -1135,6 +1267,16 @@ namespace Azaliq.Data.Migrations
             modelBuilder.Entity("Azaliq.Data.Configurations.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrder", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedUser", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.Manager", b =>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Azaliq.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250720105833_CommentsAddedToModels")]
-    partial class CommentsAddedToModels
+    [Migration("20250722164614_Testttting")]
+    partial class Testttting
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,7 +57,174 @@ namespace Azaliq.Data.Migrations
                             Id = -1,
                             IsDeleted = true,
                             Name = "Deleted Category"
+                        },
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Name = "Roses"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsDeleted = false,
+                            Name = "Tulips"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsDeleted = false,
+                            Name = "Lilies"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsDeleted = false,
+                            Name = "Orchids"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            IsDeleted = false,
+                            Name = "Sunflowers"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsDeleted = false,
+                            Name = "Carnations"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsDeleted = false,
+                            Name = "Daisies"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsDeleted = false,
+                            Name = "Peonies"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsDeleted = false,
+                            Name = "Chrysanthemums"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            IsDeleted = false,
+                            Name = "Gardenias"
                         });
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Unique identifier for the ArchivedOrder.");
+
+                    b.Property<Guid>("ArchivedUserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Foreign key to the ArchivedUser who placed the ArchivedOrder.");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2")
+                        .HasComment("Date and time when the ArchivedOrder was placed.");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasComment("Status of the ArchivedOrder, indicating its current state in the order lifecycle.");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasComment("Total amount for the ArchivedOrder, calculated based on the products and their quantities.");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArchivedUserId");
+
+                    b.ToTable("ArchivedOrders", t =>
+                        {
+                            t.HasComment("ArchivedOrder entity represents a snapshot of a customer's order when the user is deleted.");
+                        });
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrderProduct", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ArchivedOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArchivedOrderId");
+
+                    b.ToTable("ArchivedOrderProducts");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("OriginalUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ArchivedUsers");
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.CartItem", b =>
@@ -322,6 +489,138 @@ namespace Azaliq.Data.Migrations
                         {
                             t.HasComment("Product entity represents a product in the system.");
                         });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Description = "A beautiful bouquet of red roses",
+                            ImageUrl = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Red Rose Bouquet",
+                            Price = 49.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 2,
+                            Description = "Bright and cheerful yellow tulips",
+                            ImageUrl = "https://images.unsplash.com/photo-1499744937866-d9e8f7e0ecf4?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Yellow Tulips",
+                            Price = 39.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 3,
+                            Description = "Elegant white lilies perfect for any occasion",
+                            ImageUrl = "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "White Lilies",
+                            Price = 44.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 4,
+                            Description = "Delicate pink orchids",
+                            ImageUrl = "https://images.unsplash.com/photo-1497551060073-4c5ab6435f5f?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Pink Orchids",
+                            Price = 59.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 5,
+                            Description = "Bright sunflower basket",
+                            ImageUrl = "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Sunflower Basket",
+                            Price = 35.00m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 6,
+                            Description = "Colorful mix of carnations",
+                            ImageUrl = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Carnation Mix",
+                            Price = 29.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 7,
+                            Description = "Fresh daisies",
+                            ImageUrl = "https://images.unsplash.com/photo-1465188035480-ff3f285f3bce?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Daisy Delight",
+                            Price = 24.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 8,
+                            Description = "Soft pink peonies",
+                            ImageUrl = "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Peony Love",
+                            Price = 54.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 9,
+                            Description = "Charming chrysanthemums",
+                            ImageUrl = "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Chrysanthemum Charm",
+                            Price = 27.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 10,
+                            Description = "Fragrant gardenias",
+                            ImageUrl = "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=500&q=60",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Gardenia Glow",
+                            Price = 39.99m,
+                            Quantity = 0
+                        });
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.ProductTag", b =>
@@ -344,6 +643,58 @@ namespace Azaliq.Data.Migrations
                     b.ToTable("ProductsTags", t =>
                         {
                             t.HasComment("ProductTags");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Fresh"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Popular"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Seasonal"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Gift"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Fragrant"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Wedding"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Decor"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Romantic"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Exotic"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Cheap"
                         });
                 });
 
@@ -695,12 +1046,37 @@ namespace Azaliq.Data.Migrations
                         .HasColumnType("nvarchar(150)")
                         .HasComment("Full name of the user.");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.ToTable(t =>
                         {
                             t.HasComment("ApplicationUser represents a user in the application.");
                         });
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrder", b =>
+                {
+                    b.HasOne("Azaliq.Data.Models.Models.ArchivedUser", "ArchivedUser")
+                        .WithMany("Orders")
+                        .HasForeignKey("ArchivedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArchivedUser");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrderProduct", b =>
+                {
+                    b.HasOne("Azaliq.Data.Models.Models.ArchivedOrder", "ArchivedOrder")
+                        .WithMany("Products")
+                        .HasForeignKey("ArchivedOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ArchivedOrder");
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.CartItem", b =>
@@ -713,7 +1089,7 @@ namespace Azaliq.Data.Migrations
                     b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
@@ -770,7 +1146,7 @@ namespace Azaliq.Data.Migrations
                     b.HasOne("Azaliq.Data.Models.Models.Order", "Order")
                         .WithMany("Products")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Azaliq.Data.Models.Models.Product", "Product")
                         .WithMany()
@@ -807,7 +1183,7 @@ namespace Azaliq.Data.Migrations
                     b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
@@ -894,6 +1270,16 @@ namespace Azaliq.Data.Migrations
             modelBuilder.Entity("Azaliq.Data.Configurations.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedOrder", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Azaliq.Data.Models.Models.ArchivedUser", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.Manager", b =>

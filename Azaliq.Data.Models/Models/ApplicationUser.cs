@@ -15,5 +15,7 @@ namespace Azaliq.Data.Models.Models
         [Comment("Phone number of the user.")]
         public ICollection<Order> Orders { get; set; }
             = new HashSet<Order>();
+        
+        public bool IsDeleted { get; set; } = false;
     }
 }
