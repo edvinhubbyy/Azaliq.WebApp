@@ -35,23 +35,50 @@
             var toggleButtonClass = isManager ? "btn-danger" : "btn-success";
             var toggleButtonText = isManager ? "⬇️ Demote Manager" : "⬆️ Promote to Manager";
 
+            var isBanned = user.IsBanned;
+            var banAction = isBanned ? "UnbanUser" : "BanUser";
+            var banButtonClass = isBanned ? "btn-secondary" : "btn-danger";
+            var banButtonText = isBanned ? "✅ Unban User" : "🚫 Ban User";
+
             <tr>
                 <td>@user.Email</td>
                 <td>@user.UserName</td>
                 <td>
                     <div class="d-flex gap-2 flex-wrap">
-                        <!-- Promote/Demote Button -->
-                        <form asp-action="@toggleAction" asp-controller="ManagementTools" method="post" style="margin:0;">
+                        <!-- Promote/Demote -->
+                        <form asp-action="@toggleAction" asp-controller="ManagementTools" method="post" class="promote-demote-form">
                             <input type="hidden" name="userId" value="@user.Id" />
-                            <button class="btn @toggleButtonClass btn-sm" type="submit">
+                            <button type="button"
+                                    class="btn @toggleButtonClass btn-sm promote-demote-btn"
+                                    data-username="@user.UserName"
+                                    data-action="@toggleButtonText"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#promoteDemoteModal">
                                 @toggleButtonText
                             </button>
                         </form>
 
-                        <!-- Archive & Delete Button -->
-                        <form asp-action="ArchiveUser" asp-controller="UserManagement" method="post" style="margin:0;" onsubmit="return confirm('Are you sure you want to archive and permanently delete this user?');">
+                        <!-- Ban/Unban -->
+                        <form asp-action="@banAction" asp-controller="ManagementTools" method="post" class="ban-unban-form">
                             <input type="hidden" name="userId" value="@user.Id" />
-                            <button class="btn btn-warning btn-sm" type="submit">
+                            <button type="button"
+                                    class="btn @banButtonClass btn-sm ban-unban-btn"
+                                    data-username="@user.UserName"
+                                    data-isbanned="@isBanned.ToString().ToLower()"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#banUnbanModal">
+                                @banButtonText
+                            </button>
+                        </form>
+
+                        <!-- Archive & Delete -->
+                        <form asp-action="ArchiveUser" asp-controller="ManagementTools" method="post" class="archive-delete-form">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <button type="button"
+                                    class="btn btn-warning btn-sm archive-delete-btn"
+                                    data-username="@user.UserName"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#archiveDeleteModal">
                                 📦 Archive & Delete
                             </button>
                         </form>
@@ -61,3 +88,110 @@
         }
     </tbody>
 </table>
+
+<!-- Promote/Demote Modal -->
+<div class="modal fade" id="promoteDemoteModal" tabindex="-1" aria-labelledby="promoteDemoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Role Change</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="promoteDemoteMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmPromoteDemote">Yes, Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ban/Unban Modal -->
+<div class="modal fade" id="banUnbanModal" tabindex="-1" aria-labelledby="banUnbanModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Ban Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="banUnbanMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmBanUnban">Yes, Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Archive & Delete Modal -->
+<div class="modal fade" id="archiveDeleteModal" tabindex="-1" aria-labelledby="archiveDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Archive & Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="archiveDeleteMessage"></p>
+                <p class="text-danger"><strong>This action cannot be undone!</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" id="confirmArchiveDelete">Yes, Archive & Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Promote/Demote Modal Logic
+        let promoteDemoteFormToSubmit = null;
+        const promoteDemoteMessage = document.getElementById('promoteDemoteMessage');
+        document.querySelectorAll('.promote-demote-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const username = this.dataset.username;
+                const action = this.dataset.action;
+                promoteDemoteMessage.textContent = `Are you sure you want to ${action.toLowerCase()} for user '${username}'?`;
+                promoteDemoteFormToSubmit = this.closest('form');
+            });
+        });
+        document.getElementById('confirmPromoteDemote').addEventListener('click', () => {
+            if (promoteDemoteFormToSubmit) promoteDemoteFormToSubmit.submit();
+        });
+
+        // Ban/Unban Modal Logic
+        let banUnbanFormToSubmit = null;
+        const banUnbanMessage = document.getElementById('banUnbanMessage');
+        document.querySelectorAll('.ban-unban-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const username = this.dataset.username;
+                const isBanned = this.dataset.isbanned === 'true';
+                const action = isBanned ? 'unban' : 'ban';
+                banUnbanMessage.textContent = `Are you sure you want to ${action} user '${username}'?`;
+                banUnbanFormToSubmit = this.closest('form');
+            });
+        });
+        document.getElementById('confirmBanUnban').addEventListener('click', () => {
+            if (banUnbanFormToSubmit) banUnbanFormToSubmit.submit();
+        });
+
+        // Archive Modal Logic
+        let archiveDeleteFormToSubmit = null;
+        const archiveDeleteMessage = document.getElementById('archiveDeleteMessage');
+        document.querySelectorAll('.archive-delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const username = this.dataset.username;
+                archiveDeleteMessage.textContent = `Are you sure you want to archive and permanently delete user '${username}'?`;
+                archiveDeleteFormToSubmit = this.closest('form');
+            });
+        });
+        document.getElementById('confirmArchiveDelete').addEventListener('click', () => {
+            if (archiveDeleteFormToSubmit) archiveDeleteFormToSubmit.submit();
+        });
+    </script>
+}

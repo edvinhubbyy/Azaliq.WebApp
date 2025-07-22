@@ -15,7 +15,7 @@ namespace Azaliq.Data.Configurations
             // Relationship with User
             entity
                 .HasOne(o => o.User)
-                .WithMany() // or .WithMany(u => u.Orders) if you add navigation property in ApplicationUser
+                .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             

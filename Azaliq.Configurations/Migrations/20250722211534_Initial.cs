@@ -20,7 +20,8 @@ namespace Azaliq.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OriginalUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false)
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    ArchivedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,8 +49,8 @@ namespace Azaliq.Data.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true, comment: "Full name of the user."),
-                    Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true, comment: "Email address of the user."),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true, comment: "Address of the user."),
+                    IsBanned = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -107,18 +108,14 @@ namespace Azaliq.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Unique identifier for the ArchivedOrder."),
                     ArchivedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, comment: "Foreign key to the ArchivedUser who placed the ArchivedOrder."),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Date and time when the ArchivedOrder was placed."),
-                    PickupTime = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "Optional date and time when the ArchivedOrder is scheduled for pickup."),
                     Status = table.Column<int>(type: "int", nullable: false, comment: "Status of the ArchivedOrder, indicating its current state in the order lifecycle."),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, comment: "Total amount for the ArchivedOrder, calculated based on the products and their quantities."),
-                    IsDelivery = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the ArchivedOrder is for delivery or pickup."),
-                    DeliveryAddress = table.Column<string>(type: "nvarchar(max)", nullable: true, comment: "Optional delivery address for the ArchivedOrder, if it is a delivery order."),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the ArchivedOrder has been deleted or is active."),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Added customer/order details:"),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CountryCode = table.Column<int>(type: "int", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeliveryAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -277,17 +274,11 @@ namespace Azaliq.Data.Migrations
                     Phone = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
                     CountryCode = table.Column<int>(type: "int", nullable: false),
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ZipCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ZipCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -553,16 +544,36 @@ namespace Azaliq.Data.Migrations
                 columns: new[] { "Id", "CategoryId", "Description", "ImageUrl", "IsAvailable", "IsDeleted", "IsSameDayDeliveryAvailable", "Name", "Price", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 1, "A beautiful bouquet of red roses", "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=60", false, false, false, "Red Rose Bouquet", 49.99m, 0 },
-                    { 2, 2, "Bright and cheerful yellow tulips", "https://images.unsplash.com/photo-1499744937866-d9e8f7e0ecf4?auto=format&fit=crop&w=500&q=60", false, false, false, "Yellow Tulips", 39.99m, 0 },
-                    { 3, 3, "Elegant white lilies perfect for any occasion", "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=500&q=60", false, false, false, "White Lilies", 44.99m, 0 },
-                    { 4, 4, "Delicate pink orchids", "https://images.unsplash.com/photo-1497551060073-4c5ab6435f5f?auto=format&fit=crop&w=500&q=60", false, false, false, "Pink Orchids", 59.99m, 0 },
-                    { 5, 5, "Bright sunflower basket", "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=500&q=60", false, false, false, "Sunflower Basket", 35.00m, 0 },
-                    { 6, 6, "Colorful mix of carnations", "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=500&q=60", false, false, false, "Carnation Mix", 29.99m, 0 },
-                    { 7, 7, "Fresh daisies", "https://images.unsplash.com/photo-1465188035480-ff3f285f3bce?auto=format&fit=crop&w=500&q=60", false, false, false, "Daisy Delight", 24.99m, 0 },
-                    { 8, 8, "Soft pink peonies", "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=500&q=60", false, false, false, "Peony Love", 54.99m, 0 },
-                    { 9, 9, "Charming chrysanthemums", "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=500&q=60", false, false, false, "Chrysanthemum Charm", 27.99m, 0 },
-                    { 10, 10, "Fragrant gardenias", "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=500&q=60", false, false, false, "Gardenia Glow", 39.99m, 0 }
+                    { 1, 1, "A bouquet of long-stemmed red roses", "https://images.pexels.com/photos/931162/pexels-photo-931162.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Classic Red Roses", 49.99m, 0 },
+                    { 2, 1, "Soft pink garden roses", "https://images.pexels.com/photos/1073048/pexels-photo-1073048.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Pink Garden Roses", 54.99m, 0 },
+                    { 3, 1, "Crisp white avalanche roses", "https://images.pexels.com/photos/213222/pexels-photo-213222.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "White Avalanche Roses", 59.99m, 0 },
+                    { 4, 2, "Bright yellow tulips in a bundle", "https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Yellow Tulip Bundle", 39.99m, 0 },
+                    { 5, 2, "Mixed red and white tulips", "https://images.pexels.com/photos/5857509/pexels-photo-5857509.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Red & White Tulips", 42.99m, 0 },
+                    { 6, 2, "Soft pink tulips standing tall", "https://images.pexels.com/photos/315638/pexels-photo-315638.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Pink Tulips", 37.99m, 0 },
+                    { 7, 3, "Fragrant white stargazer lilies", "https://images.pexels.com/photos/1460886/pexels-photo-1460886.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "White Stargazer Lilies", 44.99m, 0 },
+                    { 8, 3, "Vibrant orange asiatic lilies", "https://images.pexels.com/photos/248526/pexels-photo-248526.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Orange Asiatic Lilies", 46.99m, 0 },
+                    { 9, 3, "Delicate pink oriental lilies", "https://images.pexels.com/photos/1544336/pexels-photo-1544336.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Pink Oriental Lilies", 48.99m, 0 },
+                    { 10, 4, "Elegant white Phalaenopsis orchids", "https://images.pexels.com/photos/931180/pexels-photo-931180.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Phalaenopsis Orchids", 59.99m, 0 },
+                    { 11, 4, "Soft pink moth orchids", "https://images.pexels.com/photos/1637359/pexels-photo-1637359.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Pink Moth Orchids", 62.99m, 0 },
+                    { 12, 4, "Rich purple cymbidium orchids", "https://images.pexels.com/photos/257280/pexels-photo-257280.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Purple Cymbidium Orchids", 64.99m, 0 },
+                    { 13, 5, "Bright single sunflower stem", "https://images.pexels.com/photos/414274/pexels-photo-414274.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Single Sunflower Stem", 25.00m, 0 },
+                    { 14, 5, "Cheerful bouquet of sunflowers", "https://images.pexels.com/photos/1030936/pexels-photo-1030936.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Sunflower Bouquet", 35.00m, 0 },
+                    { 15, 5, "Compact sunflowers in a glass vase", "https://images.pexels.com/photos/349758/pexels-photo-349758.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Mini Sunflower Vase", 29.99m, 0 },
+                    { 16, 6, "Bright red carnations", "https://images.pexels.com/photos/2898825/pexels-photo-2898825.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Red Carnations", 29.99m, 0 },
+                    { 17, 6, "Pure white carnations", "https://images.pexels.com/photos/1299898/pexels-photo-1299898.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "White Carnations", 31.99m, 0 },
+                    { 18, 6, "Soft pink carnations", "https://images.pexels.com/photos/4147446/pexels-photo-4147446.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Pink Carnations", 27.99m, 0 },
+                    { 19, 7, "Fresh classic daisies", "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Classic Daisies", 24.99m, 0 },
+                    { 20, 7, "Vibrant gerbera daisies", "https://images.pexels.com/photos/462117/pexels-photo-462117.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Gerbera Daisies", 22.99m, 0 },
+                    { 21, 7, "Sunny yellow daisies", "https://images.pexels.com/photos/413195/pexels-photo-413195.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Yellow Daisies", 20.99m, 0 },
+                    { 22, 8, "Full cluster of pink peonies", "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Pink Peony Cluster", 54.99m, 0 },
+                    { 23, 8, "Elegant white peonies", "https://images.pexels.com/photos/1231265/pexels-photo-1231265.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "White Peonies", 56.99m, 0 },
+                    { 24, 8, "Soft coral-colored peonies", "https://images.pexels.com/photos/991447/pexels-photo-991447.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Coral Peonies", 58.99m, 0 },
+                    { 25, 9, "Sunny yellow chrysanthemums", "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Yellow Chrysanthemums", 27.99m, 0 },
+                    { 26, 9, "Rich purple chrysanthemums", "https://images.pexels.com/photos/116393/pexels-photo-116393.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Purple Chrysanthemums", 29.99m, 0 },
+                    { 27, 9, "Crisp white chrysanthemums", "https://images.pexels.com/photos/939222/pexels-photo-939222.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "White Chrysanthemums", 25.99m, 0 },
+                    { 28, 10, "Fragrant classic gardenias", "https://images.pexels.com/photos/937400/pexels-photo-937400.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Classic Gardenias", 39.99m, 0 },
+                    { 29, 10, "Single white gardenia bloom", "https://images.pexels.com/photos/264727/pexels-photo-264727.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "White Gardenia Bloom", 41.99m, 0 },
+                    { 30, 10, "Gardenia flowers with green leaves", "https://images.pexels.com/photos/206420/pexels-photo-206420.jpeg?auto=compress&cs=tinysrgb&h=800", false, false, false, "Gardenia Leaves & Flower", 43.99m, 0 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -640,11 +651,6 @@ namespace Azaliq.Data.Migrations
                 table: "Managers",
                 column: "UserId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_ApplicationUserId",
-                table: "Orders",
-                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",

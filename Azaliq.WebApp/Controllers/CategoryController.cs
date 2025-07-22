@@ -1,5 +1,4 @@
-﻿using Azaliq.Services.Core;
-using Azaliq.Services.Core.Contracts;
+﻿using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +42,7 @@ namespace Azaliq.WebApp.Controllers
             }
 
             await _categoryService.AddCategoryAsync(model);
-            return RedirectToAction("Index", "Home"); // or to a list of categories
+            return RedirectToAction("Index"); // or to a list of categories
         }
 
 

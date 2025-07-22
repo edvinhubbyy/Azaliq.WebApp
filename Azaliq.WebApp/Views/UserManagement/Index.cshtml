@@ -1,27 +1,35 @@
-﻿@using Azaliq.Data.Models.Models
-@model List<ArchivedUser>
+﻿@model List<Azaliq.ViewModels.Archives.ArchivedUserListItemViewModel>
 
-<h1>Archived Users</h1>
+@{
+    ViewData["Title"] = "Archived Users";
+}
 
-<table class="table">
-    <thead>
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
     <tr>
-        <th>UserName</th>
         <th>Email</th>
+        <th>Username</th>
         <th>Archived On</th>
-        <th>Actions</th>
+        <th>Details</th>
     </tr>
     </thead>
     <tbody>
     @foreach (var user in Model)
     {
         <tr>
-            <td>@user.UserName</td>
             <td>@user.Email</td>
+            <td>@user.UserName</td>
+            <td>@user.ArchivedOn.ToLocalTime().ToString("g")</td>
             <td>
-                <a asp-action="ArchivedUserDetails" asp-route-id="@user.Id">View Orders</a>
+                <a asp-action="ArchivedUserDetails" asp-route-id="@user.Id" class="btn btn-info btn-sm">View Orders</a>
             </td>
         </tr>
     }
     </tbody>
 </table>
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Back to Active Users</a>
+</p>

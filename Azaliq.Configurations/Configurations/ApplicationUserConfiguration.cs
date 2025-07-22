@@ -25,6 +25,10 @@ namespace Azaliq.Data.Configurations
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity
+                .Property(u => u.IsBanned)
+                .HasDefaultValue(false);
+
         }
     }
     

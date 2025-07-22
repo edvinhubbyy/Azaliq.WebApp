@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Azaliq.ViewModels.CartItems
+﻿namespace Azaliq.ViewModels.CartItems
 {
     public class CartItemViewModel
     {
@@ -14,6 +8,7 @@ namespace Azaliq.ViewModels.CartItems
         public string? ProductImageUrl { get; set; }  // Nullable, in case no image
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public int StockQuantity { get; set; }  // Represents the available stock for the product
 
         public decimal Subtotal => Price * Quantity;
     }

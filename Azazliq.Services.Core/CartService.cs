@@ -3,11 +3,6 @@ using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.CartItems;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Azaliq.Services.Core
 {
@@ -45,7 +40,6 @@ namespace Azaliq.Services.Core
 
         public async Task<List<CartItemViewModel>> GetCartItemsAsync(string userId)
         {
-            // Example implementation
             return await _context.CartItems
                 .Where(ci => ci.UserId == userId)
                 .Select(ci => new CartItemViewModel
@@ -55,10 +49,12 @@ namespace Azaliq.Services.Core
                     ProductName = ci.Product.Name,
                     ProductImageUrl = ci.Product.ImageUrl,
                     Price = ci.Product.Price,
-                    Quantity = ci.Quantity
+                    Quantity = ci.Quantity,
+                    StockQuantity = ci.Product.Quantity  // <- important
                 })
                 .ToListAsync();
         }
+
         // Implement other methods as needed
 
 

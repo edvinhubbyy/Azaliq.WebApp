@@ -97,12 +97,21 @@ namespace Azaliq.Services.Core
 
             if (!cartItems.Any())
             {
-                return; // No items in cart
+                throw new InvalidOperationException("Cart is empty.");
+            }
+
+            // Validate stock before placing order
+            foreach (var item in cartItems)
+            {
+                if (item.Quantity > item.Product.Quantity)
+                {
+                    throw new InvalidOperationException($"Not enough stock for product: {item.Product.Name}");
+                }
             }
 
             var order = new Order
             {
-                UserId = userId, // <- assign userId here
+                UserId = userId,
                 FullName = inputModel.FullName,
                 Email = inputModel.Email,
                 Phone = inputModel.Phone,
@@ -121,10 +130,14 @@ namespace Azaliq.Services.Core
                     ProductId = item.ProductId,
                     Quantity = item.Quantity
                 });
+
+                // Decrease stock here:
+                item.Product.Quantity -= item.Quantity;
             }
 
             _dbContext.Orders.Add(order);
             _dbContext.CartItems.RemoveRange(cartItems);
+
             await _dbContext.SaveChangesAsync();
         }
 

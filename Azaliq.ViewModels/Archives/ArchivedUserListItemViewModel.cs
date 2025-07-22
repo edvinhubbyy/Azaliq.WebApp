@@ -4,19 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Azaliq.ViewModels.Admin
+namespace Azaliq.ViewModels.Archives
 {
-    public class UserWithRoleViewModel
+    public class ArchivedUserListItemViewModel
     {
-        public string Id { get; set; } = null!;
-        
+        public Guid Id { get; set; }
         public string Email { get; set; } = null!;
-        
         public string UserName { get; set; } = null!;
-        
-        public bool IsManager { get; set; }
-
-        public bool IsBanned { get; set; }
+        public DateTime ArchivedOn { get; set; }
     }
-
 }

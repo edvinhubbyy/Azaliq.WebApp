@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Azaliq.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250721153855_Test2")]
-    partial class Test2
+    [Migration("20250722211534_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -136,8 +136,7 @@ namespace Azaliq.Data.Migrations
 
                     b.Property<string>("DeliveryAddress")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("Optional delivery address for the ArchivedOrder, if it is a delivery order.");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -145,8 +144,7 @@ namespace Azaliq.Data.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("Added customer/order details:");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2")
@@ -209,6 +207,9 @@ namespace Azaliq.Data.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ArchivedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -331,9 +332,6 @@ namespace Azaliq.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("City")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -399,8 +397,6 @@ namespace Azaliq.Data.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("UserId");
 
@@ -497,130 +493,390 @@ namespace Azaliq.Data.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            Description = "A beautiful bouquet of red roses",
-                            ImageUrl = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=60",
+                            Description = "A bouquet of long-stemmed red roses",
+                            ImageUrl = "https://images.pexels.com/photos/931162/pexels-photo-931162.jpeg?auto=compress&cs=tinysrgb&h=800",
                             IsAvailable = false,
                             IsDeleted = false,
                             IsSameDayDeliveryAvailable = false,
-                            Name = "Red Rose Bouquet",
+                            Name = "Classic Red Roses",
                             Price = 49.99m,
                             Quantity = 0
                         },
                         new
                         {
                             Id = 2,
-                            CategoryId = 2,
-                            Description = "Bright and cheerful yellow tulips",
-                            ImageUrl = "https://images.unsplash.com/photo-1499744937866-d9e8f7e0ecf4?auto=format&fit=crop&w=500&q=60",
+                            CategoryId = 1,
+                            Description = "Soft pink garden roses",
+                            ImageUrl = "https://images.pexels.com/photos/1073048/pexels-photo-1073048.jpeg?auto=compress&cs=tinysrgb&h=800",
                             IsAvailable = false,
                             IsDeleted = false,
                             IsSameDayDeliveryAvailable = false,
-                            Name = "Yellow Tulips",
-                            Price = 39.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 3,
-                            Description = "Elegant white lilies perfect for any occasion",
-                            ImageUrl = "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "White Lilies",
-                            Price = 44.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 4,
-                            Description = "Delicate pink orchids",
-                            ImageUrl = "https://images.unsplash.com/photo-1497551060073-4c5ab6435f5f?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Pink Orchids",
-                            Price = 59.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryId = 5,
-                            Description = "Bright sunflower basket",
-                            ImageUrl = "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Sunflower Basket",
-                            Price = 35.00m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CategoryId = 6,
-                            Description = "Colorful mix of carnations",
-                            ImageUrl = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Carnation Mix",
-                            Price = 29.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CategoryId = 7,
-                            Description = "Fresh daisies",
-                            ImageUrl = "https://images.unsplash.com/photo-1465188035480-ff3f285f3bce?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Daisy Delight",
-                            Price = 24.99m,
-                            Quantity = 0
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CategoryId = 8,
-                            Description = "Soft pink peonies",
-                            ImageUrl = "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=500&q=60",
-                            IsAvailable = false,
-                            IsDeleted = false,
-                            IsSameDayDeliveryAvailable = false,
-                            Name = "Peony Love",
+                            Name = "Pink Garden Roses",
                             Price = 54.99m,
                             Quantity = 0
                         },
                         new
                         {
-                            Id = 9,
-                            CategoryId = 9,
-                            Description = "Charming chrysanthemums",
-                            ImageUrl = "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=500&q=60",
+                            Id = 3,
+                            CategoryId = 1,
+                            Description = "Crisp white avalanche roses",
+                            ImageUrl = "https://images.pexels.com/photos/213222/pexels-photo-213222.jpeg?auto=compress&cs=tinysrgb&h=800",
                             IsAvailable = false,
                             IsDeleted = false,
                             IsSameDayDeliveryAvailable = false,
-                            Name = "Chrysanthemum Charm",
-                            Price = 27.99m,
+                            Name = "White Avalanche Roses",
+                            Price = 59.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 2,
+                            Description = "Bright yellow tulips in a bundle",
+                            ImageUrl = "https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Yellow Tulip Bundle",
+                            Price = 39.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 2,
+                            Description = "Mixed red and white tulips",
+                            ImageUrl = "https://images.pexels.com/photos/5857509/pexels-photo-5857509.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Red & White Tulips",
+                            Price = 42.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 2,
+                            Description = "Soft pink tulips standing tall",
+                            ImageUrl = "https://images.pexels.com/photos/315638/pexels-photo-315638.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Pink Tulips",
+                            Price = 37.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 3,
+                            Description = "Fragrant white stargazer lilies",
+                            ImageUrl = "https://images.pexels.com/photos/1460886/pexels-photo-1460886.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "White Stargazer Lilies",
+                            Price = 44.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 3,
+                            Description = "Vibrant orange asiatic lilies",
+                            ImageUrl = "https://images.pexels.com/photos/248526/pexels-photo-248526.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Orange Asiatic Lilies",
+                            Price = 46.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 3,
+                            Description = "Delicate pink oriental lilies",
+                            ImageUrl = "https://images.pexels.com/photos/1544336/pexels-photo-1544336.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Pink Oriental Lilies",
+                            Price = 48.99m,
                             Quantity = 0
                         },
                         new
                         {
                             Id = 10,
-                            CategoryId = 10,
-                            Description = "Fragrant gardenias",
-                            ImageUrl = "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&w=500&q=60",
+                            CategoryId = 4,
+                            Description = "Elegant white Phalaenopsis orchids",
+                            ImageUrl = "https://images.pexels.com/photos/931180/pexels-photo-931180.jpeg?auto=compress&cs=tinysrgb&h=800",
                             IsAvailable = false,
                             IsDeleted = false,
                             IsSameDayDeliveryAvailable = false,
-                            Name = "Gardenia Glow",
+                            Name = "Phalaenopsis Orchids",
+                            Price = 59.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryId = 4,
+                            Description = "Soft pink moth orchids",
+                            ImageUrl = "https://images.pexels.com/photos/1637359/pexels-photo-1637359.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Pink Moth Orchids",
+                            Price = 62.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryId = 4,
+                            Description = "Rich purple cymbidium orchids",
+                            ImageUrl = "https://images.pexels.com/photos/257280/pexels-photo-257280.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Purple Cymbidium Orchids",
+                            Price = 64.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CategoryId = 5,
+                            Description = "Bright single sunflower stem",
+                            ImageUrl = "https://images.pexels.com/photos/414274/pexels-photo-414274.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Single Sunflower Stem",
+                            Price = 25.00m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CategoryId = 5,
+                            Description = "Cheerful bouquet of sunflowers",
+                            ImageUrl = "https://images.pexels.com/photos/1030936/pexels-photo-1030936.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Sunflower Bouquet",
+                            Price = 35.00m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CategoryId = 5,
+                            Description = "Compact sunflowers in a glass vase",
+                            ImageUrl = "https://images.pexels.com/photos/349758/pexels-photo-349758.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Mini Sunflower Vase",
+                            Price = 29.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CategoryId = 6,
+                            Description = "Bright red carnations",
+                            ImageUrl = "https://images.pexels.com/photos/2898825/pexels-photo-2898825.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Red Carnations",
+                            Price = 29.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CategoryId = 6,
+                            Description = "Pure white carnations",
+                            ImageUrl = "https://images.pexels.com/photos/1299898/pexels-photo-1299898.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "White Carnations",
+                            Price = 31.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CategoryId = 6,
+                            Description = "Soft pink carnations",
+                            ImageUrl = "https://images.pexels.com/photos/4147446/pexels-photo-4147446.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Pink Carnations",
+                            Price = 27.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CategoryId = 7,
+                            Description = "Fresh classic daisies",
+                            ImageUrl = "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Classic Daisies",
+                            Price = 24.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CategoryId = 7,
+                            Description = "Vibrant gerbera daisies",
+                            ImageUrl = "https://images.pexels.com/photos/462117/pexels-photo-462117.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Gerbera Daisies",
+                            Price = 22.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CategoryId = 7,
+                            Description = "Sunny yellow daisies",
+                            ImageUrl = "https://images.pexels.com/photos/413195/pexels-photo-413195.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Yellow Daisies",
+                            Price = 20.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CategoryId = 8,
+                            Description = "Full cluster of pink peonies",
+                            ImageUrl = "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Pink Peony Cluster",
+                            Price = 54.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CategoryId = 8,
+                            Description = "Elegant white peonies",
+                            ImageUrl = "https://images.pexels.com/photos/1231265/pexels-photo-1231265.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "White Peonies",
+                            Price = 56.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CategoryId = 8,
+                            Description = "Soft coral-colored peonies",
+                            ImageUrl = "https://images.pexels.com/photos/991447/pexels-photo-991447.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Coral Peonies",
+                            Price = 58.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CategoryId = 9,
+                            Description = "Sunny yellow chrysanthemums",
+                            ImageUrl = "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Yellow Chrysanthemums",
+                            Price = 27.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CategoryId = 9,
+                            Description = "Rich purple chrysanthemums",
+                            ImageUrl = "https://images.pexels.com/photos/116393/pexels-photo-116393.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Purple Chrysanthemums",
+                            Price = 29.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CategoryId = 9,
+                            Description = "Crisp white chrysanthemums",
+                            ImageUrl = "https://images.pexels.com/photos/939222/pexels-photo-939222.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "White Chrysanthemums",
+                            Price = 25.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 28,
+                            CategoryId = 10,
+                            Description = "Fragrant classic gardenias",
+                            ImageUrl = "https://images.pexels.com/photos/937400/pexels-photo-937400.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Classic Gardenias",
                             Price = 39.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 29,
+                            CategoryId = 10,
+                            Description = "Single white gardenia bloom",
+                            ImageUrl = "https://images.pexels.com/photos/264727/pexels-photo-264727.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "White Gardenia Bloom",
+                            Price = 41.99m,
+                            Quantity = 0
+                        },
+                        new
+                        {
+                            Id = 30,
+                            CategoryId = 10,
+                            Description = "Gardenia flowers with green leaves",
+                            ImageUrl = "https://images.pexels.com/photos/206420/pexels-photo-206420.jpeg?auto=compress&cs=tinysrgb&h=800",
+                            IsAvailable = false,
+                            IsDeleted = false,
+                            IsSameDayDeliveryAvailable = false,
+                            Name = "Gardenia Leaves & Flower",
+                            Price = 43.99m,
                             Quantity = 0
                         });
                 });
@@ -1040,7 +1296,7 @@ namespace Azaliq.Data.Migrations
                     b.Property<string>("Address")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
-                        .HasComment("Email address of the user.");
+                        .HasComment("Address of the user.");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -1048,8 +1304,10 @@ namespace Azaliq.Data.Migrations
                         .HasColumnType("nvarchar(150)")
                         .HasComment("Full name of the user.");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                    b.Property<bool>("IsBanned")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.ToTable(t =>
                         {
@@ -1130,12 +1388,8 @@ namespace Azaliq.Data.Migrations
 
             modelBuilder.Entity("Azaliq.Data.Models.Models.Order", b =>
                 {
-                    b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

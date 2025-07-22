@@ -32,8 +32,8 @@ public class ArchivedUserService : IArchivedUserService
     {
         var user = await _context.Set<ApplicationUser>()
             .Include(u => u.Orders)
-            .ThenInclude(o => o.Products)
-            .ThenInclude(op => op.Product)
+                .ThenInclude(o => o.Products)
+                    .ThenInclude(op => op.Product)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
@@ -45,27 +45,31 @@ public class ArchivedUserService : IArchivedUserService
             OriginalUserId = user.Id,
             Email = user.Email ?? "",
             UserName = user.UserName ?? "",
-            ArchivedOn = DateTime.UtcNow
+            ArchivedOn = DateTime.UtcNow,
+            Orders = new List<ArchivedOrder>()
         };
-        _context.ArchivedUsers.Add(archivedUser); // Tracked
+
+        _context.ArchivedUsers.Add(archivedUser);
 
         foreach (var order in user.Orders)
         {
+            var totalAmount = order.Products.Sum(p => p.Product.Price * p.Quantity);
+
             var archivedOrder = new ArchivedOrder
             {
                 Id = Guid.NewGuid(),
                 ArchivedUserId = archivedUser.Id,
                 OrderDate = order.OrderDate,
                 Status = order.Status,
-                TotalAmount = order.TotalAmount,
+                TotalAmount = totalAmount,
                 DeliveryAddress = order.DeliveryAddress ?? "",
                 FullName = order.FullName ?? "",
                 Email = order.Email ?? "",
                 Phone = order.Phone ?? "",
                 City = order.City ?? "",
                 ZipCode = order.ZipCode ?? "",
+                Products = new List<ArchivedOrderProduct>()
             };
-            _context.ArchivedOrders.Add(archivedOrder); // Tracked
 
             foreach (var product in order.Products)
             {
@@ -77,8 +81,13 @@ public class ArchivedUserService : IArchivedUserService
                     Price = product.Product.Price,
                     Quantity = product.Quantity
                 };
-                _context.ArchivedOrderProducts.Add(archivedProduct); // Tracked
+
+                archivedOrder.Products.Add(archivedProduct); // Add to collection
+                _context.ArchivedOrderProducts.Add(archivedProduct); // Still tracked
             }
+
+            archivedUser.Orders.Add(archivedOrder); // Add to collection
+            _context.ArchivedOrders.Add(archivedOrder); // Still tracked
         }
 
         await _context.SaveChangesAsync();

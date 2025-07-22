@@ -41,7 +41,8 @@ public class UserRoleService : IUserRoleService
                 Id = user.Id,
                 Email = user.Email!,
                 UserName = user.UserName!,
-                IsManager = isManager
+                IsManager = isManager,
+                IsBanned = user.IsBanned 
             });
         }
 

@@ -1,5 +1,4 @@
 ﻿using Azaliq.Services.Core.Contracts;
-using Azaliq.ViewModels.Order;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

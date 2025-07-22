@@ -1,5 +1,7 @@
 ﻿using Azaliq.Data;
+using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
+using Azaliq.ViewModels.Archives;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,14 +22,19 @@ namespace Azaliq.WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var archivedUsers = await _context.ArchivedUsers
-                .Include(u => u.Orders)
-                    .ThenInclude(o => o.Products)
+                .OrderByDescending(u => u.ArchivedOn)
+                .Select(u => new ArchivedUserListItemViewModel()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    UserName = u.UserName,
+                    ArchivedOn = u.ArchivedOn
+                })
                 .ToListAsync();
 
             return View(archivedUsers);
         }
 
-        // GET: /UserManagement/ArchivedUserDetails/{id}
         public async Task<IActionResult> ArchivedUserDetails(string id)
         {
             if (!Guid.TryParse(id, out Guid userId))
@@ -35,13 +42,32 @@ namespace Azaliq.WebApp.Controllers
 
             var archivedUser = await _context.ArchivedUsers
                 .Include(u => u.Orders)
-                    .ThenInclude(o => o.Products)
+                .ThenInclude(o => o.Products)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (archivedUser == null)
                 return NotFound();
 
-            return View(archivedUser);
+            var viewModel = new ArchivedUserDetailsViewModel
+            {
+                UserName = archivedUser.UserName,
+                Email = archivedUser.Email,
+                Orders = archivedUser.Orders.Select(o => new ArchivedOrderViewModel
+                {
+                    OrderDate = o.OrderDate,
+                    Status = o.Status.ToString(),
+                    TotalAmount = o.TotalAmount,
+                    DeliveryAddress = o.DeliveryAddress,
+                    Products = o.Products.Select(p => new ArchivedOrderProductViewModel
+                    {
+                        ProductName = p.ProductName,
+                        Price = p.Price,
+                        Quantity = p.Quantity
+                    }).ToList()
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
 
         // POST: /UserManagement/ArchiveUser
@@ -61,5 +87,7 @@ namespace Azaliq.WebApp.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        
     }
 }
