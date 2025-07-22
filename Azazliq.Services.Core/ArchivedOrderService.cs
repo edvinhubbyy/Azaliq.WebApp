@@ -39,19 +39,16 @@ public class ArchivedUserService : IArchivedUserService
         if (user == null)
             return false;
 
-        // Create the archived user
         var archivedUser = new ArchivedUser
         {
             Id = Guid.NewGuid(),
             OriginalUserId = user.Id,
             Email = user.Email ?? "",
             UserName = user.UserName ?? "",
-            Orders = new List<ArchivedOrder>()
+            ArchivedOn = DateTime.UtcNow
         };
+        _context.ArchivedUsers.Add(archivedUser); // Tracked
 
-        _context.ArchivedUsers.Add(archivedUser);
-
-        // Archive each order
         foreach (var order in user.Orders)
         {
             var archivedOrder = new ArchivedOrder
@@ -61,15 +58,15 @@ public class ArchivedUserService : IArchivedUserService
                 OrderDate = order.OrderDate,
                 Status = order.Status,
                 TotalAmount = order.TotalAmount,
-                FullName = order.FullName ?? "Unknown",
+                DeliveryAddress = order.DeliveryAddress ?? "",
+                FullName = order.FullName ?? "",
                 Email = order.Email ?? "",
                 Phone = order.Phone ?? "",
                 City = order.City ?? "",
                 ZipCode = order.ZipCode ?? "",
-                DeliveryAddress = order.DeliveryAddress ?? "",
             };
+            _context.ArchivedOrders.Add(archivedOrder); // Tracked
 
-            // Archive each product in the order
             foreach (var product in order.Products)
             {
                 var archivedProduct = new ArchivedOrderProduct
@@ -80,23 +77,13 @@ public class ArchivedUserService : IArchivedUserService
                     Price = product.Product.Price,
                     Quantity = product.Quantity
                 };
-
-                archivedOrder.Products.Add(archivedProduct);
-
-                // This line ensures the product is saved
-                _context.ArchivedOrderProducts.Add(archivedProduct);
+                _context.ArchivedOrderProducts.Add(archivedProduct); // Tracked
             }
-
-            archivedUser.Orders.Add(archivedOrder);
-            _context.ArchivedOrders.Add(archivedOrder); // Optional but good practice
         }
 
-        // Save all archived data
         await _context.SaveChangesAsync();
 
-        // Remove original user-related data
-        var orderProductsToRemove = user.Orders.SelectMany(o => o.Products);
-        _context.OrdersProducts.RemoveRange(orderProductsToRemove);
+        _context.OrdersProducts.RemoveRange(user.Orders.SelectMany(o => o.Products));
         _context.Orders.RemoveRange(user.Orders);
         _context.Users.Remove(user);
 
