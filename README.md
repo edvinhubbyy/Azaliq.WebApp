@@ -14,7 +14,7 @@ It includes user-friendly storefronts, shopping cart functionality, and a robust
 ## 📦 Tech Stack
 
 ```csharp
-🖥️ ASP.NET Core MVC (.NET 7)
+🖥️ ASP.NET Core MVC (.NET 8)
 🛢️ Entity Framework Core + SQL Server
 🎨 Razor Pages + Bootstrap
 🔐 ASP.NET Identity (roles: Admin, Manager, User)
