@@ -1,70 +1,57 @@
 ﻿@page
-@using Microsoft.AspNetCore.Http.Features
-@model TwoFactorAuthenticationModel
+@model Azaliq.WebApp.Areas.Identity.Pages.Account.Manage.TwoFactorAuthenticationModel
 @{
-    ViewData["Title"] = "Two-factor authentication (2FA)";
-    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+    ViewData["Title"] = "Two-factor authentication";
 }
 
-@* <partial name="_StatusMessage" for="StatusMessage" /> *@
-<h3>@ViewData["Title"]</h3>
-@{
-    var consentFeature = HttpContext.Features.Get<ITrackingConsentFeature>();
-    @if (consentFeature?.CanTrack ?? true)
+<h1>@ViewData["Title"]</h1>
+
+<p class="text-success">@Model.StatusMessage</p>
+
+<div class="mb-4">
+    <h4>Authenticator app</h4>
+    @if (Model.HasAuthenticator)
     {
-        @if (Model.Is2faEnabled)
-        {
-            if (Model.RecoveryCodesLeft == 0)
-            {
-                <div class="alert alert-danger">
-                    <strong>You have no recovery codes left.</strong>
-                    <p>You must <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
-                </div>
-            }
-            else if (Model.RecoveryCodesLeft == 1)
-            {
-                <div class="alert alert-danger">
-                    <strong>You have 1 recovery code left.</strong>
-                    <p>You can <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
-                </div>
-            }
-            else if (Model.RecoveryCodesLeft <= 3)
-            {
-                <div class="alert alert-warning">
-                    <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
-                    <p>You should <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
-                </div>
-            }
-
-            if (Model.IsMachineRemembered)
-            {
-                <form method="post" style="display: inline-block">
-                    <button type="submit" class="btn btn-primary">Forget this browser</button>
-                </form>
-            }
-            <a asp-page="./Disable2fa" class="btn btn-primary">Disable 2FA</a>
-            <a asp-page="./GenerateRecoveryCodes" class="btn btn-primary">Reset recovery codes</a>
-        }
-
-        <h4>Authenticator app</h4>
-        @if (!Model.HasAuthenticator)
-        {
-            <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary">Add authenticator app</a>
-        }
-        else
-        {
-            <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary">Set up authenticator app</a>
-            <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-primary">Reset authenticator app</a>
-        }
+        <p>You have an authenticator app configured.</p>
     }
     else
     {
-        <div class="alert alert-danger">
-            <strong>Privacy and cookie policy have not been accepted.</strong>
-            <p>You must accept the policy before you can enable two factor authentication.</p>
-        </div>
+        <p><a asp-page="./EnableAuthenticator" class="btn btn-primary">Set up authenticator app</a></p>
     }
-}
+</div>
+
+<div class="mb-4">
+    <h4>Email as 2FA</h4>
+    @if (Model.IsEmail2faEnabled)
+    {
+        <p>Email will be used to send a one-time code on login.</p>
+        <form method="post" asp-page-handler="DisableEmail2fa">
+            <button class="btn btn-outline-danger">Disable Email-2FA</button>
+        </form>
+    }
+    else
+    {
+        <p>When enabled, you will get a one-time code sent to your email on each login.</p>
+        <form method="post" asp-page-handler="EnableEmail2fa">
+            <button class="btn btn-primary">Enable Email-2FA</button>
+        </form>
+    }
+</div>
+
+<div class="mb-4">
+    <h4>Remember this browser</h4>
+    @if (Model.IsMachineRemembered)
+    {
+        <p>This browser is remembered.</p>
+        <form method="post" asp-page-handler="ForgetBrowser">
+            <button class="btn btn-warning">Forget this browser</button>
+        </form>
+    }
+    else
+    {
+        <p>This browser is not remembered.</p>
+    }
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
