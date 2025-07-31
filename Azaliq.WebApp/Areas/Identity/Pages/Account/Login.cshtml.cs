@@ -63,26 +63,27 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            // Check email confirmation
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
                 ModelState.AddModelError(string.Empty, "You need to confirm your email to log in.");
                 return Page();
             }
 
-            // Check password
-            var result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
             if (result.Succeeded)
             {
-                // Enforce 2FA
-                if (await _userManager.GetTwoFactorEnabledAsync(user))
-                {
-                    // This will redirect to /LoginWith2fa
-                    return RedirectToPage("./LoginWith2fa", new { RememberMe = Input.RememberMe, ReturnUrl = returnUrl });
-                }
-
-                await _signInManager.SignInAsync(user, Input.RememberMe);
                 return LocalRedirect(returnUrl);
+            }
+            else if (result.RequiresTwoFactor)
+            {
+                return RedirectToPage("./LoginWith2fa", new { RememberMe = Input.RememberMe, ReturnUrl = returnUrl });
+            }
+            else if (result.IsLockedOut)
+            {
+                // Optional: handle lockout here
+                ModelState.AddModelError(string.Empty, "User account locked out.");
+                return Page();
             }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
