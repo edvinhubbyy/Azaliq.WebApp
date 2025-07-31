@@ -4,6 +4,7 @@ using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +45,18 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IArchivedUserService, ArchivedUserService>();
 
 
+//builder.Services.AddTransient<IEmailSender, CustomEmailSender>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddScoped<ITestEmailService, TestEmailService>();
+
+
+builder.Services.AddTransient<IEmailSender>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var apiKey = config["SendGrid:ApiKey"];
+    return new CustomEmailSender(apiKey);
+});
 
 
 
