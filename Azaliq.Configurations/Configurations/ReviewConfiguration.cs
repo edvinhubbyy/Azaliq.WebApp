@@ -11,42 +11,31 @@ namespace Azaliq.Data.Configurations
 {
     public class ReviewConfiguration : IEntityTypeConfiguration<Review>
     {
-        public void Configure(EntityTypeBuilder<Review> builder)
+        public void Configure(EntityTypeBuilder<Review> entity)
         {
-            builder
-                .HasKey(r => r.Id);
+            entity.HasKey(r => r.Id);
 
-            builder
-                .Property(r => r.Comment)
+            entity.Property(r => r.Comment)
                 .HasMaxLength(1000);
 
-            builder
-                .Property(r => r.Rating)
+            entity.Property(r => r.Rating)
                 .IsRequired();
 
-            builder
-                .Property(r => r.CreatedOn)
+            entity.Property(r => r.CreatedOn)
                 .IsRequired();
 
-            builder
-                .HasOne(r => r.Product)
-                .WithMany(p => p.Reviews);
-
-
-            builder
-                .HasOne(r => r.Product)
-                .WithMany()
+            entity.HasOne(r => r.Product)
+                .WithMany(p => p.Reviews)  
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder
-                .HasOne(r => r.User)
+            entity.HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder
-                .HasQueryFilter(r => r.IsDeleted == false);
+            entity.HasQueryFilter(r => r.IsDeleted == false);
         }
+
     }
 }

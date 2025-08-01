@@ -2,7 +2,6 @@
 using Azaliq.Services.Core.Contracts;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.Globalization;
 using Document = iTextSharp.text.Document;
 using PageSize = iTextSharp.text.PageSize;
 

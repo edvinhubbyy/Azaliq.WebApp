@@ -1,14 +1,12 @@
-﻿using Azaliq.ViewModels._2fa;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Mail;
+using Azaliq.ViewModels._2fa;
 
 namespace Azaliq.Services.Core.Contracts
 {
     public interface IEmailService
     {
         Task SendAsync(EmailViewModel model);
+        Task SendEmailWithAttachmentAsync(string email, string subject, string message, byte[] attachmentData, string attachmentFileName);
     }
+
 }

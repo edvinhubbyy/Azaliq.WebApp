@@ -52,6 +52,12 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [StringLength(20, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 20 characters.")]
+            [RegularExpression(@"^\S+$", ErrorMessage = "No white space allowed in the username.")]
+            [Display(Name = "Username")]
+            public string UserName { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -81,9 +87,17 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // Check if a user with this email already exists
-                var existingUser = await _userManager.FindByEmailAsync(Input.Email);
-                if (existingUser != null)
+                // Check if username already exists
+                var existingUserByUsername = await _userManager.FindByNameAsync(Input.UserName);
+                if (existingUserByUsername != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Username is already taken.");
+                    return Page();
+                }
+
+                // Check if email already exists
+                var existingUserByEmail = await _userManager.FindByEmailAsync(Input.Email);
+                if (existingUserByEmail != null)
                 {
                     ModelState.AddModelError(string.Empty, "An account with this email already exists.");
                     return Page();
@@ -91,7 +105,8 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
 
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                // Set username and email properly
+                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);

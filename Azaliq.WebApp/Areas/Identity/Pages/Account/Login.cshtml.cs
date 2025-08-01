@@ -34,8 +34,8 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; } = null!;
+            [Display(Name = "Username or Email")]
+            public string UsernameOrEmail { get; set; } = null!;
 
             [Required]
             [DataType(DataType.Password)]
@@ -56,7 +56,15 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             if (!ModelState.IsValid)
                 return Page();
 
-            var user = await _userManager.FindByEmailAsync(Input.Email);
+            // Try to find user by username
+            var user = await _userManager.FindByNameAsync(Input.UsernameOrEmail);
+
+            // If not found, try email if input looks like an email
+            if (user == null && Input.UsernameOrEmail.Contains("@"))
+            {
+                user = await _userManager.FindByEmailAsync(Input.UsernameOrEmail);
+            }
+
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -69,10 +77,11 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
+                _logger.LogInformation("User logged in.");
                 return LocalRedirect(returnUrl);
             }
             else if (result.RequiresTwoFactor)
@@ -81,13 +90,15 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             }
             else if (result.IsLockedOut)
             {
-                // Optional: handle lockout here
+                _logger.LogWarning("User account locked out.");
                 ModelState.AddModelError(string.Empty, "User account locked out.");
                 return Page();
             }
-
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return Page();
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
+            }
         }
     }
 }

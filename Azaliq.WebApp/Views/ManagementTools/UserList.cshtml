@@ -72,10 +72,9 @@
                         </form>
 
                         <!-- Archive & Delete -->
-                        <form asp-action="ArchiveUser" asp-controller="ManagementTools" method="post" class="archive-delete-form">
+                        <form asp-action="ArchiveUser" asp-controller="UserManagement" method="post" class="archive-delete-form">
                             <input type="hidden" name="userId" value="@user.Id" />
-                            <button type="button"
-                                    class="btn btn-warning btn-sm archive-delete-btn"
+                            <button type="button" class="btn btn-warning btn-sm archive-delete-btn"
                                     data-username="@user.UserName"
                                     data-bs-toggle="modal"
                                     data-bs-target="#archiveDeleteModal">

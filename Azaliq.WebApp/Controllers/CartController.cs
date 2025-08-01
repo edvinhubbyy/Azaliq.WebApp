@@ -5,9 +5,11 @@ using Azaliq.ViewModels.CartItems;
 using Azaliq.ViewModels.Order;
 using Azaliq.ViewModels.Store;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Azaliq.Data.Models.Models;
 
 namespace Azaliq.WebApp.Controllers
 {
@@ -18,13 +20,18 @@ namespace Azaliq.WebApp.Controllers
         private readonly ICartService _cartService;
         private readonly IOrderService _orderService;
         private readonly IPdfService _pdfService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailService _emailService;
 
-        public CartController(ApplicationDbContext dbContext, ICartService cartService, IOrderService orderService, IPdfService pdfService)
+        public CartController(ApplicationDbContext dbContext, ICartService cartService, IOrderService orderService,
+            IPdfService pdfService, UserManager<ApplicationUser> userManager, IEmailService emailService)
         {
             _dbContext = dbContext;
             _cartService = cartService;
             _orderService = orderService;
             _pdfService = pdfService;
+            _userManager = userManager;
+            _emailService = emailService;
         }
 
         // GET: /Cart
@@ -149,7 +156,7 @@ namespace Azaliq.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(CartInputViewModel model)
         {
-            // Reload stores in case validation fails and view redisplayed
+            // Reload stores if validation fails and view redisplayed
             model.Stores = await _dbContext.StoresLocations
                 .Where(s => !s.IsDeleted)
                 .Select(s => new StoreDropDownModel
@@ -206,7 +213,7 @@ namespace Azaliq.WebApp.Controllers
                 PickupStoreId = deliveryOption == DeliveryOptions.PickupFromStore ? model.PickupStoreId : null
             };
 
-            // Save order here — very important
+            // Place order, get the saved order entity (make sure PlaceOrderAsync returns Order)
             var order = await _orderService.PlaceOrderAsync(orderModel, userId);
 
             if (order == null)
@@ -215,12 +222,23 @@ namespace Azaliq.WebApp.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Generate PDF bytes
             var pdfBytes = await _pdfService.GenerateOrderPdfWithQrAsync(order);
-            return File(pdfBytes, "application/pdf", $"Azaliq_Order_{order.Id}.pdf");
-            
-            TempData["Success"] = "Order placed successfully!";
 
-            // Redirect to "MyOrders" page so user can see their orders
+            // Send invoice PDF via email
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null && !string.IsNullOrEmpty(user.Email))
+            {
+                await _emailService.SendEmailWithAttachmentAsync(
+                    user.Email,
+                    $"Your Azaliq Order Invoice - #{order.Id}",
+                    "<p>Thank you for your order from Azaliq! Please find your invoice attached.</p>",
+                    pdfBytes,
+                    $"Azaliq_Invoice_{order.Id}.pdf"
+                );
+            }
+
+            TempData["Success"] = "Order placed successfully! Invoice has been sent to your email.";
             return RedirectToAction("MyOrders", "Orders");
         }
 

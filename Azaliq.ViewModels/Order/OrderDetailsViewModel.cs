@@ -43,6 +43,5 @@ namespace Azaliq.ViewModels.Order
 
         // Convenience property for sum of all items subtotals
         public decimal TotalPrice => Items.Sum(item => item.Subtotal);
-        
     }
 }
