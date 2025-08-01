@@ -16,19 +16,8 @@ namespace Azaliq.Data.Configurations
                 .HasDefaultValue(false);
 
             entity
-                .HasOne(m => m.User)
-                .WithOne()
-                .HasForeignKey<Manager>(m => m.UserId);
-
-            entity
                 .HasIndex(m => new { m.UserId })
                 .IsUnique();
-
-            entity
-                .HasMany(m => m.ManagedStores)
-                .WithOne(c => c.Manager)
-                .HasForeignKey(c => c.ManagerId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             entity
                 .HasQueryFilter(m => m.IsDeleted == false);

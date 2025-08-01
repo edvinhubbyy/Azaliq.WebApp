@@ -32,8 +32,14 @@ namespace Azaliq.Data.Models.Models
         [Comment("Indicates whether the Order is for delivery or pickup.")]
         public bool IsDelivery { get; set; }
 
+        public int? PickupStoreId { get; set; }
+        
+        public virtual Store? PickupStore { get; set; }
+
         [Comment("Optional delivery address for the Order, if it is a delivery order.")]
         public string? DeliveryAddress { get; set; }
+
+        public DeliveryOptions DeliveryOption { get; set; }
 
         [Comment("Indicates whether the Order has been deleted or is active.")]
         public bool IsDeleted { get; set; } = false;
@@ -48,9 +54,9 @@ namespace Azaliq.Data.Models.Models
         
         public CountryCode CountryCode { get; set; }
         
-        public string City { get; set; } = null!;
+        public string? City { get; set; }
         
-        public string ZipCode { get; set; } = null!;
+        public string? ZipCode { get; set; }
 
 
     }

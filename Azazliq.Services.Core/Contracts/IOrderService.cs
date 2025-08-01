@@ -1,4 +1,5 @@
-﻿using Azaliq.ViewModels.Order;
+﻿using Azaliq.Data.Models.Models;
+using Azaliq.ViewModels.Order;
 
 namespace Azaliq.Services.Core.Contracts
 {
@@ -8,8 +9,10 @@ namespace Azaliq.Services.Core.Contracts
 
         Task<OrderDetailsViewModel?> GetOrderByIdAsync(int orderId);
 
-        Task PlaceOrderAsync(OrderDetailsViewModel inputModel, string userId);
-        
+        Task<Order?> GetOrderEntityByIdAsync(int orderId);
+
+        Task<Order> PlaceOrderAsync(OrderDetailsViewModel model, string userId);
+
         // Admins controls
         Task<List<OrderViewModel>> GetAllOrdersAsync();
 

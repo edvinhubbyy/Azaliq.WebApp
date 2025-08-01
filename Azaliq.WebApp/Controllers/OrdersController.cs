@@ -1,4 +1,5 @@
-﻿using Azaliq.Services.Core.Contracts;
+﻿using Azaliq.Services.Core;
+using Azaliq.Services.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -7,11 +8,14 @@ namespace Azaliq.WebApp.Controllers
     public class OrdersController : BaseController
     {
         private readonly IOrderService _orderService;
+        private readonly IPdfService _pdfService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IPdfService pdfService)
         {
             _orderService = orderService;
+            _pdfService = pdfService;
         }
+
 
         // GET: /Orders/Details/{id}
         public async Task<IActionResult> Details(int id)
@@ -32,6 +36,17 @@ namespace Azaliq.WebApp.Controllers
             var orders = await _orderService.GetOrdersByUserIdAsync(userId);
             return View(orders);
         }
+
+        public async Task<IActionResult> DownloadInvoicePdf(int orderId)
+        {
+            var orderEntity = await _orderService.GetOrderEntityByIdAsync(orderId);
+            if (orderEntity == null)
+                return NotFound();
+
+            var pdfBytes = await _pdfService.GenerateOrderPdfWithQrAsync(orderEntity);
+            return File(pdfBytes, "application/pdf", $"Azaliq_Order_{orderEntity.Id}.pdf");
+        }
+
 
         // POST: /Orders/Reorder
         [HttpPost]

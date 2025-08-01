@@ -18,7 +18,12 @@ namespace Azaliq.Data.Configurations
                 .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
+            entity.HasOne(o => o.PickupStore)
+                .WithMany(s => s.PickupOrders)
+                .HasForeignKey(o => o.PickupStoreId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             entity
                 .Property(o => o.TotalAmount)
                 .HasColumnType("decimal(18,2)");
@@ -70,14 +75,17 @@ namespace Azaliq.Data.Configurations
                 .HasMaxLength(PhoneMaxLength);
 
             entity.Property(o => o.City)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(CityMaxLength);
 
             entity.Property(o => o.ZipCode)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(ZipCodeMaxLength);
 
             entity.Property(o => o.CountryCode)
+                .IsRequired();
+
+            entity.Property(o => o.DeliveryOption)
                 .IsRequired();
 
             entity.Property(o => o.OrderDate)

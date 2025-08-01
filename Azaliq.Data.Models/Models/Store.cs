@@ -24,11 +24,8 @@ namespace Azaliq.Data.Models.Models
         [Comment("Country code of the Store")]
         public CountryCode CountryCode { get; set; }
 
-        [Comment("City of the Store")]
-        public Guid? ManagerId { get; set; }
-
-        [Comment("Manager of the Store")]
-        public virtual Manager? Manager { get; set; }
+        public ICollection<Order> PickupOrders { get; set; } 
+            = new HashSet<Order>();
 
         [Comment("Indicates if the Store is deleted")]
         public bool IsDeleted { get; set; } = false;

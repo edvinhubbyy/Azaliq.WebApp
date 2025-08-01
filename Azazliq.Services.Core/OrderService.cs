@@ -11,7 +11,7 @@ namespace Azaliq.Services.Core
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _dbContext;
-        
+
         public OrderService(ApplicationDbContext context)
         {
             _dbContext = context;
@@ -29,7 +29,6 @@ namespace Azaliq.Services.Core
                     Status = o.Status.ToString(),
                     Items = o.Products.Select(i => new OrderItemViewModel
                     {
-                        
                         ProductName = i.Product.Name,
                         ImageUrl = i.Product.ImageUrl ?? NoImageUrl,
                         Price = i.Product.Price,
@@ -45,8 +44,9 @@ namespace Azaliq.Services.Core
         {
             var order = await _dbContext.Orders
                 .Include(o => o.Products)
-                .ThenInclude(oi => oi.Product)
-                .Include(o => o.User) // assuming ApplicationUser has the extra properties
+                    .ThenInclude(oi => oi.Product)
+                .Include(o => o.User)
+                .Include(o => o.PickupStore) // Include pickup store info
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null) return null;
@@ -61,13 +61,22 @@ namespace Azaliq.Services.Core
                 IsDelivery = order.IsDelivery,
                 DeliveryAddress = order.DeliveryAddress,
 
-                FullName = order.FullName ?? order.User.FullName,  // from order or user
+                FullName = order.FullName ?? order.User.FullName,
                 Email = order.Email ?? order.User.Email,
                 Phone = order.Phone,
-                CountryCode = order.CountryCode.ToString(),
-                Address = order.DeliveryAddress,
-                City = order.City,
-                ZipCode = order.ZipCode,
+                CountryCode = order.CountryCode,
+
+                // Address only for courier orders
+                Address = order.DeliveryOption == DeliveryOptions.Courier ? order.DeliveryAddress : string.Empty,
+                City = order.DeliveryOption == DeliveryOptions.Courier ? order.City : string.Empty,
+                ZipCode = order.DeliveryOption == DeliveryOptions.Courier ? order.ZipCode : string.Empty,
+
+                PickupStoreId = order.PickupStoreId,
+                PickupStoreUrl = order.PickupStore != null
+                    ? $"/Store/Map/{order.PickupStore.Id}"
+                    : null,
+                
+                DeliveryOption = order.DeliveryOption.ToString(),
 
                 Items = order.Products.Select(oi => new OrderItemViewModel
                 {
@@ -82,13 +91,20 @@ namespace Azaliq.Services.Core
             return model;
         }
 
+        public async Task<Order?> GetOrderEntityByIdAsync(int orderId)
+        {
+            return await _dbContext.Orders
+                .Include(o => o.Products)
+                .ThenInclude(op => op.Product)  // Include the actual Product info inside OrderProducts
+                .Include(o => o.PickupStore)       // Include PickupStore details if any
+                .FirstOrDefaultAsync(o => o.Id == orderId && !o.IsDeleted);
+        }
 
-        public async Task PlaceOrderAsync(OrderDetailsViewModel inputModel, string userId)
+
+        public async Task<Order> PlaceOrderAsync(OrderDetailsViewModel inputModel, string userId)
         {
             if (string.IsNullOrEmpty(userId))
-            {
                 throw new ArgumentException("UserId cannot be null or empty.", nameof(userId));
-            }
 
             var cartItems = await _dbContext.CartItems
                 .Include(ci => ci.Product)
@@ -96,17 +112,26 @@ namespace Azaliq.Services.Core
                 .ToListAsync();
 
             if (!cartItems.Any())
-            {
                 throw new InvalidOperationException("Cart is empty.");
-            }
 
             // Validate stock before placing order
             foreach (var item in cartItems)
             {
                 if (item.Quantity > item.Product.Quantity)
-                {
                     throw new InvalidOperationException($"Not enough stock for product: {item.Product.Name}");
-                }
+            }
+
+            var deliveryOption = Enum.Parse<DeliveryOptions>(inputModel.DeliveryOption);
+
+            // Validate pickup store if pickup delivery option
+            if (deliveryOption == DeliveryOptions.PickupFromStore)
+            {
+                if (inputModel.PickupStoreId == null)
+                    throw new InvalidOperationException("Pickup store must be selected for pickup orders.");
+
+                var storeExists = await _dbContext.StoresLocations.AnyAsync(s => s.Id == inputModel.PickupStoreId);
+                if (!storeExists)
+                    throw new InvalidOperationException("Invalid pickup store selected.");
             }
 
             var order = new Order
@@ -115,12 +140,20 @@ namespace Azaliq.Services.Core
                 FullName = inputModel.FullName,
                 Email = inputModel.Email,
                 Phone = inputModel.Phone,
-                DeliveryAddress = inputModel.Address,
-                City = inputModel.City,
-                ZipCode = inputModel.ZipCode,
+                CountryCode = inputModel.CountryCode,
+
+                DeliveryOption = deliveryOption,
+                PickupStoreId = inputModel.PickupStoreId,
+
+                // Use empty string instead of null if not courier
+                DeliveryAddress = deliveryOption == DeliveryOptions.Courier ? inputModel.Address : string.Empty,
+                City = deliveryOption == DeliveryOptions.Courier ? inputModel.City : string.Empty,
+                ZipCode = deliveryOption == DeliveryOptions.Courier ? inputModel.ZipCode : string.Empty,
+
                 OrderDate = DateTime.UtcNow,
                 IsDeleted = false,
-                Status = OrderStatus.Pending
+                Status = OrderStatus.Pending,
+                Products = new List<OrderProduct>()
             };
 
             foreach (var item in cartItems)
@@ -131,7 +164,7 @@ namespace Azaliq.Services.Core
                     Quantity = item.Quantity
                 });
 
-                // Decrease stock here:
+                // Decrease stock
                 item.Product.Quantity -= item.Quantity;
             }
 
@@ -139,8 +172,9 @@ namespace Azaliq.Services.Core
             _dbContext.CartItems.RemoveRange(cartItems);
 
             await _dbContext.SaveChangesAsync();
-        }
 
+            return order;
+        }
 
         public async Task<List<OrderViewModel>> GetAllOrdersAsync()
         {
@@ -164,7 +198,6 @@ namespace Azaliq.Services.Core
                 })
                 .ToListAsync();
         }
-
 
         public async Task<bool> ReorderAsync(int orderId, string userId)
         {
@@ -199,8 +232,6 @@ namespace Azaliq.Services.Core
             await _dbContext.SaveChangesAsync();
             return true;
         }
-
-
 
         public async Task<bool> ChangeStatusAsync(int orderId, string newStatus)
         {
@@ -256,7 +287,5 @@ namespace Azaliq.Services.Core
             await _dbContext.SaveChangesAsync();
             return true;
         }
-
     }
-
 }

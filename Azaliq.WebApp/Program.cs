@@ -67,6 +67,8 @@ builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IArchivedUserService, ArchivedUserService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
+
 
 // 5) Register email senders
 builder.Services.AddTransient<IEmailSender, EmailSender>();
