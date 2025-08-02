@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Azaliq.GCommon.ValidationConstants.ProductTag;
 
 namespace Azaliq.ViewModels.Tag
 {
@@ -11,9 +12,10 @@ namespace Azaliq.ViewModels.Tag
     {
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Required(ErrorMessage = TagRequiredErrorMessage)]
+        [StringLength(NameMaxLength, MinimumLength = NameMinLength, ErrorMessage = TagErrorMessage)]
         public string Name { get; set; } = null!;
+        
     }
 
 }

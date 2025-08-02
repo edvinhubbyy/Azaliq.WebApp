@@ -24,14 +24,16 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous] // Allow anonymous access to the index page
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string? searchTerm)
         {
             string? userId = GetUserId();
-            var products = await _productService.GetAllProductsAsync(userId);
+            var products = await _productService.GetAllProductsAsync(userId, searchTerm);
 
+            ViewBag.SearchTerm = searchTerm;
             return View(products);
         }
+
 
         [AllowAnonymous]
         public async Task<IActionResult> ByCategory(int categoryId)

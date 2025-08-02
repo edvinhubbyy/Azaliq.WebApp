@@ -16,15 +16,15 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous] // Allow anonymous access to the index page
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string? searchTerm)
         {
             string? userId = GetUserId();
-            var products = await _categoryService.GetAllCategoriesAsync(userId);
-
-            // TODO: Fix this
-            return View(products);
+            var categories = await _categoryService.GetAllCategoriesAsync(userId, searchTerm);
+            ViewBag.SearchTerm = searchTerm;
+            return View(categories);
         }
+
 
 
         [HttpGet]

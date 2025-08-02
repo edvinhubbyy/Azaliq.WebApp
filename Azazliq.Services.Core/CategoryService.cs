@@ -42,19 +42,26 @@ namespace Azaliq.Services.Core
             return category?.Name ?? "Unknown";
         }
 
-        public async Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync(string? userId)
+        public async Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync(string? userId, string? searchTerm = null)
         {
-            var categories =  await _dbContext
-                .Categories
+            var query = _dbContext.Categories
+                .AsNoTracking()
+                .Where(c => !c.IsDeleted);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(c => c.Name.Contains(searchTerm));
+            }
+
+            return await query
                 .Select(c => new CategoryViewModel
                 {
                     Id = c.Id,
                     Name = c.Name
                 })
                 .ToListAsync();
-
-            return categories;
         }
+
 
         public async Task AddCategoryAsync(AddCategoryViewModel model)
         {

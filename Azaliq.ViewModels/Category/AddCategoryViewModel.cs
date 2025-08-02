@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using static Azaliq.GCommon.ValidationConstants.Category;
 
 namespace Azaliq.ViewModels.Category
 {
@@ -11,6 +7,7 @@ namespace Azaliq.ViewModels.Category
     {
         [Required]
         [StringLength(50)]
+        [RegularExpression(CategoryNameRegex, ErrorMessage = CategoryNameRegexErrorMessage)]
         public string Name { get; set; } = null!;
     }
 }

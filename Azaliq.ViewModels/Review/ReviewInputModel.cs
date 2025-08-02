@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static Azaliq.GCommon.ValidationConstants.Review;
 
 namespace Azaliq.ViewModels.Review
 {
@@ -7,16 +8,16 @@ namespace Azaliq.ViewModels.Review
         [Required]
         public int ProductId { get; set; }
 
-        // No validation on UserId and UserName since set in controller
         public string? UserId { get; set; }
+
         public string UserName { get; set; } = null!;
 
-        [Required]
-        [MaxLength(500)]
+        [Required(ErrorMessage = CommentRequired)]
+        [StringLength(TextMaxLength, ErrorMessage = TextErrorMessage)]
         public string Comment { get; set; } = null!;
 
-        [Required]
-        [Range(1, 5)]
+        [Required(ErrorMessage = RatingRequired)]
+        [Range(RatingMinValue, RatingMaxValue, ErrorMessage = RatingRequiredErrorMessage)]
         public int Rating { get; set; }
     }
 }

@@ -19,13 +19,22 @@ namespace Azaliq.Services.Core
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<ProductIndexViewModel>> GetAllProductsAsync(string? userId)
+        public async Task<IEnumerable<ProductIndexViewModel>> GetAllProductsAsync(string? userId, string? searchTerm = null)
         {
-            IEnumerable<ProductIndexViewModel> allProducts = await _dbContext
-                .Products
+            var query = _dbContext.Products
                 .Include(p => p.Category)
                 .Include(p => p.Tags)
-                .AsNoTracking()
+                .AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(searchTerm) ||
+                    p.Description.Contains(searchTerm) ||
+                    p.Category.Name.Contains(searchTerm));
+            }
+
+            var allProducts = await query
                 .Select(p => new ProductIndexViewModel
                 {
                     Id = p.Id,
@@ -40,6 +49,7 @@ namespace Azaliq.Services.Core
 
             return allProducts;
         }
+
 
         public async Task<IEnumerable<ProductDetailsViewModel>> GetProductsByTagAsync(string tagName)
         {

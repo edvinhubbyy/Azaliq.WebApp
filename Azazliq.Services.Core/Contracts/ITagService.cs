@@ -12,8 +12,8 @@ namespace Azaliq.Services.Core.Contracts
     public interface ITagService
     {
 
-        Task<IEnumerable<TagIndexViewModel>> GetAllTagsAsync();
-
+        Task<IEnumerable<TagIndexViewModel>> GetAllTagsAsync(string? search = null);
+        
         Task AddTagAsync(CreateTagInputModel model);
 
         Task<TagEditInputModel?> GetTagByIdAsync(int? id);

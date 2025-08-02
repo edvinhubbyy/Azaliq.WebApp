@@ -27,7 +27,7 @@
 else
 {
     <form asp-action="UpdateAndCheckout" asp-controller="Cart" method="post" id="cartForm">
-        @Html.AntiForgeryToken()
+        @* @Html.AntiForgeryToken() *@
         <div class="cart-container" role="table" aria-label="Shopping Cart Items">
             <table class="cart-table" role="grid">
                 <thead>
@@ -76,7 +76,7 @@ else
                         </td>
                         <td>
                             <form asp-action="Delete" method="post" style="display:inline;">
-                                @Html.AntiForgeryToken()
+                                @* @Html.AntiForgeryToken() *@
                                 <input type="hidden" name="productId" value="@Model.Items[i].ProductId"/>
                                 <button type="submit" class="btn-remove" aria-label="Remove @Model.Items[i].ProductName from cart" title="Remove from cart">
                                     <i class="fas fa-trash-alt"></i>
@@ -127,7 +127,7 @@ else
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
                         <form asp-action="Delete" asp-controller="Cart" method="post" class="d-inline">
-                            @Html.AntiForgeryToken()
+                            @* @Html.AntiForgeryToken() *@
                             <button type="submit" class="btn btn-danger px-4 fw-semibold">Clear Cart</button>
                         </form>
                     </div>

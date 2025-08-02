@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static Azaliq.GCommon.ValidationConstants.Product;
 
 namespace Azaliq.ViewModels.Product
 {
@@ -8,12 +9,12 @@ namespace Azaliq.ViewModels.Product
         
         public string Name { get; set; } = null!;
 
-        [Display(Name = "Image URL")]
+        [Display(Name = ImageUrlDisplay)]
         public string? ImageUrl { get; set; }
         
         public string Price { get; set; } = null!;
 
-        [Display(Name = "Available")]
+        [Display(Name = IsAvailableDisplay)]
         public bool IsAvailable { get; set; }
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using static Azaliq.GCommon.ValidationConstants.Product;
 
 namespace Azaliq.ViewModels.Product
 {
@@ -22,7 +18,7 @@ namespace Azaliq.ViewModels.Product
         
         public int Quantity { get; set; }
 
-        [Display(Name = "Is same day delivery available")]
+        [Display(Name = SameDayDeliveryRequiredDisplay)]
         public bool IsSameDayDeliveryAvailable { get; set; }
 
     }

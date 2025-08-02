@@ -18,9 +18,14 @@ namespace Azaliq.Services.Core
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<TagIndexViewModel>> GetAllTagsAsync()
+        public async Task<IEnumerable<TagIndexViewModel>> GetAllTagsAsync(string? search = null)
         {
-            var tags = await _dbContext.ProductsTags
+            var query = _dbContext.ProductsTags.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(t => t.Name.ToLower().Contains(search.ToLower()));
+
+            var tags = await query
                 .AsNoTracking()
                 .Select(t => new TagIndexViewModel
                 {
@@ -31,6 +36,7 @@ namespace Azaliq.Services.Core
 
             return tags;
         }
+
 
         public async Task AddTagAsync(CreateTagInputModel model)
         {

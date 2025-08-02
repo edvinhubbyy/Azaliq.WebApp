@@ -5,7 +5,7 @@ namespace Azaliq.Services.Core.Contracts
     public interface IProductService
     {
 
-        Task<IEnumerable<ProductIndexViewModel>> GetAllProductsAsync(string? userId);
+        Task<IEnumerable<ProductIndexViewModel>> GetAllProductsAsync(string? userId, string? searchTerm = null);
 
         Task<IEnumerable<ProductListItemViewModel>> GetProductsByCategoryAsync(int categoryId);
 

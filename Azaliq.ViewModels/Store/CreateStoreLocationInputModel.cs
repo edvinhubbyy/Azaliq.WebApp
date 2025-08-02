@@ -1,34 +1,34 @@
 ﻿using Azaliq.Data.Models.Models.Enum;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Azaliq.GCommon.ValidationConstants.Store;
+using static Azaliq.GCommon.ValidationConstants.General;
 
 namespace Azaliq.ViewModels.Store
 {
     public class CreateStoreLocationInputModel
     {
-        [Required]
-        [MaxLength(NameMaxLength)]
+        [Required(ErrorMessage = NameRequired)]
+        [StringLength(NameMaxLength, ErrorMessage = NameLengthErrorMessage)]
+        [RegularExpression(StoreNameRegex, ErrorMessage = StoreNameRegexErrorMessage)]
         public string Name { get; set; } = null!;
-
-        [Required]
-        [Url]
-        [MaxLength(GoogleMapsUrlLength)]
+        
+        [Required(ErrorMessage = GoogleMapsErrorMessage)]
+        [Url(ErrorMessage = GoogleMapsUrlErrorMessage)]
+        [StringLength(GoogleMapsUrlLength, ErrorMessage = GoogleMapsUrlLengthErrorMessage)]
+        [Display(Name = GoogleMapsDisplay)]
         public string GoogleMapsUrl { get; set; } = null!;
 
-        [Required]
-        [MaxLength(AddressMaxLength)]
+        [Required(ErrorMessage = AddressErrorMessage)]
+        [StringLength(AddressMaxLength, ErrorMessage = AddressErrorMessageErrorMessage)]
         public string Address { get; set; } = null!;
 
-        [Required]
-        [MaxLength(PhoneMaxLength)]
-        public string PhoneNumber { get; set; } = null!;
+        [Required(ErrorMessage = PhoneErrorMessage)]
+        [RegularExpression(PhoneNumberRegex, ErrorMessage = PhoneRegexErrorMessage)]
+        [Display(Name = PhoneDisplay)]
+        public string Phone { get; set; } = null!;
 
-        [Required(ErrorMessage = "Please select a country code")]
+        [Required(ErrorMessage = CountryCodeErrorMessage)]
+        [Display(Name = CountryCodeDisplay)]
         public CountryCode CountryCode { get; set; }
     }
 

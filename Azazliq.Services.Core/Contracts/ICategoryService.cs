@@ -14,7 +14,7 @@ namespace Azaliq.Services.Core.Contracts
 
         Task<string> GetCategoryNameAsync(int categoryId);
 
-        Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync(string? userId);
+        Task<IEnumerable<CategoryViewModel>> GetAllCategoriesAsync(string? userId, string? searchTerm = null);
 
         Task AddCategoryAsync(AddCategoryViewModel model);
 

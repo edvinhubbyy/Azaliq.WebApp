@@ -67,7 +67,7 @@ namespace Azaliq.Services.Core
                 Name = inputModel.Name,
                 GoogleMapsUrl = inputModel.GoogleMapsUrl,
                 Address = inputModel.Address,
-                PhoneNumber = inputModel.PhoneNumber,
+                PhoneNumber = inputModel.Phone,
                 CountryCode = inputModel.CountryCode
             };
 

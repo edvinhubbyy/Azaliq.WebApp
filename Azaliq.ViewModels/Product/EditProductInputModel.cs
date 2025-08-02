@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using static Azaliq.GCommon.ValidationConstants.Product;
 
 namespace Azaliq.ViewModels.Product
 {
@@ -14,24 +10,32 @@ namespace Azaliq.ViewModels.Product
         public int Id { get; set; } // Needed to identify which product to update
 
         [Required]
-        [StringLength(100)]
+        [StringLength(NameMaxLength, MinimumLength = NameMinLength)]
+        [RegularExpression(NameRegex, ErrorMessage = NameRegexErrorMessage)]
         public string Name { get; set; } = null!;
 
-        [StringLength(1000)]
+        [StringLength(DescriptionMaxLength, MinimumLength = DescriptionMinLength, ErrorMessage = DescriptionLengthErrorMessage)]
+        [RegularExpression(DescriptionRegex, ErrorMessage = DescriptionLengthErrorMessage)]
         public string? Description { get; set; }
 
-        [Url]
-        [Display(Name = "Image URL")]
+
+        [Display(Name = ImageUrlDisplay)]
+        [RegularExpression(ImageUrlRegex, 
+            ErrorMessage = ImageUrlRegexErrorMessage)]
         public string? ImageUrl { get; set; }
 
-        [Range(0.01, 100_000)]
+
+        [Range(0.01, 100_000, ErrorMessage = PriceErrorMessage)]
+        [RegularExpression(PriceRegex, ErrorMessage = PriceRegexErrorMessage)]
         public decimal Price { get; set; }
 
-        [Required]
-        [Range(1, 10_000)]
+
+        [Required(ErrorMessage = QuantityRequiredError)]
+        [Range(QuantityMinValue, QuantityMaxValue, ErrorMessage = QuantityErrorMessage)]
         public int Quantity { get; set; }
 
-        [Display(Name = "Is same day delivery available")]
+
+        [Display(Name = SameDayDeliveryRequiredDisplay)]
         public bool IsSameDayDeliveryAvailable { get; set; }
 
         [Required]
@@ -39,10 +43,10 @@ namespace Azaliq.ViewModels.Product
 
         public IEnumerable<CreateProductDropDownCategory>? Categories { get; set; }
 
-        [Display(Name = "Tags")]
+        [Display(Name = TagsDisplayName)]
         public List<string>? SelectedTags { get; set; }
 
-        [Display(Name = "All tags")]
+        [Display(Name = AllTagsDisplayName)]
         public IEnumerable<string> AllTags { get; set; } 
             = new HashSet<string>();
     }

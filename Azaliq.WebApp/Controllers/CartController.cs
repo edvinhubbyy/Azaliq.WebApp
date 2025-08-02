@@ -75,7 +75,7 @@ namespace Azaliq.WebApp.Controllers
 
         // POST: /Cart/UpdateAndCheckout
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAndCheckout(List<CartItemViewModel> Items)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

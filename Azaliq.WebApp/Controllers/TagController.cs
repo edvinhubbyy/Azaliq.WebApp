@@ -28,10 +28,20 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous] // Allow anonymous access to the index page
-        public async Task<IActionResult> Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string? search)
         {
-            var tags = await _tagService.GetAllTagsAsync(); // or pass userId if needed
+            var tags = await _tagService.GetAllTagsAsync();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+                tags = tags
+                    .Where(t => t.Name.ToLower().Contains(search))
+                    .ToList();
+            }
+
+            ViewBag.SearchTerm = search;
             return View(tags);
         }
 
