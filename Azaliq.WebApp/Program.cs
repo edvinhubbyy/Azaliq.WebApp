@@ -1,16 +1,11 @@
-// File: Program.cs
 using Azaliq.Data;
 using Azaliq.Data.Configurations;
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +39,20 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddRoles<IdentityRole>()
     .AddTokenProvider<EmailTokenProvider<ApplicationUser>>(TokenOptions.DefaultEmailProvider)
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders(); 
+    .AddDefaultTokenProviders();
+
+// Add Google Authentication
+builder.Services.AddAuthentication()
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    })
+    .AddGitHub(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+    });
 
 // 3) Map the "Email" token provider for both email confirmation & 2FA
 builder.Services.Configure<IdentityOptions>(opts =>
@@ -68,7 +76,6 @@ builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IArchivedUserService, ArchivedUserService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
-
 
 // 5) Register email senders
 builder.Services.AddTransient<IEmailSender, EmailSender>();

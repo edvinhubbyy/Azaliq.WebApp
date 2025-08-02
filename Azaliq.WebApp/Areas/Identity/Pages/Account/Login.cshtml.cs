@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Azaliq.Data.Models.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Azaliq.WebApp.Areas.Identity.Pages.Account
 {
@@ -31,6 +32,8 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; } = "/";
 
+        public IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
+
         public class InputModel
         {
             [Required]
@@ -44,9 +47,10 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public void OnGet(string? returnUrl = null)
+        public async Task OnGetAsync(string? returnUrl = null)
         {
             ReturnUrl = returnUrl ?? "/";
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
@@ -54,12 +58,13 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             if (!ModelState.IsValid)
+            {
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
+            }
 
-            // Try to find user by username
+            // Find user by username or email
             var user = await _userManager.FindByNameAsync(Input.UsernameOrEmail);
-
-            // If not found, try email if input looks like an email
             if (user == null && Input.UsernameOrEmail.Contains("@"))
             {
                 user = await _userManager.FindByEmailAsync(Input.UsernameOrEmail);
@@ -68,12 +73,14 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
             }
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
                 ModelState.AddModelError(string.Empty, "You need to confirm your email to log in.");
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
             }
 
@@ -92,11 +99,13 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             {
                 _logger.LogWarning("User account locked out.");
                 ModelState.AddModelError(string.Empty, "User account locked out.");
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
             }
         }

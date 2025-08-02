@@ -39,6 +39,29 @@
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
+
+        <hr />
+
+        <div class="mt-4">
+            <h4>Or register using a third-party service:</h4>
+            <div>
+                @if (Model.ExternalLogins?.Count > 0)
+                {
+                    foreach (var provider in Model.ExternalLogins)
+                    {
+                        <form method="post" asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" class="d-inline">
+                            <button type="submit" class="btn btn-outline-danger w-100 mb-2">
+                                <i class="fab fa-@provider.Name.ToLower() me-2"></i> Register with @provider.DisplayName
+                            </button>
+                        </form>
+                    }
+                }
+                else
+                {
+                    <p>No external authentication providers configured.</p>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
