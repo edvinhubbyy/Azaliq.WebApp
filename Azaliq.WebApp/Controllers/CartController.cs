@@ -73,6 +73,23 @@ namespace Azaliq.WebApp.Controllers
             return RedirectToAction("Index", "Cart");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            await _cartService.ClearCartAsync(userId);
+
+            // Redirect back to cart page after clearing
+            return RedirectToAction(nameof(Index));
+        }
+
         // POST: /Cart/UpdateAndCheckout
         [HttpPost]
         //[ValidateAntiForgeryToken]

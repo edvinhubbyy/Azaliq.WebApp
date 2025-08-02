@@ -150,7 +150,7 @@
             public const string CountryCodeErrorMessage = "Please select a country code.";
             public const string CountryCodeDisplay = "Country Code";
 
-            public const string AddressRegex = @"^[a-zA-Z0-9\s,'\-\.#\/]{5,100}$";
+            public const string AddressRegex = @"^[a-zA-Z0-9\s,'\-\.#\/():;&@!?""\[\]{}]{5,100}$";
             public const string AddressRegexErrorMessage = "Address contains invalid characters.";
 
             public const string DeliveryOptionRequiredErrorMessage = "Please select a delivery option.";
@@ -160,7 +160,7 @@
             public const string CityRegexErrorMessage = "City name contains invalid characters.";
 
             public const string ZipCodeDisplay = "Zip Code";
-            public const string ZipCodeRegex = @"^\d{5}$";
+            public const string ZipCodeRegex = @"^\d{4,10}$";
             public const string ZipCodeRegexErrorMessage = "Zip code must be exactly 5 digits.";
 
         }

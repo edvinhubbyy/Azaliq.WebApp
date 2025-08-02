@@ -25,23 +25,5 @@ namespace Azaliq.WebApp.Controllers
         {
             return View();
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error(int? id)
-        {
-            if (id == null)
-            {
-                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-
-            }
-            else if (id == 401 || id == 403)
-            {
-                return View("NotFound");
-            }
-            else
-            {
-                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-            }
-        }
     }
 }

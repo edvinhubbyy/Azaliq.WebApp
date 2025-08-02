@@ -1,56 +1,49 @@
 ﻿@page
-@model Azaliq.WebApp.Areas.Identity.Pages.Account.RegisterModel
+@model Azaliq.WebApp.Areas.Identity.Pages.Account.LoginModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Log in";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <div class="row justify-content-center">
     <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+        <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Log in to your account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
-                <label asp-for="Input.UserName">Username</label>
-                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                <input asp-for="Input.UsernameOrEmail" class="form-control" autocomplete="username" aria-required="true" placeholder="Email" />
+                <label asp-for="Input.UsernameOrEmail">Email</label>
+                <span asp-validation-for="Input.UsernameOrEmail" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" />
                 <label asp-for="Input.Password">Password</label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            <div class="form-check mb-3">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label">Remember me?</label>
             </div>
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-primary btn-lg">Register</button>
+            <button id="loginSubmit" type="submit" class="w-100 btn btn-primary btn-lg">Log in</button>
         </form>
 
         <hr />
 
         <div class="text-center mt-4">
-            <p>Or register with:</p>
+            <p>Or log in with:</p>
             @if (Model.ExternalLogins?.Count > 0)
             {
                 @foreach (var provider in Model.ExternalLogins)
                 {
                     <form method="post" asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" class="mb-2">
                         <button type="submit" class="btn btn-outline-primary w-100">
-                            <i class="fab fa-@provider.Name.ToLower() me-2"></i> Register with @provider.DisplayName
+                            <i class="fab fa-@provider.Name.ToLower() me-2"></i> Log in with @provider.DisplayName
                         </button>
                     </form>
                 }
