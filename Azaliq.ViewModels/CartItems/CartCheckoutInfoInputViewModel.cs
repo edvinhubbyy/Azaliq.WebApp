@@ -7,7 +7,7 @@ using static Azaliq.GCommon.ValidationConstants.Cart;
 
 namespace Azaliq.ViewModels.CartItems
 {
-    public class CartInputViewModel : CartIndexViewModel
+    public class CartCheckoutInfoInputViewModel : CartIndexViewModel
     {
         [Required]
         [MaxLength(FullNameMaxLength)]
@@ -20,12 +20,15 @@ namespace Azaliq.ViewModels.CartItems
 
         [Required]
         [MaxLength(PhoneMaxLength)]
+        [Display(Name = "Phone Number")]
         public string Phone { get; set; } = null!;
 
         [Required]
+        [Display(Name = "Country Code")]
         public CountryCode CountryCode { get; set; }
 
         [Required(ErrorMessage = "Please select a delivery option.")]
+        [Display(Name = "Delivery Options")]
         public DeliveryOptions? DeliveryOption { get; set; }
 
         public List<StoreDropDownModel> Stores { get; set; } = new List<StoreDropDownModel>();
@@ -39,6 +42,7 @@ namespace Azaliq.ViewModels.CartItems
         public string? City { get; set; }
 
         [MaxLength(ZipCodeMaxLength)]
+        [Display(Name = "Zip Code")]
         public string? ZipCode { get; set; }
 
         public List<CartItemViewModel> Items { get; set; } = new();

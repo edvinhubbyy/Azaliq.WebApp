@@ -139,7 +139,7 @@ namespace Azaliq.WebApp.Controllers
             // Optional: Prefill user info if you have it in your user profile
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-            var model = new CartInputViewModel
+            var model = new CartCheckoutInfoInputViewModel
             {
                 Items = cartItems,
                 Email = user?.Email ?? "",
@@ -157,7 +157,7 @@ namespace Azaliq.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Checkout(CartInputViewModel model)
+        public async Task<IActionResult> Checkout(CartCheckoutInfoInputViewModel model)
         {
             // Reload stores if validation fails and view redisplayed
             model.Stores = await _dbContext.StoresLocations

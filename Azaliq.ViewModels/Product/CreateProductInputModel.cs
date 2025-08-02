@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Configurations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Azaliq.ViewModels.Product
 {
@@ -18,6 +12,7 @@ namespace Azaliq.ViewModels.Product
         public string? Description { get; set; }
 
         [Url]
+        [Display(Name = "Image URL")]
         public string? ImageUrl { get; set; }
 
         [Range(0.01, 100_000)]
@@ -27,6 +22,7 @@ namespace Azaliq.ViewModels.Product
         [Range(1, 10_000)]
         public int Quantity { get; set; }
 
+        [Display(Name = "Is same day delivery available")]
         public bool IsSameDayDeliveryAvailable { get; set; }
 
         [Required]
@@ -34,9 +30,10 @@ namespace Azaliq.ViewModels.Product
 
         public IEnumerable<CreateProductDropDownCategory>? Categories { get; set; }
 
-
+        [Display(Name = "Tags")]
         public List<string>? SelectedTags { get; set; }
 
+        [Display(Name = "All Tags")]
         public IEnumerable<string> AllTags { get; set; } 
             = new HashSet<string>();
     }

@@ -1,4 +1,5 @@
-﻿using Azaliq.ViewModels.Review;
+﻿using System.ComponentModel.DataAnnotations;
+using Azaliq.ViewModels.Review;
 
 namespace Azaliq.ViewModels.Product
 {
@@ -10,6 +11,7 @@ namespace Azaliq.ViewModels.Product
 
         public string? Description { get; set; }
 
+        [Display(Name = "Image URL")]
         public string? ImageUrl { get; set; }
 
         public string Price { get; set; } = null!;
@@ -18,8 +20,10 @@ namespace Azaliq.ViewModels.Product
 
         public string Category { get; set; } = null!;
 
+        [Display(Name = "Is available")]
         public bool IsAvailable { get; set; }
 
+        [Display(Name = "Is same day delivery available")]
         public bool IsSameDayDeliveryAvailable { get; set; }
 
         public ICollection<string> Tags { get; set; }
