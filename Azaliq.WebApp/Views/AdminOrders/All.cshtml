@@ -32,7 +32,8 @@
                 <td>@TimeZoneInfo.ConvertTimeBySystemTimeZoneId(order.OrderDate, "Europe/Sofia").ToString("g")</td>
                 <td>
                     <form asp-action="ChangeStatus" method="post" class="d-flex gap-2 align-items-center">
-                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="orderId" value="@order.OrderId"/>
                         <select name="newStatus" class="form-select form-select-sm" style="width: auto;">
                             @foreach (var status in Enum.GetValues(typeof(Azaliq.Data.Models.Models.Enum.OrderStatus)).Cast<Azaliq.Data.Models.Models.Enum.OrderStatus>())
                             {

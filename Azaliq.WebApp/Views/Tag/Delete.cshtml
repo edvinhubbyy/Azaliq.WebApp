@@ -33,7 +33,8 @@
 }
 
 <form asp-action="DeleteConfirmed" method="post" id="delete-form">
-    <input type="hidden" asp-for="Id" />
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id"/>
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
         Yes, Delete
     </button>

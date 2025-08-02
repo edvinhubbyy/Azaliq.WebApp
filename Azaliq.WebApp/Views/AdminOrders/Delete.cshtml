@@ -31,7 +31,8 @@
 </ul>
 
 <form asp-action="DeleteConfirmed" method="post" class="d-flex gap-3">
-    <input type="hidden" name="orderId" value="@Model.OrderId" />
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="orderId" value="@Model.OrderId"/>
     <button type="submit" class="btn btn-danger btn-lg d-flex align-items-center">
         <i class="fas fa-trash me-2"></i> Yes, Delete
     </button>

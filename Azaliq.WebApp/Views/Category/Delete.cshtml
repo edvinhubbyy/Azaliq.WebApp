@@ -34,7 +34,8 @@ else
 @if (TempData["DeleteError"] == null)
 {
     <form id="delete-form" asp-action="DeleteConfirmed" method="post">
-        <input type="hidden" asp-for="Id" />
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id"/>
         <!-- Instead of direct submit button, trigger modal -->
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
             Yes, Delete

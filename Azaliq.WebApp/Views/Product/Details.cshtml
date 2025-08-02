@@ -37,14 +37,16 @@
 
                     <div class="d-flex gap-2 mt-4 flex-wrap">
                         <form asp-controller="Cart" asp-action="Add" method="post" class="me-2 mb-2">
-                            <input type="hidden" name="productId" value="@Model.Id" />
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productId" value="@Model.Id"/>
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-cart-plus me-1"></i> Add to Cart
                             </button>
                         </form>
 
                         <form asp-controller="Favorites" asp-action="Add" method="post" class="me-2 mb-2">
-                            <input type="hidden" name="productId" value="@Model.Id" />
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productId" value="@Model.Id"/>
                             <button type="submit" class="btn btn-outline-danger">
                                 <i class="fas fa-heart me-1"></i> Toggle Favorite
                             </button>

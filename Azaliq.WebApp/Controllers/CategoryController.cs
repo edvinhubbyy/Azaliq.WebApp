@@ -34,6 +34,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddCategoryViewModel model)
         {
             if (!ModelState.IsValid)

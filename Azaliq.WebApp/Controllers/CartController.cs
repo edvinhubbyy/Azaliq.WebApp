@@ -51,6 +51,7 @@ namespace Azaliq.WebApp.Controllers
 
         // POST: /Cart/Add/{productId}
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int productId, int quantity = 1)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -62,6 +63,7 @@ namespace Azaliq.WebApp.Controllers
 
         // POST: /Cart/Delete/{productId}
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int productId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -73,6 +75,7 @@ namespace Azaliq.WebApp.Controllers
 
         // POST: /Cart/UpdateAndCheckout
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAndCheckout(List<CartItemViewModel> Items)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

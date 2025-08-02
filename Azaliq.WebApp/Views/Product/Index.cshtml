@@ -67,7 +67,8 @@
                         @if (User.IsInRole("User"))
                         {
                             <form asp-controller="Cart" asp-action="Add" method="post" class="mt-2">
-                                <input type="hidden" name="productId" value="@product.Id" />
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@product.Id"/>
                                 <input type="number"
                                        name="quantity"
                                        value="1"
@@ -75,7 +76,7 @@
                                        max="500"
                                        class="form-control mb-1"
                                        style="width: 70px; display: inline-block;"
-                                       onkeydown="return eventAllowsNumberInput(event, this);" />
+                                       onkeydown="return eventAllowsNumberInput(event, this);"/>
                                 <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
                             </form>
 

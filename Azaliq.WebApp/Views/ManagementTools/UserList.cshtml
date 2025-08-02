@@ -47,7 +47,8 @@
                     <div class="d-flex gap-2 flex-wrap">
                         <!-- Promote/Demote -->
                         <form asp-action="@toggleAction" asp-controller="ManagementTools" method="post" class="promote-demote-form">
-                            <input type="hidden" name="userId" value="@user.Id" />
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="userId" value="@user.Id"/>
                             <button type="button"
                                     class="btn @toggleButtonClass btn-sm promote-demote-btn"
                                     data-username="@user.UserName"
@@ -60,7 +61,8 @@
 
                         <!-- Ban/Unban -->
                         <form asp-action="@banAction" asp-controller="ManagementTools" method="post" class="ban-unban-form">
-                            <input type="hidden" name="userId" value="@user.Id" />
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="userId" value="@user.Id"/>
                             <button type="button"
                                     class="btn @banButtonClass btn-sm ban-unban-btn"
                                     data-username="@user.UserName"
@@ -73,7 +75,8 @@
 
                         <!-- Archive & Delete -->
                         <form asp-action="ArchiveUser" asp-controller="UserManagement" method="post" class="archive-delete-form">
-                            <input type="hidden" name="userId" value="@user.Id" />
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="userId" value="@user.Id"/>
                             <button type="button" class="btn btn-warning btn-sm archive-delete-btn"
                                     data-username="@user.UserName"
                                     data-bs-toggle="modal"

@@ -19,21 +19,22 @@
 <h2>@ViewData["Title"]</h2>
 
 <form asp-action="Create" method="post" novalidate>
+    @Html.AntiForgeryToken()
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" class="form-control"/>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="GoogleMapsUrl" class="form-label"></label>
-        <input asp-for="GoogleMapsUrl" class="form-control" />
+        <input asp-for="GoogleMapsUrl" class="form-control"/>
         <span asp-validation-for="GoogleMapsUrl" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Address" class="form-label"></label>
-        <input asp-for="Address" class="form-control" />
+        <input asp-for="Address" class="form-control"/>
         <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
@@ -49,7 +50,7 @@
                    placeholder="88 123 4567"
                    pattern="^\d[\d\s\-().]{7,}\d$"
                    title="Enter a valid phone number, e.g. 88 123 4567"
-                   autocomplete="tel" />
+                   autocomplete="tel"/>
         </div>
         <span asp-validation-for="CountryCode" class="text-danger"></span>
         <span asp-validation-for="PhoneNumber" class="text-danger"></span>

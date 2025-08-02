@@ -36,6 +36,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpPost("send")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Send([FromBody] EmailViewModel model)
         {
             if (!ModelState.IsValid)
@@ -54,6 +55,7 @@ namespace Azaliq.WebApp.Controllers
 
         [HttpPost("invoice")]
         [Authorize] // Ensure only logged-in users can request their invoice
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EmailInvoicePdf([FromQuery] int orderId)
         {
             var order = await _context

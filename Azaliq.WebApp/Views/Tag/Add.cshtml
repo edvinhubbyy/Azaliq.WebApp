@@ -7,10 +7,12 @@
 <h2 class="text-center mt-4">Add Tag</h2>
 
 <div class="container mt-4">
+    @Html.AntiForgeryToken()
     <form asp-action="Add" method="post" novalidate>
+        @Html.AntiForgeryToken()
         <div class="mb-3">
             <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" autocomplete="off" />
+            <input asp-for="Name" class="form-control" autocomplete="off"/>
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 

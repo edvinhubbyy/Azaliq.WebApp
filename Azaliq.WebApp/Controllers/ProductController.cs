@@ -131,6 +131,7 @@ namespace Azaliq.WebApp.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateProductInputModel inputModel, string? NewTags)
         {
             try
@@ -201,6 +202,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditProductInputModel inputModel, string? newTags)
         {
             try

@@ -28,6 +28,7 @@ namespace Azaliq.WebApp.Controllers
 
         // POST: /AdminOrders/ChangeStatus
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeStatus(int orderId, string newStatus)
         {
             var success = await _orderService.ChangeStatusAsync(orderId, newStatus);

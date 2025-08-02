@@ -50,6 +50,7 @@ namespace Azaliq.WebApp.Controllers
 
         // POST: /Orders/Reorder
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reorder(int orderId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

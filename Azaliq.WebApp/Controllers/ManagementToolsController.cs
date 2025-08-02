@@ -24,6 +24,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> PromoteToManager(string userId)
         {
             var success = await _userRoleService.PromoteToManagerAsync(userId);
@@ -36,6 +37,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveManagerRole(string userId)
         {
             var success = await _userRoleService.DemoteFromManagerAsync(userId);
@@ -48,6 +50,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             var success = await _userRoleService.DeleteUserAsync(userId);

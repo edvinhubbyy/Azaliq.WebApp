@@ -10,23 +10,24 @@
 <h2>@ViewData["Title"]</h2>
 
 <form asp-action="Edit" method="post" novalidate id="editStoreForm">
-    <input type="hidden" asp-for="Id" />
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id"/>
 
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" class="form-control"/>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="GoogleMapsUrl" class="form-label"></label>
-        <input asp-for="GoogleMapsUrl" class="form-control" />
+        <input asp-for="GoogleMapsUrl" class="form-control"/>
         <span asp-validation-for="GoogleMapsUrl" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Address" class="form-label"></label>
-        <input asp-for="Address" class="form-control" />
+        <input asp-for="Address" class="form-control"/>
         <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
@@ -53,7 +54,7 @@
                    placeholder="88 123 4567"
                    pattern="^(\d[\d\s\-().]{6,}\d)$"
                    title="Enter a valid phone number without country code, e.g. 88 123 4567"
-                   autocomplete="tel" />
+                   autocomplete="tel"/>
             <span asp-validation-for="Phone" class="text-danger"></span>
             <span id="phoneError" class="text-danger" style="display:none;">Invalid phone number format</span>
         </div>

@@ -27,76 +27,78 @@
 else
 {
     <form asp-action="UpdateAndCheckout" asp-controller="Cart" method="post" id="cartForm">
+        @Html.AntiForgeryToken()
         <div class="cart-container" role="table" aria-label="Shopping Cart Items">
             <table class="cart-table" role="grid">
                 <thead>
-                    <tr>
-                        <th scope="col">Product</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Unit Price</th>
-                        <th scope="col">Subtotal</th>
-                        <th scope="col" aria-label="Remove Item"></th>
-                    </tr>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Subtotal</th>
+                    <th scope="col" aria-label="Remove Item"></th>
+                </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < Model.Items.Count; i++)
-                    {
-                        var priceBgn = Model.Items[i].Price;
-                        var subtotalBgn = Model.Items[i].Subtotal;
-                        var priceEur = priceBgn * BgnToEurRate;
-                        var subtotalEur = subtotalBgn * BgnToEurRate;
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    var priceBgn = Model.Items[i].Price;
+                    var subtotalBgn = Model.Items[i].Subtotal;
+                    var priceEur = priceBgn * BgnToEurRate;
+                    var subtotalEur = subtotalBgn * BgnToEurRate;
 
-                        <tr>
-                            <td class="product-name" title="@Model.Items[i].ProductName">@Model.Items[i].ProductName</td>
-                            <td>
-                                <img src="@Model.Items[i].ProductImageUrl" alt="@Model.Items[i].ProductName" class="product-image" />
-                            </td>
-                            <td>
-                                <input type="number"
-                                       name="Items[@i].Quantity"
-                                       value="@Model.Items[i].Quantity"
-                                       min="1" max="500"
-                                       class="quantity-input"
-                                       data-index="@i"
-                                       aria-label="Quantity for @Model.Items[i].ProductName" />
-                                <input type="hidden" name="Items[@i].ProductId" value="@Model.Items[i].ProductId" />
-                                <div class="text-danger small mt-1" id="error-@i" style="display:none;">
-                                    Quantity must be between 1 and 500.
-                                </div>
-                            </td>
-                            <td class="price-cell">
-                                <div>@priceBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
-                                <div class="text-muted small">€@priceEur.ToString("F2")</div>
-                            </td>
-                            <td class="subtotal-cell" id="subtotal-@i">
-                                <div>@subtotalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
-                                <div class="text-muted small">€@subtotalEur.ToString("F2")</div>
-                            </td>
-                            <td>
-                                <form asp-action="Delete" method="post" style="display:inline;">
-                                    <input type="hidden" name="productId" value="@Model.Items[i].ProductId" />
-                                    <button type="submit" class="btn-remove" aria-label="Remove @Model.Items[i].ProductName from cart" title="Remove from cart">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    @{
-                        var totalBgn = Model.Total;
-                        var totalEur = totalBgn * BgnToEurRate;
-                    }
-                    <tr class="total-row">
-                        <td colspan="3"></td>
-                        <td class="text-end" style="font-weight: 600; font-size: 1.15rem;">Total:</td>
-                        <td colspan="2" class="subtotal-cell" id="totalAmount">
-                            <div>@totalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
-                            <div class="text-muted small">€@totalEur.ToString("F2")</div>
+                    <tr>
+                        <td class="product-name" title="@Model.Items[i].ProductName">@Model.Items[i].ProductName</td>
+                        <td>
+                            <img src="@Model.Items[i].ProductImageUrl" alt="@Model.Items[i].ProductName" class="product-image"/>
+                        </td>
+                        <td>
+                            <input type="number"
+                                   name="Items[@i].Quantity"
+                                   value="@Model.Items[i].Quantity"
+                                   min="1" max="500"
+                                   class="quantity-input"
+                                   data-index="@i"
+                                   aria-label="Quantity for @Model.Items[i].ProductName"/>
+                            <input type="hidden" name="Items[@i].ProductId" value="@Model.Items[i].ProductId"/>
+                            <div class="text-danger small mt-1" id="error-@i" style="display:none;">
+                                Quantity must be between 1 and 500.
+                            </div>
+                        </td>
+                        <td class="price-cell">
+                            <div>@priceBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                            <div class="text-muted small">€@priceEur.ToString("F2")</div>
+                        </td>
+                        <td class="subtotal-cell" id="subtotal-@i">
+                            <div>@subtotalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                            <div class="text-muted small">€@subtotalEur.ToString("F2")</div>
+                        </td>
+                        <td>
+                            <form asp-action="Delete" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@Model.Items[i].ProductId"/>
+                                <button type="submit" class="btn-remove" aria-label="Remove @Model.Items[i].ProductName from cart" title="Remove from cart">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
+                }
+                </tbody>
+                <tfoot>
+                @{
+                    var totalBgn = Model.Total;
+                    var totalEur = totalBgn * BgnToEurRate;
+                }
+                <tr class="total-row">
+                    <td colspan="3"></td>
+                    <td class="text-end" style="font-weight: 600; font-size: 1.15rem;">Total:</td>
+                    <td colspan="2" class="subtotal-cell" id="totalAmount">
+                        <div>@totalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                        <div class="text-muted small">€@totalEur.ToString("F2")</div>
+                    </td>
+                </tr>
                 </tfoot>
             </table>
         </div>
@@ -125,6 +127,7 @@ else
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
                         <form asp-action="Delete" asp-controller="Cart" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-danger px-4 fw-semibold">Clear Cart</button>
                         </form>
                     </div>

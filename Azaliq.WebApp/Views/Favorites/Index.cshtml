@@ -15,7 +15,8 @@
                     <h5 class="card-title">@product.Name</h5>
                     <p class="card-text">@product.Price лв</p>
                     <form method="post" asp-controller="Favorites" asp-action="Add">
-                        <input type="hidden" name="productId" value="@product.Id" />
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productId" value="@product.Id"/>
                         <button class="btn btn-danger">Remove from Favorites</button>
                     </form>
                 </div>

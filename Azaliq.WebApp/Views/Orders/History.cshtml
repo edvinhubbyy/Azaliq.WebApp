@@ -18,7 +18,8 @@ else
     {
         <partial name="_OrderCard" model="order" />
         <form asp-action="Reorder" method="post" class="text-end mb-4">
-            <input type="hidden" name="orderId" value="@order.OrderId" />
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="orderId" value="@order.OrderId"/>
             <button type="submit" class="btn btn-outline-primary btn-sm">Reorder</button>
         </form>
     }

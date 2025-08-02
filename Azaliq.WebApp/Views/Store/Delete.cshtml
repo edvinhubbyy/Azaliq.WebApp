@@ -17,7 +17,8 @@
 </div>
 
 <form id="delete-form" asp-action="Delete" method="post">
-    <input type="hidden" asp-for="Id" />
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id"/>
     <!-- Button triggers modal instead of direct submit -->
     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
         Yes, Delete

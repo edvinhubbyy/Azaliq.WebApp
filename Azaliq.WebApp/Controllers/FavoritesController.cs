@@ -25,6 +25,7 @@ namespace Azaliq.WebApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int productId)
         {
             var userId = _userManager.GetUserId(User);
