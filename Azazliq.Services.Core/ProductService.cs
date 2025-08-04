@@ -102,8 +102,8 @@ namespace Azaliq.Services.Core
                     .Products
                     .Include(p => p.Category)
                     .Include(p => p.Tags)
-                    .Include(p => p.Reviews)            // include reviews navigation
-                    .ThenInclude(r => r.User)       // include user navigation inside reviews
+                    .Include(p => p.Reviews)
+                        .ThenInclude(r => r.User)
                     .AsNoTracking()
                     .SingleOrDefaultAsync(r => r.Id == id.Value && !r.IsDeleted);
 
@@ -119,21 +119,36 @@ namespace Azaliq.Services.Core
                         Price = product.Price.ToString("F2"),
                         Quantity = product.Quantity,
                         IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
-
                         Tags = product.Tags.Select(t => t.Name).ToList(),
-
                         Reviews = product.Reviews
                             .Where(r => !r.IsDeleted)
                             .Select(r => new ReviewViewModel
                             {
                                 Id = r.Id,
-                                UserName = r.User.UserName,  // from navigation User
+                                UserName = r.User.UserName,
                                 Comment = r.Comment,
                                 Rating = r.Rating,
                                 CreatedOn = r.CreatedOn
                             })
                             .ToList()
                     };
+
+                    // Load other products - e.g., latest 4 excluding current product
+                    var otherProducts = await this._dbContext.Products
+                        .Where(p => !p.IsDeleted && p.Id != id.Value)
+                        .OrderByDescending(p => p.Price)
+                        .Take(4)
+                        .Select(p => new ProductIndexViewModel
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            ImageUrl = p.ImageUrl,
+                            Description = p.Description,
+                            Price = p.Price
+                        })
+                        .ToListAsync();
+
+                    detailsVm.OtherProducts = otherProducts;
                 }
             }
 

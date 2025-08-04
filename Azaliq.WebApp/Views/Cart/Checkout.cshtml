@@ -28,146 +28,251 @@
     var storeList = new SelectList(Model.Stores, "Id", "DisplayName", Model.PickupStoreId);
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
+<h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+
+<style>
+    /* Liquid glass container */
+    .liquid-glass {
+        background: rgba(255, 192, 203, 0.15); /* soft pink with low opacity */
+        backdrop-filter: blur(15px) saturate(180%);
+        -webkit-backdrop-filter: blur(15px) saturate(180%);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 192, 203, 0.3);
+        box-shadow: 0 8px 32px 0 rgba(255, 192, 203, 0.1);
+        padding: 30px;
+        color: #3a0f2a;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Form controls with subtle pink tint */
+    input.form-control, select.form-select {
+        background: rgba(255, 192, 203, 0.1);
+        border: 1.5px solid rgba(255, 182, 193, 0.7);
+        color: #3a0f2a;
+        transition: border-color 0.3s ease;
+        box-shadow: none;
+        border-radius: 8px;
+    }
+
+        input.form-control:focus, select.form-select:focus {
+            border-color: #ff6f91;
+            box-shadow: 0 0 8px rgba(255, 111, 145, 0.5);
+            background: rgba(255, 192, 203, 0.15);
+            outline: none;
+        }
+
+    /* Buttons */
+    .btn-primary {
+        background-color: #ff6f91;
+        border: none;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #ff4b70;
+            box-shadow: 0 0 10px rgba(255, 75, 112, 0.7);
+        }
+
+    .btn-success {
+        background-color: #d35d6e;
+        border: none;
+    }
+
+        .btn-success:hover, .btn-success:focus {
+            background-color: #aa4958;
+            box-shadow: 0 0 10px rgba(170, 73, 88, 0.7);
+        }
+
+    /* Validation error */
+    .is-invalid {
+        border-color: #ff4b70 !important;
+        box-shadow: 0 0 8px rgba(255, 75, 112, 0.8) !important;
+        background: rgba(255, 192, 203, 0.2) !important;
+    }
+
+    /* Layout */
+    .checkout-container {
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 40px;
+    }
+
+    .checkout-info, .checkout-summary {
+        flex: 1 1 380px;
+        max-width: 480px;
+    }
+
+    /* Responsive */
+    @@media (max-width: 900px) {
+        .checkout-container
+
+    {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    }
+
+    /* Table styles */
+    .table thead th {
+        border-bottom: 2px solid #ff6f91;
+    }
+
+    .table tbody tr:hover {
+        background-color: rgba(255, 111, 145, 0.1);
+    }
+</style>
 
 <form asp-action="Checkout" method="post" novalidate>
     @Html.AntiForgeryToken()
 
-    <!-- Step 1: Basic Info -->
-    <div id="step1">
-        <h4 class="mb-3">Basic Information</h4>
+    <div class="checkout-container">
 
-        <div class="mb-3">
-            <label asp-for="FullName" class="form-label"></label>
-            <input asp-for="FullName" class="form-control" required />
-            <span asp-validation-for="FullName" class="text-danger"></span>
-        </div>
+        <!-- Left side: Info steps with liquid glass -->
+        <div class="checkout-info liquid-glass">
 
-        <div class="mb-3">
-            <label asp-for="Email" class="form-label"></label>
-            <input asp-for="Email" class="form-control" type="email" autocomplete="email" required />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+            <!-- Step 1: Basic Info -->
+            <div id="step1">
+                <h4 class="mb-3">Basic Information</h4>
 
-        <div class="mb-3">
-            <label asp-for="Phone" class="form-label"></label>
-            <div class="input-group">
-                <select asp-for="CountryCode" asp-items="countryCodeList" class="form-select" style="max-width: 180px;" required>
-                    <option value="">Select Country</option>
-                </select>
-                <input asp-for="Phone"
-                       type="tel"
-                       class="form-control"
-                       placeholder="88 123 4567"
-                       pattern="^\d[\d\s\-().]{7,}\d$"
-                       title="Enter a valid phone number, e.g. 88 123 4567"
-                       autocomplete="tel" required />
-            </div>
-            <span asp-validation-for="CountryCode" class="text-danger"></span>
-            <span asp-validation-for="Phone" class="text-danger"></span>
-            <small class="form-text text-muted">Format example: 88 123 4567</small>
-        </div>
+                <div class="mb-3">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" required />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
 
-        <button type="button" id="continueBtn" class="btn btn-primary">Continue</button>
-    </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" type="email" autocomplete="email" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
 
-    <!-- Step 2: Delivery & Order -->
-    <div id="step2" style="display:none;">
-        <h4 class="mb-3">Delivery & Location</h4>
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <div class="input-group">
+                        <select asp-for="CountryCode" asp-items="countryCodeList" class="form-select" style="max-width: 180px;" required>
+                            <option value="">Select Country</option>
+                        </select>
+                        <input asp-for="Phone"
+                               type="tel"
+                               class="form-control"
+                               placeholder="88 123 4567"
+                               pattern="^\d[\d\s\-().]{7,}\d$"
+                               title="Enter a valid phone number, e.g. 88 123 4567"
+                               autocomplete="tel" required />
+                    </div>
+                    <span asp-validation-for="CountryCode" class="text-danger"></span>
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                    <small class="form-text text-muted">Format example: 88 123 4567</small>
+                </div>
 
-        <div class="mb-3">
-            <label asp-for="DeliveryOption" class="form-label">Delivery Option</label>
-            <select asp-for="DeliveryOption" asp-items="deliveryOptionList" class="form-select" id="deliveryOptionSelect" required>
-                <option value="">Select Delivery Option</option>
-            </select>
-            <span asp-validation-for="DeliveryOption" class="text-danger"></span>
-        </div>
-
-        <!-- Pickup Store (shown only if PickupFromStore selected) -->
-        <div class="mb-3" id="storeSelectionDiv" style="display:none;">
-            <label asp-for="PickupStoreId" class="form-label">Choose Pickup Store</label>
-            <select asp-for="PickupStoreId" asp-items="storeList" class="form-select">
-                <option value="">Select a store</option>
-            </select>
-            <span asp-validation-for="PickupStoreId" class="text-danger"></span>
-        </div>
-
-        <!-- Address fields (shown only if Courier selected) -->
-        <div id="addressFields" style="display:none;">
-            <div class="mb-3">
-                <label asp-for="Address" class="form-label"></label>
-                <input asp-for="Address" class="form-control" autocomplete="street-address" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+                <button type="button" id="continueBtn" class="btn btn-primary w-100">Continue</button>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="City" class="form-label"></label>
-                <input asp-for="City" class="form-control" autocomplete="address-level2" />
-                <span asp-validation-for="City" class="text-danger"></span>
+            <!-- Step 2: Delivery & Order -->
+            <div id="step2" style="display:none;">
+                <h4 class="mb-3">Delivery & Location</h4>
+
+                <div class="mb-3">
+                    <label asp-for="DeliveryOption" class="form-label">Delivery Option</label>
+                    <select asp-for="DeliveryOption" asp-items="deliveryOptionList" class="form-select" id="deliveryOptionSelect" required>
+                        <option value="">Select Delivery Option</option>
+                    </select>
+                    <span asp-validation-for="DeliveryOption" class="text-danger"></span>
+                </div>
+
+                <!-- Pickup Store -->
+                <div class="mb-3" id="storeSelectionDiv" style="display:none;">
+                    <label asp-for="PickupStoreId" class="form-label">Choose Pickup Store</label>
+                    <select asp-for="PickupStoreId" asp-items="storeList" class="form-select">
+                        <option value="">Select a store</option>
+                    </select>
+                    <span asp-validation-for="PickupStoreId" class="text-danger"></span>
+                </div>
+
+                <!-- Address fields -->
+                <div id="addressFields" style="display:none;">
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label"></label>
+                        <input asp-for="Address" class="form-control" autocomplete="street-address" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="City" class="form-label"></label>
+                        <input asp-for="City" class="form-control" autocomplete="address-level2" />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ZipCode" class="form-label"></label>
+                        <input asp-for="ZipCode" class="form-control" autocomplete="postal-code" />
+                        <span asp-validation-for="ZipCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100 mt-3">Place Order</button>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="ZipCode" class="form-label"></label>
-                <input asp-for="ZipCode" class="form-control" autocomplete="postal-code" />
-                <span asp-validation-for="ZipCode" class="text-danger"></span>
-            </div>
         </div>
 
-        <h4 class="mb-3 mt-4">Order Summary</h4>
+        <!-- Right side: Order summary WITHOUT liquid glass -->
+        <div class="checkout-summary">
+            <h4 class="mb-3">Order Summary</h4>
 
-        <div class="table-responsive shadow rounded">
-            <table class="table align-middle mb-0 bg-white">
-                <thead class="table-light">
-                    <tr>
-                        <th>Product</th>
-                        <th>Image</th>
-                        <th class="text-center">Quantity</th>
-                        <th class="text-end">Unit Price</th>
-                        <th class="text-end">Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Items)
-                    {
+            <div class="table-responsive shadow rounded">
+                <table class="table align-middle mb-0 bg-white">
+                    <thead class="table-light">
                         <tr>
-                            <td>@item.ProductName</td>
-                            <td>
-                                <img src="@item.ProductImageUrl" alt="@item.ProductName" class="rounded" style="height: 50px; width: 50px; object-fit: cover;" />
-                            </td>
-                            <td class="text-center">@item.Quantity</td>
+                            <th>Product</th>
+                            <th>Image</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>
+                                    <img src="@item.ProductImageUrl" alt="@item.ProductName" class="rounded" style="height: 50px; width: 50px; object-fit: cover;" />
+                                </td>
+                                <td class="text-center">@item.Quantity</td>
+                                <td class="text-end">
+                                    @item.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
+                                    <br />
+                                    <small class="text-muted">
+                                        @ConvertToEuro(item.Price).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
+                                    </small>
+                                </td>
+                                <td class="text-end fw-semibold">
+                                    @item.Subtotal.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
+                                    <br />
+                                    <small class="text-muted">
+                                        @ConvertToEuro(item.Subtotal).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
+                                    </small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-secondary fw-bold">
+                            <td colspan="3"></td>
+                            <td class="text-end">Total:</td>
                             <td class="text-end">
-                                @item.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
-                                <br />
-                                <small class="text-muted">
-                                    @ConvertToEuro(item.Price).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
-                                </small>
-                            </td>
-                            <td class="text-end fw-semibold">
-                                @item.Subtotal.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))
-                                <br />
-                                <small class="text-muted">
-                                    @ConvertToEuro(item.Subtotal).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
-                                </small>
+                                <div>@Model.Total.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
+                                <div><small class="text-muted">@ConvertToEuro(Model.Total).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</small></div>
                             </td>
                         </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr class="table-secondary fw-bold">
-                        <td colspan="3"></td>
-                        <td class="text-end">Total:</td>
-                        <td class="text-end">
-                            <div>@Model.Total.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
-                            <div><small class="text-muted">@ConvertToEuro(Model.Total).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</small></div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </tfoot>
+                </table>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-success btn-lg w-100 mt-4">Place Order</button>
     </div>
-
 </form>
 
 @section Scripts {

@@ -1,54 +1,419 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome to Azaliq";
 }
 
-<div class="d-flex flex-column justify-content-center align-items-center min-vh-120 text-center px-3 pt-5">
-    <h1 class="display-3 fw-bold mb-3 text-primary animate-fade-in">
-        Welcome to Azaliya
-    </h1>
-    <a href="/Product" class="btn btn-lg btn-gradient-primary px-5 py-3 shadow animate-fade-in delay-2">
-        Explore Our Flowers
-    </a>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Azaliq.WebApp</title>
 
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Azaliq.WebApp.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
-<style>
-    /* Fade-in animation */
-    @@keyframes fadeIn {
-        from {opacity: 0; transform: translateY(15px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
-    .animate-fade-in {
-        animation: fadeIn 0.8s ease forwards;
-    }
-    .delay-1 {
-        animation-delay: 0.4s;
-    }
-    .delay-2 {
-        animation-delay: 0.8s;
-    }
+    <style>
+        /* GENERAL STYLES */
+        body {
+            background: #fff;
+            color: #4a2c3f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
 
-    .custom-top-padding {
-        padding-top: 100px;
-    }
+        a {
+            text-decoration: none;
+        }
 
-    /* Gradient button */
-    .btn-gradient-primary {
-        background: linear-gradient(45deg, #6a11cb, #2575fc);
-        border: none;
-        color: white;
-        transition: background 0.3s ease;
-        border-radius: 0.4rem;
-    }
-    .btn-gradient-primary:hover,
-    .btn-gradient-primary:focus {
-        background: linear-gradient(45deg, #2575fc, #6a11cb);
-        color: white;
-        box-shadow: 0 0 15px rgba(37,117,252,0.6);
-    }
+        /* SECTION: HERO */
+        section.hero {
+            text-align: center;
+            padding: 4rem 1rem 3rem 1rem;
+            max-width: 700px;
+            margin: 0 auto 5rem auto;
+        }
 
-    /* Link underline on hover */
-    .hover-underline:hover {
-        text-decoration: underline;
-    }
-</style>
+            section.hero h1 {
+                font-weight: 800;
+                color: #d81b60;
+                letter-spacing: 0.05em;
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                text-shadow: 0 0 5px rgba(216, 27, 96, 0.25);
+            }
+
+            section.hero p {
+                color: #b73a62;
+                font-size: 1.3rem;
+                margin-bottom: 2rem;
+            }
+
+        .btn-glass-gradient {
+            background: linear-gradient(135deg, rgba(216,27,96,0.85), rgba(255,182,193,0.75));
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 2.5rem;
+            border-radius: 30px;
+            box-shadow: 0 0 15px rgba(216, 27, 96, 0.8), inset 0 0 20px rgba(255,182,193,0.9);
+            border: none;
+            display: inline-block;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+            .btn-glass-gradient:hover,
+            .btn-glass-gradient:focus {
+                background: linear-gradient(135deg, rgba(255,182,193,0.95), rgba(216,27,96,0.95));
+                box-shadow: 0 0 25px rgba(216, 27, 96, 1), inset 0 0 25px rgba(255,182,193,1);
+                color: white; /* Blue text on hover */
+                outline: none;
+            }
+
+        /* SECTION: INFO CARDS */
+        section.info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            max-width: 960px;
+            margin: 0 auto 5rem auto;
+            padding: 0 1rem;
+        }
+
+        .info-card {
+            background: rgba(255 182 193 / 0.15);
+            backdrop-filter: saturate(180%) blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255 182 193 / 0.3);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: #7a2c44;
+            box-shadow: 0 4px 16px rgba(216, 27, 96, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: default;
+        }
+
+            .info-card:hover,
+            .info-card:focus-within {
+                transform: translateY(-6px);
+                box-shadow: 0 10px 30px rgba(216, 27, 96, 0.25);
+            }
+
+            .info-card i {
+                font-size: 3.2rem;
+                color: #d81b60;
+                margin-bottom: 0.75rem;
+                filter: drop-shadow(0 0 2px rgba(216, 27, 96, 0.3));
+            }
+
+            .info-card h3 {
+                font-weight: 700;
+                font-size: 1.3rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .info-card p {
+                font-size: 1rem;
+                color: #85394d;
+            }
+
+        /* SECTION: ABOUT */
+        section.about {
+            background: rgba(255 182 193 / 0.08);
+            max-width: 900px;
+            margin: 0 auto 5rem auto;
+            padding: 3rem 2rem;
+            border-radius: 25px;
+            box-shadow: 0 8px 24px rgba(216, 27, 96, 0.1);
+            text-align: center;
+        }
+
+            section.about h2 {
+                color: #d81b60;
+                font-weight: 800;
+                font-size: 2.2rem;
+                margin-bottom: 1rem;
+            }
+
+            section.about p {
+                font-size: 1.1rem;
+                color: #68273a;
+                max-width: 700px;
+                margin: 0 auto;
+                line-height: 1.6;
+            }
+
+        /* SECTION: FEATURED PRODUCTS */
+        section.featured-products {
+            max-width: 1100px;
+            margin: 0 auto 5rem auto;
+            padding: 0 1rem;
+        }
+
+            section.featured-products h2 {
+                font-weight: 800;
+                color: #d81b60;
+                margin-bottom: 2rem;
+                text-align: center;
+                font-size: 2.2rem;
+            }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+            gap: 1.8rem;
+        }
+
+        .product-card {
+            background: #fff0f4;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(216,27,96,0.15);
+            padding: 1.5rem;
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+        }
+
+            .product-card:hover {
+                box-shadow: 0 12px 36px rgba(216,27,96,0.35);
+            }
+
+            .product-card img {
+                max-width: 100%;
+                border-radius: 15px;
+                margin-bottom: 1rem;
+            }
+
+            .product-card h3 {
+                font-weight: 700;
+                color: #d81b60;
+                margin-bottom: 0.5rem;
+            }
+
+            .product-card p {
+                color: #68273a;
+                font-size: 1rem;
+            }
+
+        /* SECTION: TESTIMONIALS */
+        section.testimonials {
+            background: rgba(255 182 193 / 0.1);
+            max-width: 900px;
+            margin: 0 auto 5rem auto;
+            padding: 3rem 2rem;
+            border-radius: 25px;
+            box-shadow: 0 8px 24px rgba(216, 27, 96, 0.1);
+            text-align: center;
+        }
+
+            section.testimonials h2 {
+                color: #d81b60;
+                font-weight: 800;
+                font-size: 2.2rem;
+                margin-bottom: 2rem;
+            }
+
+        .testimonial {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #68273a;
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+            .testimonial::before {
+                content: "“";
+                font-size: 3rem;
+                color: #d81b60;
+                position: absolute;
+                left: -1rem;
+                top: -1rem;
+                opacity: 0.2;
+            }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: #d81b60;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* SECTION: CONTACT */
+        section.contact {
+            max-width: 700px;
+            margin: 0 auto 5rem auto;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+            section.contact h2 {
+                font-weight: 800;
+                color: #d81b60;
+                margin-bottom: 1rem;
+                font-size: 2.2rem;
+            }
+
+            section.contact p {
+                font-size: 1.1rem;
+                color: #68273a;
+                margin-bottom: 1rem;
+            }
+
+            section.contact a {
+                color: #d81b60;
+                font-weight: 700;
+                transition: color 0.3s ease;
+            }
+
+                section.contact a:hover {
+                    color: #ffff;
+                    text-decoration: none;
+                }
+
+        /* RESPONSIVE */
+        @@media (max-width: 600px) {
+            section .hero h1
+
+        {
+            font-size: 2.2rem;
+        }
+
+        section.hero p {
+            font-size: 1.1rem;
+        }
+
+        section.about, section.testimonials {
+            padding: 2rem 1rem;
+        }
+
+        .info-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .product-card {
+            padding: 1rem;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero" role="banner" aria-label="Welcome message and introduction">
+        <h1>Welcome to Azaliq 🌸</h1>
+        <p>Your premium flower shop offering fresh bouquets, floral arrangements, and same-day delivery. Discover the art of expressing your feelings with nature’s beauty.</p>
+        <a href="@Url.Action("Index", "Product")" class="btn-glass-gradient" aria-label="Explore Our Flowers">Explore Our Flowers</a>
+    </section>
+
+    <!-- INFO CARDS SECTION -->
+    <section class="info-cards" aria-label="What we offer">
+        <article class="info-card" role="region" aria-labelledby="flowers-title">
+            <i class="fa-solid fa-spa" aria-hidden="true"></i>
+            <h3 id="flowers-title">Fresh Flowers</h3>
+            <p>Beautiful, handpicked fresh flowers available daily to brighten your moments.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="bouquets-title">
+            <br/>
+            <br/>
+            <h3 id="bouquets-title">Custom Bouquets</h3>
+            <p>Personalized bouquets tailored to your style and occasion with love.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="delivery-title">
+            <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+            <h3 id="delivery-title">Same-Day Delivery</h3>
+            <p>Fast and reliable delivery to your doorstep on the same day you order.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="events-title">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            <h3 id="events-title">Events & Weddings</h3>
+            <p>Expert floral decoration services for weddings, parties, and special events.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="gifts-title">
+            <i class="fa-solid fa-gift" aria-hidden="true"></i>
+            <h3 id="gifts-title">Gifts & Accessories</h3>
+            <p>Complement your flowers with elegant gifts and accessories for every occasion.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="workshops-title">
+            <i class="fa-solid fa-leaf" aria-hidden="true"></i>
+            <h3 id="workshops-title">Workshops & Classes</h3>
+            <p>Learn the art of flower arranging with our friendly and creative workshops.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="subscriptions-title">
+            <i class="fa-solid fa-sync" aria-hidden="true"></i>
+            <h3 id="subscriptions-title">Flower Subscriptions</h3>
+            <p>Regular fresh flower deliveries customized to your preferences and schedule.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="corporate-title">
+            <br />
+            <br />
+            <h3 id="corporate-title">Corporate Services</h3>
+            <p>Enhance your workspace and events with professional floral designs.</p>
+        </article>
+
+        <article class="info-card" role="region" aria-labelledby="consultations-title">
+            <i class="fa-solid fa-comments" aria-hidden="true"></i>
+            <h3 id="consultations-title">Personal Consultations</h3>
+            <p>Get expert advice to create perfect floral arrangements tailored to your needs.</p>
+        </article>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about" aria-label="About Azaliq">
+        <h2>About Azaliq</h2>
+        <p>At Azaliq, we believe flowers are the purest form of expressing emotions. Our expert florists craft every bouquet with passion and care. Since our founding, we've served countless happy customers with quality, creativity, and dedication to sustainable sourcing.</p>
+    </section>
+
+    <!-- FEATURED PRODUCTS SECTION -->
+    <section class="featured-products" aria-label="Featured Products">
+        <h2>Featured Bouquets</h2>
+        <div class="products-grid" role="list" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+            <div class="product-card" role="listitem" tabindex="0" style="flex: 1 1 250px; max-width: 280px; text-align: center; padding: 1rem; border-radius: 16px; background: rgba(255 182 193 / 0.15); box-shadow: 0 0 12px rgba(216, 27, 96, 0.1);">
+                <h3>Classic Red Roses</h3>
+                <p>A timeless bouquet of deep red roses symbolizing love and passion.</p>
+            </div>
+            <div class="product-card" role="listitem" tabindex="0" style="flex: 1 1 250px; max-width: 280px; text-align: center; padding: 1rem; border-radius: 16px; background: rgba(255 182 193 / 0.15); box-shadow: 0 0 12px rgba(216, 27, 96, 0.1);">
+                <h3>Spring Mix</h3>
+                <p>Brighten your day with a vibrant mix of seasonal spring flowers.</p>
+            </div>
+            <div class="product-card" role="listitem" tabindex="0" style="flex: 1 1 250px; max-width: 280px; text-align: center; padding: 1rem; border-radius: 16px; background: rgba(255 182 193 / 0.15); box-shadow: 0 0 12px rgba(216, 27, 96, 0.1);">
+                <h3>Pink Peonies</h3>
+                <p>Soft and fragrant peonies, perfect for romantic gestures or celebrations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials" aria-label="Customer Testimonials">
+        <h2>What Our Customers Say</h2>
+        <blockquote class="testimonial">
+            "Azaliq made my wedding unforgettable with their stunning floral designs! The team was attentive and creative."
+            <footer class="testimonial-author">— Maria S.</footer>
+        </blockquote>
+        <blockquote class="testimonial">
+            "The flower subscription is perfect — fresh blooms every week brighten my home and mood."
+            <footer class="testimonial-author">— Ivan D.</footer>
+        </blockquote>
+        <blockquote class="testimonial">
+            "Excellent customer service and fast delivery. Highly recommend Azaliq for all your floral needs."
+            <footer class="testimonial-author">— Elena K.</footer>
+        </blockquote>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact" aria-label="Contact Information">
+        <h2>Get In Touch</h2>
+        <p>Have questions or want to schedule a consultation? Reach out to us:</p>
+        <p>Email: <a href="mailto:contact@azaliq.com">contact@azaliq.com</a></p>
+        <p>Phone: <a href="tel:+1234567890">+1 (234) 567-890</a></p>
+    </section>
+
+</body>
+</html>

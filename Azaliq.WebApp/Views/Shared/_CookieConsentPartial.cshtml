@@ -1,0 +1,100 @@
+﻿<div id="cookieConsentOverlay" class="cookie-overlay d-none">
+    <div class="cookie-modal shadow-lg rounded-4 p-4 text-center glass-bg-pink">
+        <h5 class="fw-bold mb-3 text-pink-glow">🍪 We Value Your Privacy</h5>
+        <p class="text-muted mb-4">
+            This website uses cookies to enhance your browsing experience. You can accept or decline below.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <button id="acceptCookies" class="btn btn-pink-glass px-4">Accept</button>
+            <button id="declineCookies" class="btn btn-outline-secondary px-4">Decline</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cookie-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(6px);
+        background: rgba(255, 255, 255, 0.5);
+        z-index: 1055;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cookie-modal {
+        max-width: 450px;
+        width: 90%;
+        animation: fadeInUp 0.5s ease;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    /* Reuse your pink-glass styles: */
+    .glass-bg-pink {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(14px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 192, 203, 0.25);
+        color: #1f1f1f;
+    }
+
+    .text-pink-glow {
+        color: #ff8fa3 !important;
+    }
+
+    .btn-pink-glass {
+        background: rgba(255, 192, 203, 0.15);
+        color: #1f1f1f;
+        border: 1px solid rgba(255, 192, 203, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        padding: 0.5rem 1.25rem;
+    }
+
+        .btn-pink-glass:hover {
+            background: rgba(255, 192, 203, 0.3);
+            color: black;
+            border-color: #ffb6c1;
+        }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const overlay = document.getElementById("cookieConsentOverlay");
+        const consent = localStorage.getItem("cookieConsent");
+
+        if (!consent) {
+            overlay.classList.remove("d-none");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeConsent(choice) {
+            localStorage.setItem("cookieConsent", choice);
+            overlay.classList.add("d-none");
+            document.body.style.overflow = "auto";
+        }
+
+        document.getElementById("acceptCookies").addEventListener("click", () => closeConsent("accepted"));
+        document.getElementById("declineCookies").addEventListener("click", () => closeConsent("declined"));
+    });
+</script>

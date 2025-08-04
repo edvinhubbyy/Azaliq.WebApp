@@ -4,18 +4,19 @@
     ViewData["Title"] = "Log in";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
 
 <div class="row justify-content-center">
-    <div class="col-md-4">
-        <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Log in to your account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="col-md-5 col-lg-4">
+        <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="shadow-sm p-4 rounded bg-white border">
+
+            <h2 class="h5 mb-4 text-center text-secondary">Log in to your account</h2>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.UsernameOrEmail" class="form-control" autocomplete="username" aria-required="true" placeholder="Email" />
-                <label asp-for="Input.UsernameOrEmail">Email</label>
+                <input asp-for="Input.UsernameOrEmail" class="form-control" autocomplete="username" aria-required="true" placeholder="Email or Username" />
+                <label asp-for="Input.UsernameOrEmail">Email or Username</label>
                 <span asp-validation-for="Input.UsernameOrEmail" class="text-danger"></span>
             </div>
 
@@ -25,25 +26,32 @@
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
-            <div class="form-check mb-3">
-                <input asp-for="Input.RememberMe" class="form-check-input" />
-                <label asp-for="Input.RememberMe" class="form-check-label">Remember me?</label>
+            <div class="form-check mb-4">
+                <input asp-for="Input.RememberMe" class="form-check-input" id="rememberMeCheckbox" />
+                <label asp-for="Input.RememberMe" class="form-check-label" for="rememberMeCheckbox">Remember me</label>
             </div>
 
-            <button id="loginSubmit" type="submit" class="w-100 btn btn-primary btn-lg">Log in</button>
+            <div class="g-recaptcha mb-3" data-sitekey="@Model.ReCaptchaSiteKey"></div>
+            <span class="text-danger" asp-validation-for="RecaptchaToken"></span>
+
+
+            <button id="loginSubmit" type="submit" class="btn btn-primary w-100 fw-semibold shadow-sm">
+                Log in
+            </button>
         </form>
 
-        <hr />
+        <hr class="my-4" />
 
-        <div class="text-center mt-4">
+        <div class="text-center text-muted">
             <p>Or log in with:</p>
             @if (Model.ExternalLogins?.Count > 0)
             {
                 @foreach (var provider in Model.ExternalLogins)
                 {
-                    <form method="post" asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" class="mb-2">
-                        <button type="submit" class="btn btn-outline-primary w-100">
-                            <i class="fab fa-@provider.Name.ToLower() me-2"></i> Log in with @provider.DisplayName
+                    <form method="post" asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" class="mb-3">
+                        <button type="submit" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2">
+                            <i class="fab fa-@provider.Name.ToLower()"></i>
+                            <span>Log in with @provider.DisplayName</span>
                         </button>
                     </form>
                 }
@@ -56,6 +64,38 @@
     </div>
 </div>
 
+<style>
+    body {
+        background: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #444;
+    }
+
+    form {
+        background: #fff;
+    }
+
+    .btn-primary {
+        background: #d81b60;
+        border: none;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background: #b21853;
+            box-shadow: 0 0 10px rgba(216, 27, 96, 0.6);
+        }
+
+    hr {
+        border-top: 1px solid #dee2e6;
+    }
+
+    i.fab {
+        font-size: 1.2rem;
+        color: #555;
+    }
+</style>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 }

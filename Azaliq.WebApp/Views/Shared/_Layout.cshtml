@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,73 +12,200 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Azaliq.WebApp.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        /* Fixed floating header inset with subtle glass effect, narrower and centered */
+
+        html {
+            overflow-y: scroll; /* always show scrollbar to prevent layout shift */
+        }
+
+        header {
+            position: fixed;
+            top: 1rem;
+            left: max(30rem, 20%); /* bigger margin on left */
+            right: max(30rem, 20%); /* bigger margin on right */
+            height: 45px;
+            background: rgba(255 182 193 / 0.18);
+            backdrop-filter: saturate(180%) blur(12px);
+            -webkit-backdrop-filter: saturate(180%) blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255 182 193 / 0.3);
+            box-shadow: 0 8px 20px rgba(216, 27, 96, 0.10);
+            z-index: 1030;
+            padding: 0 1.2rem;
+            display: inline-grid;
+            align-items: center;
+            transition: left 0.3s ease, right 0.3s ease; /* smooth margin change if needed */
+        }
+
+        nav > .container-fluid {
+            padding-left: 0.5rem; /* add slight horizontal padding inside */
+            padding-right: 0.5rem;
+        }
+
+
+        body {
+            padding-top: 70px;
+            background: white;
+            color: #4a2c3f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-nav .nav-link {
+            border-radius: 0;
+            background-color: transparent !important;
+            color: #4a2c3f !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.15rem 0.4rem;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+            .navbar-nav .nav-link:hover,
+            .navbar-nav .nav-link:focus {
+                background-color: transparent !important;
+                color: #d81b60 !important;
+                text-decoration: none;
+                text-shadow: 0 0 4px rgba(216, 27, 96, 0.25), 0 0 8px rgba(216, 27, 96, 0.15);
+            }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: #d81b60 !important;
+            line-height: 45px;
+            font-size: 1.1rem;
+            padding-left: 0;
+            padding-right: 0.75rem;
+        }
+
+            .navbar-brand:hover,
+            .navbar-brand:focus {
+                color: #f06292 !important;
+                text-decoration: none;
+            }
+
+        .navbar-toggler {
+            border: none;
+            outline: none;
+            filter: invert(0.4);
+            margin-top: 8px;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .navbar-light .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(216,27,96,0.7)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        footer {
+            border-top: 1px solid #f4c2c2;
+            padding: 0.1rem 0;
+            color: #4a2c3f;
+            font-size: 0.9rem;
+            text-align: center;
+            background: #fff;
+            margin-top: 1rem;
+        }
+
+        @@media (max-width: 576px) {
+            header
+
+        {
+            top: 0.8rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 40px;
+            padding: 0 0.8rem;
+            border-radius: 16px;
+        }
+
+        body {
+            padding-top: 60px;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 0.8rem;
+            padding: 0.1rem 0.3rem;
+        }
+
+        .navbar-brand {
+            line-height: 40px;
+            font-size: 1rem;
+        }
+
+        .navbar-toggler {
+            margin-top: 6px;
+            padding: 0.2rem 0.4rem;
+        }
+
+        }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Azaliq.WebApp</a>
+        <nav class="navbar navbar-expand-sm navbar-light p-0">
+            <div class="container-fluid px-0">
+
+                
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse d-sm-flex justify-content-between" id="navbarSupportedContent">
+
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Products</a>
+                            <a class="nav-link" asp-controller="Product" asp-action="Index">Products</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">Categories</a>
+                            <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Tag" asp-action="Index">Tags</a>
+                            <a class="nav-link" asp-controller="Tag" asp-action="Index">Tags</a>
                         </li>
-                        
                         @if (User.IsInRole("User"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">Cart</a>
+                                <a class="nav-link" asp-controller="Cart" asp-action="Index">Cart</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Favorites" asp-action="Index">Favorites</a>
+                                <a class="nav-link" asp-controller="Favorites" asp-action="Index">Favorites</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Orders" asp-action="MyOrders">My Orders</a>
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Store" asp-action="Index">Stores</a>
+                            <a class="nav-link" asp-controller="Store" asp-action="Index">Stores</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Orders" asp-action="MyOrders">My Orders</a>
-                        </li>
-
-                        @* Show Admin Page only to Admins and Managers *@
+                        
                         @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="AdminOrders" asp-action="All">Admin Page</a>
                             </li>
                         }
-
                         @if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="ManagementTools" asp-action="UserList">Management</a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="UserManagement" asp-action="Index">User Archive</a>
-                                </li>
-                            }
-                        
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="ManagementTools" asp-action="UserList">Management</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="UserManagement" asp-action="Index">User Archive</a>
+                            </li>
+                        }
                     </ul>
 
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex align-items-center ms-3 order-sm-3">
+                        <partial name="_LoginPartial" />
+                    </div>
+
                 </div>
             </div>
         </nav>
@@ -98,5 +228,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    
+    @await Html.PartialAsync("_CookieConsentPartial")
 </body>
 </html>

@@ -3,24 +3,77 @@
     ViewData["Title"] = "My Favorites";
 }
 
-<h2>@ViewData["Title"]</h2>
+<section class="container py-5">
+    <h2 class="mb-4 text-pink-glow">@ViewData["Title"]</h2>
 
-<div class="row">
-    @foreach (var product in Model)
-    {
-        <div class="col-md-3 mb-4">
-            <div class="card">
-                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
-                <div class="card-body text-center">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text">@product.Price лв</p>
-                    <form method="post" asp-controller="Favorites" asp-action="Add">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="productId" value="@product.Id"/>
-                        <button class="btn btn-danger">Remove from Favorites</button>
-                    </form>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card glass-bg-pink shadow-sm h-100">
+                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="stretched-link-link-wrapper text-decoration-none text-reset" style="display: block; height: 100%;">
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="object-fit: cover; height: 200px;" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-pink-glow">@product.Name</h5>
+                            <p class="card-text fw-semibold">@product.Price.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</p>
+                        </div>
+                    </a>
+                    <div class="card-footer bg-transparent border-top-0 text-center">
+                        <form method="post" asp-controller="Favorites" asp-action="Add">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-pink-glass btn-sm px-4">
+                                Remove from Favorites
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+    </div>
+</section>
+
+<style>
+    .glass-bg-pink {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(14px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 192, 203, 0.25);
+        color: #1f1f1f;
+        display: flex;
+        flex-direction: column;
+        position: relative;
     }
-</div>
+
+    .text-pink-glow {
+        color: #ff8fa3 !important;
+    }
+
+    .btn-pink-glass {
+        background: rgba(255, 192, 203, 0.15);
+        color: #1f1f1f;
+        border: 1px solid rgba(255, 192, 203, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border-radius: 0.75rem;
+    }
+
+        .btn-pink-glass:hover {
+            background: rgba(255, 192, 203, 0.3);
+            color: black;
+            border-color: #ffb6c1;
+        }
+
+    /* Make the entire card body clickable without interfering with the Remove button */
+    .stretched-link-link-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Prevent link from covering the Remove button */
+    .card-footer {
+        position: relative;
+        z-index: 2;
+    }
+</style>

@@ -4,16 +4,16 @@
     ViewData["Title"] = "Product Reviews";
 }
 
-<div class="container mt-4">
-    <h2>Reviews for Product #@Model.ProductId</h2>
+<div class="container py-4">
+    <h2 class="mb-4 text-pink-glow">Reviews for Product #@Model.ProductId</h2>
 
     @if (Model.Reviews != null && Model.Reviews.Any())
     {
         foreach (var review in Model.Reviews)
         {
-            <div class="card mb-3 shadow-sm">
+            <div class="card mb-3 shadow-sm glass-bg-pink">
                 <div class="card-body">
-                    <h5 class="card-title">@review.UserName</h5>
+                    <h5 class="card-title text-pink-glow">@review.UserName</h5>
                     <h6 class="card-subtitle mb-2 text-muted">@review.CreatedOn.ToString("g")</h6>
                     <p><strong>Rating:</strong> @review.Rating / 5</p>
                     <p>@review.Comment</p>
@@ -28,7 +28,7 @@
                         <!-- Modal -->
                         <div class="modal fade" id="confirmDeleteModal-@review.Id" tabindex="-1" aria-labelledby="confirmDeleteLabel-@review.Id" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content" style="background-color: white;">
+                                <div class="modal-content glass-bg-pink">
                                     <div class="modal-header">
                                         <h5 class="modal-title text-danger" id="confirmDeleteLabel-@review.Id">Confirm Delete</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -56,17 +56,58 @@
     }
     else
     {
-        <p>No reviews available for this product.</p>
+        <div class="alert alert-info glass-bg-pink text-center">
+            No reviews available for this product.
+        </div>
     }
+
     @if (User.IsInRole("User") || User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-
-        <a asp-controller="Reviews" asp-action="AddReview" asp-route-productId="@Model.ProductId" class="btn btn-primary mt-3">
+        <a asp-controller="Reviews" asp-action="AddReview" asp-route-productId="@Model.ProductId" class="btn btn-pink-glass mt-3">
             Add a Review
         </a>
     }
 
-    <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-secondary mt-3 ms-2">
+    <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-outline-secondary mt-3 ms-2">
         Back to Product Details
     </a>
 </div>
+
+<style>
+    .glass-bg-pink {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(14px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 192, 203, 0.25);
+        color: #1f1f1f;
+    }
+
+    .text-pink-glow {
+        color: #ff8fa3 !important;
+    }
+
+    .btn-pink-glass {
+        background: rgba(255, 192, 203, 0.15);
+        color: #1f1f1f;
+        border: 1px solid rgba(255, 192, 203, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border-radius: 0.75rem;
+    }
+
+        .btn-pink-glass:hover {
+            background: rgba(255, 192, 203, 0.3);
+            color: black;
+            border-color: #ffb6c1;
+        }
+
+    /* Modal content uses the same glass background */
+    .modal-content.glass-bg-pink {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(20px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 192, 203, 0.3);
+        color: #1f1f1f;
+    }
+</style>

@@ -1,151 +1,150 @@
 ﻿@model Azaliq.ViewModels.CartItems.CartIndexViewModel
-
 @{
     ViewData["Title"] = "Shopping Cart";
     decimal BgnToEurRate = 0.51129m;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/cart.css" />
+<section class="py-5">
+    <div class="container">
+        <h1 class="text-center mb-4">@ViewData["Title"]</h1>
 
-<h2>@ViewData["Title"]</h2>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">@Html.ValidationSummary(excludePropertyErrors: true)</div>
+        }
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        @Html.ValidationSummary(excludePropertyErrors: true)
-    </div>
-}
+        @if (!Model.Items.Any())
+        {
+            <div class="alert alert-info text-center py-5 fs-5 shadow-sm rounded">
+                <i class="fas fa-shopping-cart fa-2x mb-3"></i><br />
+                Your cart is empty.
+            </div>
+        }
+        else
+        {
+            <form asp-action="UpdateAndCheckout" asp-controller="Cart" method="post" id="cartForm">
+                <div class="table-responsive shadow-sm rounded mb-4">
+                    <table class="table table-bordered align-middle text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th>Image</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Items.Count; i++)
+                            {
+                                var item = Model.Items[i];
+                                var priceBgn = item.Price;
+                                var subtotalBgn = item.Subtotal;
+                                var priceEur = priceBgn * BgnToEurRate;
+                                var subtotalEur = subtotalBgn * BgnToEurRate;
 
-@if (!Model.Items.Any())
-{
-    <div class="alert alert-info text-center py-5 fs-5">
-        Your cart is empty.
-    </div>
-}
-else
-{
-    <form asp-action="UpdateAndCheckout" asp-controller="Cart" method="post" id="cartForm">
-        @* @Html.AntiForgeryToken() *@
+                                <tr>
+                                    <td>@item.ProductName</td>
+                                    <td><img src="@item.ProductImageUrl" alt="@item.ProductName" class="img-fluid rounded shadow-sm" style="width: 70px;" /></td>
+                                    <td style="text-align: center;">
+                                        <input type="number"
+                                               name="Items[@i].Quantity"
+                                               value="@item.Quantity"
+                                               min="1" max="500"
+                                               class="form-control text-center quantity-input"
+                                               data-index="@i"
+                                               aria-label="Quantity for @item.ProductName"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="top"
+                                               title="Quantity must be between 1 and 500."
+                                               style="max-width: 70px; margin: 0 auto; display: block;" />
+                                    </td>
 
-        <div class="cart-container" role="table" aria-label="Shopping Cart Items">
-            <table class="cart-table" role="grid">
-                <thead>
-                    <tr>
-                        <th scope="col">Product</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Unit Price</th>
-                        <th scope="col">Subtotal</th>
-                        <th scope="col" aria-label="Remove Item"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < Model.Items.Count; i++)
-                    {
-                        var priceBgn = Model.Items[i].Price;
-                        var subtotalBgn = Model.Items[i].Subtotal;
-                        var priceEur = priceBgn * BgnToEurRate;
-                        var subtotalEur = subtotalBgn * BgnToEurRate;
 
-                        <tr>
-                            <td class="product-name" title="@Model.Items[i].ProductName">@Model.Items[i].ProductName</td>
-                            <td>
-                                <img src="@Model.Items[i].ProductImageUrl" alt="@Model.Items[i].ProductName" class="product-image" />
-                            </td>
-                            <td>
-                                <input type="number"
-                                       name="Items[@i].Quantity"
-                                       value="@Model.Items[i].Quantity"
-                                       min="1" max="500"
-                                       class="quantity-input"
-                                       data-index="@i"
-                                       aria-label="Quantity for @Model.Items[i].ProductName" />
-                                <input type="hidden" name="Items[@i].ProductId" value="@Model.Items[i].ProductId" />
-                                <div class="text-danger small mt-1" id="error-@i" style="display:none;">
-                                    Quantity must be between 1 and 500.
-                                </div>
-                            </td>
-                            <td class="price-cell">
-                                <div>@priceBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
-                                <div class="text-muted small">€@priceEur.ToString("F2")</div>
-                            </td>
-                            <td class="subtotal-cell" id="subtotal-@i">
-                                <div>@subtotalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
-                                <div class="text-muted small">€@subtotalEur.ToString("F2")</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn-remove" aria-label="Remove @Model.Items[i].ProductName from cart" title="Remove from cart" onclick="deleteProduct(@Model.Items[i].ProductId)">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    @{
-                        var totalBgn = Model.Total;
-                        var totalEur = totalBgn * BgnToEurRate;
-                    }
-                    <tr class="total-row">
-                        <td colspan="3"></td>
-                        <td class="text-end" style="font-weight: 600; font-size: 1.15rem;">Total:</td>
-                        <td colspan="2" class="subtotal-cell" id="totalAmount">
-                            <div>@totalBgn.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("bg-BG"))</div>
-                            <div class="text-muted small">€@totalEur.ToString("F2")</div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+                                    <td>
+                                        <div>@priceBgn.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</div>
+                                        <div class="text-muted small">€@priceEur.ToString("F2")</div>
+                                    </td>
+                                    <td id="subtotal-@i" style="width: 120px; min-width: 120px; text-align: right;">
+                                        <div>@subtotalBgn.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</div>
+                                        <div class="text-muted small">€@subtotalEur.ToString("F2")</div>
+                                    </td>
 
-        <div class="buttons-container">
-            <button type="submit" class="btn-checkout" id="checkoutButton">
-                <i class="fas fa-check me-2"></i> Proceed to Checkout
-            </button>
-
-            <button type="button" class="btn-clear" data-bs-toggle="modal" data-bs-target="#confirmClearCartModal">
-                <i class="fas fa-trash-alt me-2"></i> Clear Cart
-            </button>
-        </div>
-    </form>
-
-    @* Hidden form to handle product delete requests *@
-    <form id="deleteForm" asp-action="Delete" asp-controller="Cart" method="post" style="display:none;">
-        <input type="hidden" name="productId" id="deleteProductId" />
-    </form>
-
-    <!-- Clear Cart Confirmation Modal -->
-    <div class="modal fade" id="confirmClearCartModal" tabindex="-1" aria-labelledby="clearCartLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="clearCartLabel">Confirm Clear Cart</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteProduct(@item.ProductId)">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            @{
+                                var totalBgn = Model.Total;
+                                var totalEur = totalBgn * BgnToEurRate;
+                            }
+                            <tr class="fw-bold">
+                                <td colspan="3"></td>
+                                <td>Total:</td>
+                                <td id="totalAmount">
+                                    <div>@totalBgn.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</div>
+                                    <div class="text-muted small">€@totalEur.ToString("F2")</div>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
-                <div class="modal-body">
-                    Are you absolutely sure you want to clear your shopping cart? This action cannot be undone.
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary fw-semibold" id="checkoutButton">
+                        <i class="fas fa-check me-1"></i> Checkout
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#confirmClearCartModal">
+                        <i class="fas fa-trash me-1"></i> Clear Cart
+                    </button>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                    <form asp-action="ClearCart" asp-controller="Cart" method="post" class="d-inline">
-                        @* @Html.AntiForgeryToken() *@
-                        <button type="submit" class="btn btn-danger px-4 fw-semibold">Clear Cart</button>
-                    </form>
+            </form>
+
+            <form id="deleteForm" asp-action="Delete" asp-controller="Cart" method="post" class="d-none">
+                <input type="hidden" name="productId" id="deleteProductId" />
+            </form>
+
+            <!-- Clear Cart Modal -->
+            <div class="modal fade" id="confirmClearCartModal" tabindex="-1" aria-labelledby="clearCartLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-sm">
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title" id="clearCartLabel">Confirm Clear Cart</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to clear your cart? This action cannot be undone.
+                        </div>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form asp-action="ClearCart" asp-controller="Cart" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger fw-semibold">Clear Cart</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
-}
+</section>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         const bgnToEurRate = 0.51129;
 
         function formatCurrencyBGN(value) {
             return new Intl.NumberFormat('bg-BG', { style: 'currency', currency: 'BGN' }).format(value);
         }
+
         function formatCurrencyEUR(value) {
             return '€' + value.toFixed(2);
         }
@@ -158,18 +157,25 @@ else
             inputs.forEach(input => {
                 const index = input.dataset.index;
                 const errorDiv = document.getElementById('error-' + index);
-                const priceBgnText = input.closest('tr').querySelector('td:nth-child(4) div:first-child').textContent;
+                const row = input.closest('tr');
+                const priceBgnText = row.querySelector('td:nth-child(4) div:first-child').textContent;
                 const priceBgn = parseFloat(priceBgnText.replace(/[^\d.,-]/g, '').replace(',', '.'));
                 let quantity = parseInt(input.value);
 
+                // Tooltip handling
                 if (isNaN(quantity) || quantity < 1 || quantity > 500) {
-                    errorDiv.style.display = 'block';
                     formValid = false;
+                    input.setAttribute('data-bs-title', 'Quantity must be between 1 and 500');
+                    input.setAttribute('data-bs-toggle', 'tooltip');
+                    input.setAttribute('data-bs-placement', 'top');
+                    const tooltip = bootstrap.Tooltip.getInstance(input) || new bootstrap.Tooltip(input);
+                    tooltip.show();
                 } else {
-                    errorDiv.style.display = 'none';
+                    const tooltip = bootstrap.Tooltip.getInstance(input);
+                    if (tooltip) tooltip.dispose();
                 }
 
-                const subtotalBgn = (isNaN(quantity) || quantity < 1 || quantity > 500) ? 0 : quantity * priceBgn;
+                const subtotalBgn = (quantity >= 1 && quantity <= 500) ? quantity * priceBgn : 0;
                 const subtotalTd = document.getElementById('subtotal-' + index);
                 subtotalTd.innerHTML = `
                     <div>${formatCurrencyBGN(subtotalBgn)}</div>
@@ -190,26 +196,24 @@ else
         document.querySelectorAll('.quantity-input').forEach(input => {
             input.addEventListener('input', () => {
                 let val = input.value;
-
-                if (/^0/.test(val)) {
-                    input.value = val.replace(/^0+/, '');
-                }
-
-                if (parseInt(val) > 500) {
-                    input.value = val.substring(0, val.length - 1);
-                }
-
+                if (/^0/.test(val)) input.value = val.replace(/^0+/, '');
+                if (parseInt(val) > 500) input.value = val.substring(0, val.length - 1);
                 validateAndUpdate();
             });
         });
 
-        validateAndUpdate();
+        // Initialize tooltips only once on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                new bootstrap.Tooltip(input);
+            });
+            validateAndUpdate();
+        });
 
-        // Function to handle deleting a product by submitting the hidden form
         function deleteProduct(productId) {
-            if (confirm('Remove this item from cart?')) {
+            if (confirm('Remove this item from your cart?')) {
                 const form = document.getElementById('deleteForm');
-                form.productId.value = productId;
+                document.getElementById('deleteProductId').value = productId;
                 form.submit();
             }
         }

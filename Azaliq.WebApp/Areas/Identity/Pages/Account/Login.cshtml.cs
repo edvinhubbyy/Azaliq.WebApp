@@ -1,30 +1,43 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
+using Azaliq.Services.Core.Security; // Your IReCaptchaService namespace
+using Azaliq.Services.Core.Security.Contract;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Authentication;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Azaliq.WebApp.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
+        private const string FailedAttemptsSessionKey = "FailedLoginAttempts";
+
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IReCaptchaService _reCaptchaService;
+        private readonly IConfiguration _configuration;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager,
-                          UserManager<ApplicationUser> userManager,
-                          ILogger<LoginModel> logger)
+        public LoginModel(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            ILogger<LoginModel> logger,
+            IReCaptchaService reCaptchaService,
+            IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _reCaptchaService = reCaptchaService;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -33,6 +46,12 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; } = "/";
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; } = new List<AuthenticationScheme>();
+
+        [Required(ErrorMessage = "Please confirm you are not a robot.")]
+        [BindProperty(Name = "g-recaptcha-response")]
+        public string RecaptchaToken { get; set; } = string.Empty;
+
+        public string ReCaptchaSiteKey => _configuration["GoogleReCaptcha:SiteKey"];
 
         public class InputModel
         {
@@ -57,11 +76,20 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
-            if (!ModelState.IsValid)
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            //if (!ModelState.IsValid)
+            //{
+            //    return Page();
+            //}
+
+            
+            if (string.IsNullOrEmpty(RecaptchaToken) || !await _reCaptchaService.VerifyAsync(RecaptchaToken))
             {
-                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                ModelState.AddModelError("RecaptchaToken", "Please confirm you are not a robot.");
                 return Page();
             }
+            
 
             // Find user by username or email
             var user = await _userManager.FindByNameAsync(Input.UsernameOrEmail);
@@ -73,21 +101,24 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
             }
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
                 ModelState.AddModelError(string.Empty, "You need to confirm your email to log in.");
-                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            // Lockout enabled: lockoutOnFailure: true
+            var result = await _signInManager.PasswordSignInAsync(
+                user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
+                // Reset failed attempts on successful login
+                HttpContext.Session.Remove(FailedAttemptsSessionKey);
+
                 _logger.LogInformation("User logged in.");
                 return LocalRedirect(returnUrl);
             }
@@ -98,16 +129,23 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             else if (result.IsLockedOut)
             {
                 _logger.LogWarning("User account locked out.");
-                ModelState.AddModelError(string.Empty, "User account locked out.");
-                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+                ModelState.AddModelError(string.Empty, "User account locked out. Please try again later.");
                 return Page();
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
                 return Page();
             }
+        }
+
+        private async Task IncrementFailedAttemptsAsync(int currentFailedAttempts)
+        {
+            currentFailedAttempts++;
+            HttpContext.Session.SetInt32(FailedAttemptsSessionKey, currentFailedAttempts);
+
+            // Optional: log the increment
+            _logger.LogWarning($"Failed login attempt #{currentFailedAttempts}");
         }
     }
 }

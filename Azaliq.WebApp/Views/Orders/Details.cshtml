@@ -8,82 +8,152 @@
     string FormatEUR(decimal amount) => string.Format(System.Globalization.CultureInfo.GetCultureInfo("de-DE"), "€{0:N2}", amount);
 }
 
-<h2>@ViewData["Title"]</h2>
+<section class="container py-5">
+    <h2 class="mb-4 text-pink-glow">@ViewData["Title"]</h2>
 
-<!-- Order Info -->
-<section>
-    <p><strong>Order Date:</strong> @Model.OrderDate.ToString("dd MMM yyyy HH:mm")</p>
-    <p><strong>Status:</strong> @Model.Status</p>
-    <p><strong>Delivery Option:</strong> @Model.DeliveryOption</p>
-
-    @if (Model.PickupStoreId != null && !string.IsNullOrWhiteSpace(Model.PickupStoreUrl))
-    {
+    <!-- Order Info -->
+    <div class="glass-bg-pink p-4 rounded mb-4 shadow-sm">
+        <h4 class="mb-3">Order Information</h4>
+        <p><strong>Order Date:</strong> @Model.OrderDate.ToString("dd MMM yyyy HH:mm")</p>
         <p>
-            <strong>Pickup Store:</strong>
-            <a href="@Model.PickupStoreUrl" target="_blank" rel="noopener noreferrer">View Store Location</a>
+            <strong>Status:</strong>
+            <span class="badge
+                @(Model.Status switch
+                  {
+                      "Pending" => "bg-warning text-dark",
+                      "Processing" => "bg-info text-dark",
+                      "Completed" => "bg-success text-white",
+                      "Cancelled" => "bg-danger text-white",
+                      _ => "bg-secondary text-white"
+                  })">
+                @Model.Status
+            </span>
         </p>
-    }
+        <p><strong>Delivery Option:</strong> @Model.DeliveryOption</p>
 
-    @if (Model.IsDelivery && !string.IsNullOrWhiteSpace(Model.DeliveryAddress))
-    {
-        <p><strong>Delivery Address:</strong> @Model.DeliveryAddress</p>
-        @if (!string.IsNullOrEmpty(Model.City))
+        @if (Model.PickupStoreId != null && !string.IsNullOrWhiteSpace(Model.PickupStoreUrl))
         {
-            <p><strong>City:</strong> @Model.City</p>
+            <p>
+                <strong>Pickup Store:</strong>
+                <a href="@Model.PickupStoreUrl" target="_blank" rel="noopener noreferrer" class="link-pink">
+                    View Store Location
+                </a>
+            </p>
         }
-        @if (!string.IsNullOrEmpty(Model.ZipCode))
+
+        @if (Model.IsDelivery && !string.IsNullOrWhiteSpace(Model.DeliveryAddress))
         {
-            <p><strong>Zip Code:</strong> @Model.ZipCode</p>
-        }
-    }
-</section>
-
-<!-- Customer Info -->
-<section>
-    <h4>Customer Details</h4>
-    <p><strong>Full Name:</strong> @Model.FullName</p>
-    <p><strong>Email:</strong> @Model.Email</p>
-    <p><strong>Phone:</strong> +@((int)Model.CountryCode) @Model.Phone</p>
-</section>
-
-<!-- Order Items -->
-<section>
-    <h4>Order Items</h4>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Image</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Items)
+            <p><strong>Delivery Address:</strong> @Model.DeliveryAddress</p>
+            @if (!string.IsNullOrEmpty(Model.City))
             {
-                var priceEUR = item.Price * bgnToEurRate;
-                var subtotalBGN = item.Price * item.Quantity;
-                var subtotalEUR = subtotalBGN * bgnToEurRate;
-
-                <tr>
-                    <td>@item.ProductName</td>
-                    <td>
-                        <img src="@item.ImageUrl" alt="@item.ProductName" style="height: 50px; width: 50px; object-fit: cover;" />
-                    </td>
-                    <td>@item.Quantity</td>
-                    <td>
-                        @FormatBGN(item.Price) <br />
-                        <small class="text-muted">@FormatEUR(priceEUR)</small>
-                    </td>
-                    <td>
-                        @FormatBGN(subtotalBGN) <br />
-                        <small class="text-muted">@FormatEUR(subtotalEUR)</small>
-                    </td>
-                </tr>
+                <p><strong>City:</strong> @Model.City</p>
             }
-        </tbody>
-    </table>
+            @if (!string.IsNullOrEmpty(Model.ZipCode))
+            {
+                <p><strong>Zip Code:</strong> @Model.ZipCode</p>
+            }
+        }
+    </div>
+
+    <!-- Customer Info -->
+    <div class="glass-bg-pink p-4 rounded mb-4 shadow-sm">
+        <h4 class="mb-3">Customer Details</h4>
+        <p><strong>Full Name:</strong> @Model.FullName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Phone:</strong> +@((int)Model.CountryCode) @Model.Phone</p>
+    </div>
+
+    <!-- Order Items -->
+    <div class="glass-bg-pink p-4 rounded shadow-sm">
+        <h4 class="mb-3">Order Items</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th>Image</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        var priceEUR = item.Price * bgnToEurRate;
+                        var subtotalBGN = item.Price * item.Quantity;
+                        var subtotalEUR = subtotalBGN * bgnToEurRate;
+
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>
+                                <img src="@item.ImageUrl" alt="@item.ProductName" style="height: 50px; width: 50px; object-fit: cover;" />
+                            </td>
+                            <td>@item.Quantity</td>
+                            <td>
+                                @FormatBGN(item.Price) <br />
+                                <small class="text-muted">@FormatEUR(priceEUR)</small>
+                            </td>
+                            <td>
+                                @FormatBGN(subtotalBGN) <br />
+                                <small class="text-muted">@FormatEUR(subtotalEUR)</small>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="MyOrders" class="btn btn-pink-glass">Back to Orders</a>
+    </div>
 </section>
 
-<a asp-action="MyOrders" class="btn btn-primary">Back to Orders</a>
+<style>
+    .glass-bg-pink {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(14px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 192, 203, 0.25);
+        color: #1f1f1f;
+    }
+
+    .text-pink-glow {
+        color: #ff8fa3 !important;
+    }
+
+    .btn-pink-glass {
+        background: rgba(255, 192, 203, 0.15);
+        color: #1f1f1f;
+        border: 1px solid rgba(255, 192, 203, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-pink-glass:hover {
+            background: rgba(255, 192, 203, 0.3);
+            color: black;
+            border-color: #ffb6c1;
+            text-decoration: none;
+        }
+
+    .link-pink {
+        color: #ff6f91;
+        text-decoration: underline;
+    }
+
+        .link-pink:hover {
+            color: #ff4070;
+            text-decoration: none;
+        }
+
+    table.table-bordered th, table.table-bordered td {
+        vertical-align: middle;
+    }
+</style>

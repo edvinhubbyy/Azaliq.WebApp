@@ -4,14 +4,14 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="shadow-sm p-4 rounded bg-white border">
+            <h2 class="h5 mb-4 text-center text-secondary">Create a new account</h2>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
 
             <div class="form-floating mb-3">
                 <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
@@ -26,45 +26,81 @@
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
+                <input asp-for="Input.Password" type="password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Password" />
                 <label asp-for="Input.Password">Password</label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
+                <input asp-for="Input.ConfirmPassword" type="password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="Confirm Password" />
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <div class="g-recaptcha mb-3" data-sitekey="@Model.ReCaptchaSiteKey"></div>
+            <span asp-validation-for="RecaptchaToken" class="text-danger"></span>
+
+            <button id="registerSubmit" type="submit" class="btn btn-primary w-100 fw-semibold shadow-sm">
+                Register
+            </button>
         </form>
 
-        <hr />
+        <hr class="my-4" />
 
-        <div class="mt-4">
-            <h4>Or register using a third-party service:</h4>
-            <div>
-                @if (Model.ExternalLogins?.Count > 0)
+        <div class="text-center text-muted">
+            <p>Or register using a third-party service:</p>
+            @if (Model.ExternalLogins?.Count > 0)
+            {
+                @foreach (var provider in Model.ExternalLogins)
                 {
-                    foreach (var provider in Model.ExternalLogins)
-                    {
-                        <form method="post" asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" class="d-inline">
-                            <button type="submit" class="btn btn-outline-danger w-100 mb-2">
-                                <i class="fab fa-@provider.Name.ToLower() me-2"></i> Register with @provider.DisplayName
-                            </button>
-                        </form>
-                    }
+                    <form method="post" asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" class="mb-3">
+                        <button type="submit" class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2">
+                            <i class="fab fa-@provider.Name.ToLower()"></i>
+                            <span>Register with @provider.DisplayName</span>
+                        </button>
+                    </form>
                 }
-                else
-                {
-                    <p>No external authentication providers configured.</p>
-                }
-            </div>
+            }
+            else
+            {
+                <p>No external authentication providers configured.</p>
+            }
         </div>
     </div>
 </div>
 
+<style>
+    body {
+        background: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #444;
+    }
+
+    form {
+        background: #fff;
+    }
+
+    .btn-primary {
+        background: #d81b60;
+        border: none;
+    }
+
+        .btn-primary:hover, .btn-primary:focus {
+            background: #b21853;
+            box-shadow: 0 0 10px rgba(216, 27, 96, 0.6);
+        }
+
+    hr {
+        border-top: 1px solid #dee2e6;
+    }
+
+    i.fab {
+        font-size: 1.2rem;
+        color: #555;
+    }
+</style>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 }

@@ -3,9 +3,13 @@ using Azaliq.Data.Configurations;
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
+using Azaliq.Services.Core.Security;
+using Azaliq.Services.Core.Security.Contract;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,11 +51,32 @@ builder.Services.AddAuthentication()
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+        // Ensure GitHub sends email
+        options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+
+        options.Events.OnRemoteFailure = context =>
+        {
+            context.Response.Redirect("/Identity/Account/Login");
+            context.HandleResponse(); // Prevents the exception
+            return Task.CompletedTask;
+        };
     })
     .AddGitHub(options =>
     {
         options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+
+        // Ensure GitHub sends email
+        options.Scope.Add("user:email");
+        options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+
+        options.Events.OnRemoteFailure = context =>
+        {
+            context.Response.Redirect("/Identity/Account/Login");
+            context.HandleResponse(); // Prevents the exception
+            return Task.CompletedTask;
+        };
     });
 
 // 3) Map the "Email" token provider for both email confirmation & 2FA
@@ -77,6 +102,10 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IArchivedUserService, ArchivedUserService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 
+// Security
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IReCaptchaService, ReCaptchaService>();
+
 // 5) Register email senders
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IEmailService, EmailService>();
@@ -88,7 +117,17 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddDistributedMemoryCache(); // Use in-memory cache for session storage
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout as needed
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
+
+app.UseSession();
 
 // 7) Seed roles on startup
 using (var scope = app.Services.CreateScope())

@@ -4,31 +4,62 @@
     ViewData["Title"] = "Add Review";
 }
 
-<div class="container mt-4">
-    <h2>Add a Review for Product #@Model.ProductId</h2>
-    
-    <form asp-controller="Reviews" asp-action="AddReview" method="post" class="mt-3">
+<div class="container py-4">
+    <h2 class="mb-4 text-pink-glow">Add a Review for Product #@Model.ProductId</h2>
+
+    <form asp-controller="Reviews" asp-action="AddReview" method="post" class="mt-3 glass-bg-pink p-4 rounded shadow-sm">
         @Html.AntiForgeryToken()
 
-        <input type="hidden" asp-for="ProductId"/>
+        <input type="hidden" asp-for="ProductId" />
 
         <div class="mb-3">
-            <label asp-for="Rating" class="form-label">Rating (1-5)</label>
-            <input asp-for="Rating" type="number" min="1" max="5" class="form-control" required/>
+            <label asp-for="Rating" class="form-label text-pink-glow">Rating (1-5)</label>
+            <input asp-for="Rating" type="number" min="1" max="5" class="form-control" required />
             <span asp-validation-for="Rating" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Comment" class="form-label">Comment</label>
+            <label asp-for="Comment" class="form-label text-pink-glow">Comment</label>
             <textarea asp-for="Comment" rows="4" class="form-control" required></textarea>
             <span asp-validation-for="Comment" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit Review</button>
-        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-secondary ms-2">Cancel</a>
+        <button type="submit" class="btn btn-pink-glass me-2">Submit Review</button>
+        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="btn btn-outline-secondary">Cancel</a>
     </form>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    .glass-bg-pink {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(14px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 192, 203, 0.25);
+        color: #1f1f1f;
+    }
+
+    .text-pink-glow {
+        color: #ff8fa3 !important;
+    }
+
+    .btn-pink-glass {
+        background: rgba(255, 192, 203, 0.15);
+        color: #1f1f1f;
+        border: 1px solid rgba(255, 192, 203, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        padding: 0.5rem 1.25rem;
+    }
+
+        .btn-pink-glass:hover {
+            background: rgba(255, 192, 203, 0.3);
+            color: black;
+            border-color: #ffb6c1;
+        }
+</style>

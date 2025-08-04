@@ -34,5 +34,9 @@ namespace Azaliq.ViewModels.Product
         public ICollection<ReviewViewModel> Reviews { get; set; } 
             = new HashSet<ReviewViewModel>();
 
+        public ICollection<ProductIndexViewModel> OtherProducts { get; set; } 
+            = new HashSet<ProductIndexViewModel>();
+
+
     }
 }

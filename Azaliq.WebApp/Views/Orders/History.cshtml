@@ -4,23 +4,77 @@
     ViewData["Title"] = "Order History";
 }
 
-<h2>@ViewData["Title"]</h2>
+<section class="container py-5">
+    <h2 class="mb-4 text-pink-glow">@ViewData["Title"]</h2>
 
-<a asp-action="MyOrders" class="btn btn-link mb-3">← Back to My Orders</a>
+    <a asp-action="MyOrders" class="btn btn-pink-glass mb-4">← Back to My Orders</a>
 
-@if (!Model.Any())
-{
-    <p>You have no past orders yet.</p>
-}
-else
-{
-    foreach (var order in Model)
+    @if (!Model.Any())
     {
-        <partial name="_OrderCard" model="order" />
-        <form asp-action="Reorder" method="post" class="text-end mb-4">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="orderId" value="@order.OrderId"/>
-            <button type="submit" class="btn btn-outline-primary btn-sm">Reorder</button>
-        </form>
+        <div class="alert alert-info glass-bg-pink text-center">
+            You have no past orders yet.
+        </div>
     }
-}
+    else
+    {
+        foreach (var order in Model)
+        {
+            <partial name="_OrderCard" model="order" />
+            <form asp-action="Reorder" method="post" class="text-end mb-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="orderId" value="@order.OrderId" />
+                <button type="submit" class="btn btn-outline-pink-glass btn-sm">Reorder</button>
+            </form>
+        }
+    }
+</section>
+
+<style>
+    .glass-bg-pink {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(14px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 192, 203, 0.25);
+        color: #1f1f1f;
+    }
+
+    .text-pink-glow {
+        color: #ff8fa3 !important;
+    }
+
+    .btn-pink-glass {
+        background: rgba(255, 192, 203, 0.15);
+        color: #1f1f1f;
+        border: 1px solid rgba(255, 192, 203, 0.4);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        padding: 0.4rem 1rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .btn-pink-glass:hover {
+            background: rgba(255, 192, 203, 0.3);
+            color: black;
+            border-color: #ffb6c1;
+            text-decoration: none;
+        }
+
+    .btn-outline-pink-glass {
+        background: transparent;
+        color: #ff8fa3;
+        border: 1px solid #ff8fa3;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        padding: 0.25rem 0.75rem;
+    }
+
+        .btn-outline-pink-glass:hover {
+            background: #ff8fa3;
+            color: white;
+            border-color: #ff8fa3;
+        }
+</style>
