@@ -184,6 +184,7 @@ namespace Azaliq.Services.Core
                 {
                     OrderId = o.Id,
                     OrderDate = o.OrderDate,
+                    UserName = o.User.UserName,
                     Status = o.Status != null ? o.Status.ToString() : "Unknown",
                     Items = o.Products
                         .Where(i => i.Product != null)

@@ -28,7 +28,7 @@
         {
             <tr>
                 <td>@order.OrderId</td>
-                <td>@order.UserId</td>
+                <td>@order.UserName</td>
                 <td>@TimeZoneInfo.ConvertTimeBySystemTimeZoneId(order.OrderDate, "Europe/Sofia").ToString("g")</td>
                 <td>
                     <form asp-action="ChangeStatus" method="post" class="d-flex gap-2 align-items-center">
