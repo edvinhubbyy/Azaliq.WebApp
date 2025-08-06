@@ -39,7 +39,7 @@ namespace Azaliq.Data.Models.Models
             = new HashSet<ProductTag>();
 
         [Comment("Collection of reviews for the product")]
-        public ICollection<Review> Reviews { get; set; } 
+        public ICollection<Review> Reviews { get; set; }
             = new HashSet<Review>();
 
         [Comment("Indicates if the product is deleted")]

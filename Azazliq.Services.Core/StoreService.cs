@@ -46,8 +46,6 @@ namespace Azaliq.Services.Core
                 CountryCode = store.CountryCode
             };
         }
-
-        // Checks if the address exists, excluding the store with excludeId if provided
         public async Task<bool> AddressExistsAsync(string address, int? excludeId = null)
         {
             var query = _context.StoresLocations.AsQueryable();

@@ -20,8 +20,6 @@ namespace Azaliq.ViewModels.Product
 
 
         [Display(Name = ImageUrlDisplay)]
-        [RegularExpression(ImageUrlRegex, 
-            ErrorMessage = ImageUrlRegexErrorMessage)]
         public string? ImageUrl { get; set; }
 
 
@@ -47,7 +45,7 @@ namespace Azaliq.ViewModels.Product
         public List<string>? SelectedTags { get; set; }
 
         [Display(Name = AllTagsDisplayName)]
-        public IEnumerable<string> AllTags { get; set; } 
+        public IEnumerable<string> AllTags { get; set; }
             = new HashSet<string>();
     }
 }

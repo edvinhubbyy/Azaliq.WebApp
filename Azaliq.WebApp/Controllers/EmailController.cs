@@ -63,11 +63,9 @@ namespace Azaliq.WebApp.Controllers
                 .Include(o => o.Products)
                 .ThenInclude(op => op.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
-            
+
             if (order == null)
                 return NotFound("Order not found.");
-
-            // Get current logged-in user ID from claims
             var userId = _userManager.GetUserId(User);
             if (userId == null)
                 return BadRequest("User is not logged in.");

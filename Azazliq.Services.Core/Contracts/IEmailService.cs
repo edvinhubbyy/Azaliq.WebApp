@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using Azaliq.ViewModels._2fa;
+﻿using Azaliq.ViewModels._2fa;
 
 namespace Azaliq.Services.Core.Contracts
 {

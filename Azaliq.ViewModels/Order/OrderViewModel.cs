@@ -7,8 +7,6 @@
         public DateTime OrderDate { get; set; }
         public string Status { get; set; } = null!;
         public List<OrderItemViewModel> Items { get; set; } = new();
-
-        // Calculate total on the fly
         public decimal TotalAmount => Items.Sum(i => i.Subtotal);
     }
 

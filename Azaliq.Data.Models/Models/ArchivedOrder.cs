@@ -16,14 +16,11 @@ namespace Azaliq.Data.Models.Models
         [Comment("Date and time when the ArchivedOrder was placed.")]
         public DateTime OrderDate { get; set; }
 
-        //[Comment("Optional date and time when the ArchivedOrder is scheduled for pickup.")]
-        //public DateTime PickupTime { get; set; }
-
         [Comment("Status of the ArchivedOrder, indicating its current state in the order lifecycle.")]
         public OrderStatus Status { get; set; }
 
         [Comment("Collection of products associated with the ArchivedOrder.")]
-        public ICollection<ArchivedOrderProduct> Products { get; set; } 
+        public ICollection<ArchivedOrderProduct> Products { get; set; }
             = new HashSet<ArchivedOrderProduct>();
 
         [Comment("Total amount for the ArchivedOrder, calculated based on the products and their quantities.")]

@@ -12,7 +12,6 @@ namespace Azaliq.Services.Core
     {
 
         private readonly ApplicationDbContext _dbContext;
-        //private readonly UserManager<ApplicationUserProduct> _userManager;
 
         public ProductService(ApplicationDbContext dbContext)
         {
@@ -69,7 +68,6 @@ namespace Azaliq.Services.Core
                     Tags = p.Tags.Select(t => t.Name).ToList(),
                     Reviews = p.Reviews.Select(r => new ReviewViewModel
                     {
-                        // map review properties here
                     }).ToList()
                 })
                 .ToListAsync();
@@ -132,8 +130,6 @@ namespace Azaliq.Services.Core
                             })
                             .ToList()
                     };
-
-                    // Load other products - e.g., latest 4 excluding current product
                     var otherProducts = await this._dbContext.Products
                         .Where(p => !p.IsDeleted && p.Id != id.Value)
                         .OrderByDescending(p => p.Price)
@@ -164,23 +160,14 @@ namespace Azaliq.Services.Core
 
             if (category != null)
             {
-                // Get existing tags from DB that match selected tag names
                 var existingTags = await _dbContext.ProductsTags
                     .Where(t => inputModel.SelectedTags.Contains(t.Name))
                     .ToListAsync();
-
-                // Find tag names that are new (not in existingTags)
                 var newTagNames = inputModel.SelectedTags
                     .Except(existingTags.Select(t => t.Name))
                     .Distinct();
-
-                // Create new tag entities for those new tag names
                 var newTags = newTagNames.Select(name => new ProductTag { Name = name }).ToList();
-
-                // Combine existing tags and new tags into one list
                 var allTags = existingTags.Concat(newTags).ToList();
-
-                // Create new product and assign tags collection
                 Product product = new Product()
                 {
                     Name = inputModel.Name,
@@ -192,11 +179,7 @@ namespace Azaliq.Services.Core
                     IsSameDayDeliveryAvailable = inputModel.IsSameDayDeliveryAvailable,
                     Tags = allTags
                 };
-
-                // Add product (and new tags if any) to database
                 await this._dbContext.Products.AddAsync(product);
-
-                // Save changes
                 await this._dbContext.SaveChangesAsync();
 
                 opResult = true;
@@ -252,30 +235,17 @@ namespace Azaliq.Services.Core
             product.Quantity = inputModel.Quantity;
             product.IsSameDayDeliveryAvailable = inputModel.IsSameDayDeliveryAvailable;
             product.CategoryId = inputModel.CategoryId;
-
-            // --- Handle tag updates ---
-
-            // Normalize input selected tags list (avoid null)
             var selectedTagNames = inputModel.SelectedTags?.Distinct().ToList() ?? new List<string>();
-
-            // Current tag names on product
             var currentTagNames = product.Tags.Select(t => t.Name).ToList();
-
-            // Tags to remove (no longer selected)
             var tagsToRemove = product.Tags.Where(t => !selectedTagNames.Contains(t.Name)).ToList();
-
-            // Remove unselected tags
             foreach (var tag in tagsToRemove)
             {
                 product.Tags.Remove(tag);
             }
-
-            // Tags to add (newly selected)
             var tagsToAddNames = selectedTagNames.Except(currentTagNames).ToList();
 
             foreach (var tagName in tagsToAddNames)
             {
-                // Check if the tag already exists in database (optional)
                 var existingTag = await _dbContext.ProductsTags.FirstOrDefaultAsync(t => t.Name == tagName);
 
                 if (existingTag != null)
@@ -284,7 +254,6 @@ namespace Azaliq.Services.Core
                 }
                 else
                 {
-                    // Create new tag if it doesn't exist
                     var newTag = new ProductTag { Name = tagName };
                     product.Tags.Add(newTag);
                 }
@@ -319,11 +288,8 @@ namespace Azaliq.Services.Core
                 Quantity = product.Quantity,
                 IsSameDayDeliveryAvailable = product.IsSameDayDeliveryAvailable,
                 CategoryId = product.CategoryId,
-                // fill other props if needed
             };
         }
-
-        // Soft delete method:
         public async Task<bool> SoftDeleteProductAsync(int productId)
         {
             var product = await _dbContext.Products.FindAsync(productId);

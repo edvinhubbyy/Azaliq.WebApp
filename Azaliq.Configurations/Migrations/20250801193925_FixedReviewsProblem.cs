@@ -4,10 +4,8 @@
 
 namespace Azaliq.Data.Migrations
 {
-    /// <inheritdoc />
     public partial class FixedReviewsProblem : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -22,8 +20,6 @@ namespace Azaliq.Data.Migrations
                 name: "ProductId1",
                 table: "Reviews");
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(

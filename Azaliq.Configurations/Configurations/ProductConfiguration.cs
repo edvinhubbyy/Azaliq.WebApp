@@ -60,235 +60,137 @@ namespace Azaliq.Data.Configurations
         {
             return new[]
             {
-                // — Roses (CategoryId = 1)
                 new Product
                 {
-                    Id = 1, Name = "Classic Red Roses", Description = "A bouquet of long-stemmed red roses",
-                    Price = 49.99m, CategoryId = 1,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/931162/pexels-photo-931162.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 2, Name = "Pink Garden Roses", Description = "Soft pink garden roses", Price = 54.99m,
+                    Id = 1,
+                    Name = "Rose",
+                    Description = "Classic long-stemmed red roses symbolizing love, romance, and admiration. A timeless floral gift perfect for Valentine's Day,    anniversaries,     or  just     to say 'I love you.'",
+                    ImageUrl = "https://images.unsplash.com/photo-1496062031456-07b8f162a322?               q=80&w=765&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 10.00m,
+                    Quantity = 100,
+                    IsAvailable = false,
                     CategoryId = 1,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/1073048/pexels-photo-1073048.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    IsSameDayDeliveryAvailable = true,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 3, Name = "White Avalanche Roses", Description = "Crisp white avalanche roses", Price = 59.99m,
-                    CategoryId = 1,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/213222/pexels-photo-213222.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Tulips (CategoryId = 2)
-                new Product
-                {
-                    Id = 4, Name = "Yellow Tulip Bundle", Description = "Bright yellow tulips in a bundle",
-                    Price = 39.99m, CategoryId = 2,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/934070/pexels-photo-934070.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 5, Name = "Red & White Tulips", Description = "Mixed red and white tulips", Price = 42.99m,
+                    Id = 2,
+                    Name = "Tulip",
+                    Description = "Bright and cheerful tulips in a rainbow of colors. These springtime favorites are known for their simple beauty and are ideal for        celebrating    fresh  beginnings and happiness.",
+                    ImageUrl = "https://plus.unsplash.com/premium_photo-1677620614560-5f1b32416563?             q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 9.99m,
+                    Quantity = 150,
+                    IsAvailable = false,
                     CategoryId = 2,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/5857509/pexels-photo-5857509.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    IsSameDayDeliveryAvailable = true,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 6, Name = "Pink Tulips", Description = "Soft pink tulips standing tall", Price = 37.99m,
-                    CategoryId = 2,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/315638/pexels-photo-315638.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Lilies (CategoryId = 3)
-                new Product
-                {
-                    Id = 7, Name = "White Stargazer Lilies", Description = "Fragrant white stargazer lilies",
-                    Price = 44.99m, CategoryId = 3,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/1460886/pexels-photo-1460886.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 8, Name = "Orange Asiatic Lilies", Description = "Vibrant orange asiatic lilies",
-                    Price = 46.99m, CategoryId = 3,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/248526/pexels-photo-248526.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 9, Name = "Pink Oriental Lilies", Description = "Delicate pink oriental lilies",
-                    Price = 48.99m, CategoryId = 3,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/1544336/pexels-photo-1544336.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Orchids (CategoryId = 4)
-                new Product
-                {
-                    Id = 10, Name = "Phalaenopsis Orchids", Description = "Elegant white Phalaenopsis orchids",
-                    Price = 59.99m, CategoryId = 4,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/931180/pexels-photo-931180.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 11, Name = "Pink Moth Orchids", Description = "Soft pink moth orchids", Price = 62.99m,
-                    CategoryId = 4,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/1637359/pexels-photo-1637359.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 12, Name = "Purple Cymbidium Orchids", Description = "Rich purple cymbidium orchids",
-                    Price = 64.99m, CategoryId = 4,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/257280/pexels-photo-257280.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Sunflowers (CategoryId = 5)
-                new Product
-                {
-                    Id = 13, Name = "Single Sunflower Stem", Description = "Bright single sunflower stem",
-                    Price = 25.00m, CategoryId = 5,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/414274/pexels-photo-414274.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 14, Name = "Sunflower Bouquet", Description = "Cheerful bouquet of sunflowers", Price = 35.00m,
+                    Id = 3,
+                    Name = "Sunflower",
+                    Description = "Large, golden sunflowers that exude warmth, happiness, and positivity. A joyful bloom that brightens up any space and symbolizes     adoration   and       loyalty.",
+                    ImageUrl = "https://images.unsplash.com/photo-1551945326-df678a97c3af?              q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 14.00m,
+                    Quantity = 80,
+                    IsAvailable = false,
                     CategoryId = 5,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/1030936/pexels-photo-1030936.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    IsSameDayDeliveryAvailable = false,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 15, Name = "Mini Sunflower Vase", Description = "Compact sunflowers in a glass vase",
-                    Price = 29.99m, CategoryId = 5,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/349758/pexels-photo-349758.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Carnations (CategoryId = 6)
-                new Product
-                {
-                    Id = 16, Name = "Red Carnations", Description = "Bright red carnations", Price = 29.99m,
-                    CategoryId = 6,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/2898825/pexels-photo-2898825.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    Id = 4,
+                    Name = "Orchid",
+                    Description = "Exotic and elegant, orchids are known for their long-lasting beauty and sophisticated look. Perfect for home décor, special gifts, or    as     a       centerpiece for luxury events.",
+                    ImageUrl = "https://images.unsplash.com/photo-1610397648930-477b8c7f0943?               q=80&w=730&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 25.00m,
+                    Quantity = 60,
+                    IsAvailable = false,
+                    CategoryId = 4,
+                    IsSameDayDeliveryAvailable = true,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 17, Name = "White Carnations", Description = "Pure white carnations", Price = 31.99m,
-                    CategoryId = 6,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/1299898/pexels-photo-1299898.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    Id = 5,
+                    Name = "Lily",
+                    Description = "Fragrant and graceful lilies available in white and pink shades. Popular for weddings, religious events, and sympathy arrangements due   to    their      serene and elegant charm.",
+                    ImageUrl = "https://plus.unsplash.com/premium_photo-1676068243733-df1880c2aef8?             q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 18.50m,
+                    Quantity = 120,
+                    IsAvailable = false,
+                    CategoryId = 3,
+                    IsSameDayDeliveryAvailable = true,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 18, Name = "Pink Carnations", Description = "Soft pink carnations", Price = 27.99m,
-                    CategoryId = 6,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/4147446/pexels-photo-4147446.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Daisies (CategoryId = 7)
-                new Product
-                {
-                    Id = 19, Name = "Classic Daisies", Description = "Fresh classic daisies", Price = 24.99m,
+                    Id = 6,
+                    Name = "Daisy",
+                    Description = "Simple yet charming daisies that radiate innocence and joy. Their classic white petals and sunny centers make them perfect for cheerful      bouquets     and     everyday smiles.",
+                    ImageUrl = "https://plus.unsplash.com/premium_photo-1677560614396-416d97638016?             q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 7.25m,
+                    Quantity = 200,
+                    IsAvailable = false,
                     CategoryId = 7,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    IsSameDayDeliveryAvailable = true,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 20, Name = "Gerbera Daisies", Description = "Vibrant gerbera daisies", Price = 22.99m,
-                    CategoryId = 7,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/462117/pexels-photo-462117.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    Id = 7,
+                    Name = "Carnation",
+                    Description = "Long-lasting carnations with ruffled petals, available in various vibrant colors. A favorite for mixed arrangements and symbolizing          fascination,     distinction, and love.",
+                    ImageUrl = "https://images.unsplash.com/photo-1590700198862-f812474f4e0a?               q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 8.50m,
+                    Quantity = 180,
+                    IsAvailable = false,
+                    CategoryId = 6,
+                    IsSameDayDeliveryAvailable = false,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 21, Name = "Yellow Daisies", Description = "Sunny yellow daisies", Price = 20.99m,
-                    CategoryId = 7,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/413195/pexels-photo-413195.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Peonies (CategoryId = 8)
-                new Product
-                {
-                    Id = 22, Name = "Pink Peony Cluster", Description = "Full cluster of pink peonies", Price = 54.99m,
+                    Id = 8,
+                    Name = "Peony",
+                    Description = "Lush, romantic peonies with full, ruffled blooms in soft pastel tones. An elegant choice for weddings, anniversaries, or any     occasion        celebrating    love and beauty.",
+                    ImageUrl = "https://images.unsplash.com/photo-1575178114667-c8a832c61f45?               q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 22.00m,
+                    Quantity = 90,
+                    IsAvailable = false,
                     CategoryId = 8,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    IsSameDayDeliveryAvailable = true,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 23, Name = "White Peonies", Description = "Elegant white peonies", Price = 56.99m,
-                    CategoryId = 8,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/1231265/pexels-photo-1231265.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 24, Name = "Coral Peonies", Description = "Soft coral-colored peonies", Price = 58.99m,
-                    CategoryId = 8,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/991447/pexels-photo-991447.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-
-                // — Chrysanthemums (CategoryId = 9)
-                new Product
-                {
-                    Id = 25, Name = "Yellow Chrysanthemums", Description = "Sunny yellow chrysanthemums",
-                    Price = 27.99m, CategoryId = 9,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 26, Name = "Purple Chrysanthemums", Description = "Rich purple chrysanthemums", Price = 29.99m,
+                    Id = 9,
+                    Name = "Chrysanthemum",
+                    Description = "Versatile chrysanthemums in rich hues, popular in fall bouquets and traditional arrangements. These long-lasting blooms represent    joy,       longevity,    and fidelity.",
+                    ImageUrl = "https://images.unsplash.com/photo-1536126080396-d775c5296e7d?               q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 10.00m,
+                    Quantity = 140,
+                    IsAvailable = false,
                     CategoryId = 9,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/116393/pexels-photo-116393.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    IsSameDayDeliveryAvailable = true,
+                    IsDeleted = false
                 },
                 new Product
                 {
-                    Id = 27, Name = "White Chrysanthemums", Description = "Crisp white chrysanthemums", Price = 25.99m,
-                    CategoryId = 9,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/939222/pexels-photo-939222.jpeg?auto=compress&cs=tinysrgb&h=800"
+                    Id = 10,
+                    Name = "Gardenia",
+                    Description = "Heavenly scented gardenias with glossy green leaves. Their creamy white petals make them a symbol of purity and elegance, perfect for        formal         occasions and gifts.",
+                    ImageUrl = "https://images.unsplash.com/photo-1685669957476-12bbdf277a7d?               q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    Price = 19.99m,
+                    Quantity = 70,
+                    IsAvailable = false,
+                    CategoryId = 10,
+                    IsSameDayDeliveryAvailable = false,
+                    IsDeleted = false
                 },
 
-                // — Gardenias (CategoryId = 10)
-                new Product
-                {
-                    Id = 28, Name = "Classic Gardenias", Description = "Fragrant classic gardenias", Price = 39.99m,
-                    CategoryId = 10,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/937400/pexels-photo-937400.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 29, Name = "White Gardenia Bloom", Description = "Single white gardenia bloom", Price = 41.99m,
-                    CategoryId = 10,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/264727/pexels-photo-264727.jpeg?auto=compress&cs=tinysrgb&h=800"
-                },
-                new Product
-                {
-                    Id = 30, Name = "Gardenia Leaves & Flower", Description = "Gardenia flowers with green leaves",
-                    Price = 43.99m, CategoryId = 10,
-                    ImageUrl =
-                        "https://images.pexels.com/photos/206420/pexels-photo-206420.jpeg?auto=compress&cs=tinysrgb&h=800"
-                }
             };
         }
 

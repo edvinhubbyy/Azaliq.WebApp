@@ -12,23 +12,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Get port from environment or default
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-
-// Set URLs before building the app
 if (builder.Environment.IsDevelopment())
 {
-    // Use HTTPS with localhost and default dev port
     builder.WebHost.UseUrls($"https://localhost:{port}");
 }
 else
 {
-    // Azure usually expects HTTP on the assigned port
     builder.WebHost.UseUrls($"http://*:{port}");
 }
-
-// 1) Configure EF Core and ApplicationDbContext
 var connectionString = builder.Configuration
     .GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -37,16 +29,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-// 2) Configure Identity with email confirmation & 2FA token providers
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
-    // Require confirmed email before login
     options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedAccount = true;
     options.SignIn.RequireConfirmedPhoneNumber = false;
-
-    // Password settings
     options.Password.RequiredLength = 3;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireDigit = false;
@@ -59,14 +46,28 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddTokenProvider<EmailTokenProvider<ApplicationUser>>(TokenOptions.DefaultEmailProvider)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
-
-// Add Google Authentication
 builder.Services.AddAuthentication()
     .AddGoogle(options =>
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
         options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+
+        options.Events.OnRemoteFailure = context =>
+        {
+            context.Response.Redirect("/Identity/Account/Login");
+            context.HandleResponse(); // Prevent exception
+            return Task.CompletedTask;
+        };
+    })
+    .AddGitHub(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+
+        options.Scope.Add("user:email");
+        options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+
         options.Events.OnRemoteFailure = context =>
         {
             context.Response.Redirect("/Identity/Account/Login");
@@ -74,16 +75,12 @@ builder.Services.AddAuthentication()
             return Task.CompletedTask;
         };
     });
-
-// 3) Map the "Email" token provider for email confirmation & 2FA
 builder.Services.Configure<IdentityOptions>(opts =>
 {
     opts.Tokens.ProviderMap["Email"] =
         new TokenProviderDescriptor(typeof(EmailTokenProvider<ApplicationUser>));
     opts.Tokens.EmailConfirmationTokenProvider = "Email";
 });
-
-// 4) Register application services
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITagService, TagService>();
@@ -95,20 +92,12 @@ builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IArchivedUserService, ArchivedUserService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
-
-// Security
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IReCaptchaService, ReCaptchaService>();
-
-// 5) Register email senders
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IEmailService, EmailService>();
-
-// 6) Add MVC + Razor Pages
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
-// 7) Add session support
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -120,15 +109,11 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 
 app.UseSession();
-
-// Seed roles on startup
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     RoleSeeder.AssignRoles(services);
 }
-
-// Configure HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -152,8 +137,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapGet("/ping", () => "pong");
 
 app.MapRazorPages();
 

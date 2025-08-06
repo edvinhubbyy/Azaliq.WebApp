@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using Azaliq.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

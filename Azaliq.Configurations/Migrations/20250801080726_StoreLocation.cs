@@ -4,10 +4,8 @@
 
 namespace Azaliq.Data.Migrations
 {
-    /// <inheritdoc />
     public partial class StoreLocation : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
@@ -22,8 +20,6 @@ namespace Azaliq.Data.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(

@@ -1,5 +1,4 @@
 ﻿using Azaliq.Data;
-using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Archives;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +16,6 @@ namespace Azaliq.WebApp.Controllers
             _context = context;
             _archivedUserService = archivedUserService;
         }
-
-        // GET: /UserManagement/Index
         public async Task<IActionResult> Index()
         {
             var archivedUsers = await _context.ArchivedUsers
@@ -69,8 +66,6 @@ namespace Azaliq.WebApp.Controllers
 
             return View(viewModel);
         }
-
-        // POST: /UserManagement/ArchiveUser
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ArchiveUser(string userId)
@@ -88,6 +83,6 @@ namespace Azaliq.WebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
     }
 }

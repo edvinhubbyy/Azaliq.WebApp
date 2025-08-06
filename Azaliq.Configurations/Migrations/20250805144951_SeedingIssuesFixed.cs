@@ -4,10 +4,8 @@
 
 namespace Azaliq.Data.Migrations
 {
-    /// <inheritdoc />
     public partial class SeedingIssuesFixed : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
@@ -28,8 +26,6 @@ namespace Azaliq.Data.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(450)");
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(

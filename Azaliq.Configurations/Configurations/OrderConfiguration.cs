@@ -12,7 +12,6 @@ namespace Azaliq.Data.Configurations
             entity
                 .HasKey(o => o.Id);
 
-            // Relationship with User
             entity
                 .HasOne(o => o.User)
                 .WithMany(u => u.Orders)
@@ -28,34 +27,26 @@ namespace Azaliq.Data.Configurations
                 .Property(o => o.TotalAmount)
                 .HasColumnType("decimal(18,2)");
 
-            // OrderDate is required
             entity
                 .Property(o => o.OrderDate)
                 .IsRequired();
 
-            // PickupTime optional
             entity.Property(o => o.PickupTime)
                 .IsRequired(false);
 
-            // OrderStatus enum stored as string (optional)
             entity.Property(o => o.Status)
                 .HasConversion<string>()
                 .IsRequired();
 
-            // TotalAmount required with precision (e.g., 18,2)
             entity.Property(o => o.TotalAmount)
                 .IsRequired();
 
-            // IsDelivery required
             entity.Property(o => o.IsDelivery)
                 .IsRequired();
 
-            // DeliveryAddress optional with max length
             entity.Property(o => o.DeliveryAddress)
                 .HasMaxLength(200)
                 .IsRequired(false);
-
-            // Relationship with OrderProduct - one-to-many
             entity.HasMany(o => o.Products)
                 .WithOne(op => op.Order)
                 .HasForeignKey(op => op.OrderId)

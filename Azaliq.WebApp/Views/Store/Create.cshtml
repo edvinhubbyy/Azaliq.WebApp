@@ -5,8 +5,6 @@
 
 @{
     ViewData["Title"] = "Add Store Location";
-
-    // Create a SelectList for CountryCode enum
     var countryCodeList = Enum.GetValues(typeof(CountryCode))
         .Cast<CountryCode>()
         .Select(cc => new SelectListItem

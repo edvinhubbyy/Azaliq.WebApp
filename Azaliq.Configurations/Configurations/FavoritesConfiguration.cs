@@ -24,6 +24,6 @@ namespace Azaliq.Data.Configurations
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(false);
         }
-        
+
     }
 }

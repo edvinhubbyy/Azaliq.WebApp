@@ -3,6 +3,7 @@ using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.CartItems;
 using Microsoft.EntityFrameworkCore;
+using static Azaliq.GCommon.ValidationConstants.General;
 
 namespace Azaliq.Services.Core
 {
@@ -41,21 +42,20 @@ namespace Azaliq.Services.Core
         public async Task<List<CartItemViewModel>> GetCartItemsAsync(string userId)
         {
             return await _context.CartItems
+                .Include(ci => ci.Product)
                 .Where(ci => ci.UserId == userId)
                 .Select(ci => new CartItemViewModel
                 {
                     Id = ci.Id,
                     ProductId = ci.ProductId,
-                    ProductName = ci.Product.Name,
-                    ProductImageUrl = ci.Product.ImageUrl,
+                    ProductName = ci.Product.Name ?? "Unknown",
+                    ProductImageUrl = ci.Product.ImageUrl ?? $"/images/{NoImageUrl}",
                     Price = ci.Product.Price,
                     Quantity = ci.Quantity,
-                    StockQuantity = ci.Product.Quantity  // <- important
+                    StockQuantity = ci.Product.Quantity
                 })
                 .ToListAsync();
         }
-
-        // Implement other methods as needed
 
 
         public async Task RemoveFromCartAsync(string userId, int productId)
@@ -95,7 +95,7 @@ namespace Azaliq.Services.Core
                 await _context.SaveChangesAsync();
             }
         }
-        
+
     }
 
 }

@@ -15,11 +15,7 @@ namespace Azaliq.ViewModels.Product
         public string? Description { get; set; }
 
         [Display(Name = ImageUrlDisplay)]
-        [RegularExpression(ImageUrlRegex,
-            ErrorMessage = ImageUrlRegexErrorMessage)]
         public string? ImageUrl { get; set; }
-
-        // Stays with number because of the decimal validation error that occurs with decimal type
         [Range(0.01, 100_000, ErrorMessage = PriceErrorMessage)]
         [RegularExpression(PriceRegex, ErrorMessage = PriceRegexErrorMessage)]
         public decimal Price { get; set; }
@@ -40,7 +36,7 @@ namespace Azaliq.ViewModels.Product
         public List<string>? SelectedTags { get; set; }
 
         [Display(Name = AllTagsDisplayName)]
-        public IEnumerable<string> AllTags { get; set; } 
+        public IEnumerable<string> AllTags { get; set; }
             = new HashSet<string>();
     }
 }

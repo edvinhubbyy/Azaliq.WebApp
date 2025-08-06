@@ -2,7 +2,6 @@
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Tag;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.Services.Core
@@ -11,7 +10,6 @@ namespace Azaliq.Services.Core
     {
 
         private readonly ApplicationDbContext _dbContext;
-        //private readonly UserManager<ApplicationUserProduct> _userManager;
 
         public TagService(ApplicationDbContext dbContext)
         {
@@ -133,7 +131,6 @@ namespace Azaliq.Services.Core
             }
             catch
             {
-                // log exception
                 return false;
             }
         }
@@ -146,32 +143,20 @@ namespace Azaliq.Services.Core
                 product.Tags.Clear();
                 return true;
             }
-
-            // Normalize tag names (optional)
             var normalizedTags = selectedTagNames.Select(t => t.Trim()).Where(t => t != "").Distinct().ToList();
-
-            // Load all tags in DB with these names
             var existingTags = await _dbContext.ProductsTags
                 .Where(t => normalizedTags.Contains(t.Name))
                 .ToListAsync();
-
-            // Find names not existing yet
             var newTagNames = normalizedTags
                 .Except(existingTags.Select(t => t.Name))
                 .ToList();
-
-            // Create new tag entities
             var newTags = newTagNames.Select(name => new ProductTag() { Name = name }).ToList();
-
-            // Add new tags to DB
             if (newTags.Any())
             {
                 await _dbContext.ProductsTags.AddRangeAsync(newTags);
                 await _dbContext.SaveChangesAsync();
                 existingTags.AddRange(newTags);
             }
-
-            // Clear current product tags and assign new list
             product.Tags.Clear();
             foreach (var tag in existingTags)
             {

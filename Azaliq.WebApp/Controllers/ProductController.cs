@@ -142,8 +142,6 @@ namespace Azaliq.WebApp.Controllers
                     inputModel.Categories = await _categoryService.GetCategoryDropDownDataAsync();
                     return View(inputModel);
                 }
-
-                // Parse new tags (comma-separated), trim, and merge with selected tags
                 var newTagsList = new List<string>();
                 if (!string.IsNullOrWhiteSpace(NewTags))
                 {
@@ -156,8 +154,6 @@ namespace Azaliq.WebApp.Controllers
 
                 inputModel.SelectedTags = inputModel.SelectedTags ?? new List<string>();
                 inputModel.SelectedTags.AddRange(newTagsList);
-
-                // Remove duplicates ignoring case
                 inputModel.SelectedTags = inputModel.SelectedTags
                     .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
@@ -193,11 +189,7 @@ namespace Azaliq.WebApp.Controllers
 
             if (editModel == null)
                 return RedirectToAction(nameof(Index));
-
-            // Populate categories dropdown
             editModel.Categories = await _categoryService.GetCategoryDropDownDataAsync();
-
-            // SelectedTags should already be populated in EditProductAsync
 
             return View(editModel);
         }
@@ -213,8 +205,6 @@ namespace Azaliq.WebApp.Controllers
                     inputModel.Categories = await _categoryService.GetCategoryDropDownDataAsync();
                     return View(inputModel);
                 }
-
-                // Merge newTags (comma separated string) with SelectedTags
                 if (!string.IsNullOrWhiteSpace(newTags))
                 {
                     var newTagsList = newTags
@@ -222,8 +212,6 @@ namespace Azaliq.WebApp.Controllers
                         .ToList();
 
                     inputModel.SelectedTags ??= new List<string>();
-
-                    // Add new tags if not already present
                     foreach (var tag in newTagsList)
                     {
                         if (!inputModel.SelectedTags.Contains(tag, StringComparer.OrdinalIgnoreCase))
@@ -250,9 +238,6 @@ namespace Azaliq.WebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-
-
-        // GET: Product/Delete/5
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -275,12 +260,9 @@ namespace Azaliq.WebApp.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                // Optionally: log error and show friendly error page
                 return RedirectToAction(nameof(Index));
             }
         }
-
-        // POST: Product/DeleteConfirmed
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -301,7 +283,6 @@ namespace Azaliq.WebApp.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                // Optionally: log error and show friendly error page
                 return RedirectToAction(nameof(Index));
             }
         }

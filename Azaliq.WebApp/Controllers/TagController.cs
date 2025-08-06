@@ -1,7 +1,5 @@
 ﻿using Azaliq.Data;
-using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
-using Azaliq.ViewModels.Category;
 using Azaliq.ViewModels.Tag;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -125,9 +123,6 @@ namespace Azaliq.WebApp.Controllers
 
             }
         }
-
-
-        // GET: Tag/Delete/5
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -141,8 +136,6 @@ namespace Azaliq.WebApp.Controllers
 
             return View(model);
         }
-
-        // POST: Tag/DeleteConfirmed
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -151,7 +144,6 @@ namespace Azaliq.WebApp.Controllers
 
             if (!result)
             {
-                // Could reload model and show error if desired
                 ModelState.AddModelError(string.Empty, "Failed to delete tag.");
                 var model = await _tagService.GetTagForDeletionAsync(id);
                 return View("Delete", model);

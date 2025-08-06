@@ -151,7 +151,6 @@
 
 @section Scripts {
     <script>
-        // Promote/Demote Modal Logic
         let promoteDemoteFormToSubmit = null;
         const promoteDemoteMessage = document.getElementById('promoteDemoteMessage');
         document.querySelectorAll('.promote-demote-btn').forEach(button => {
@@ -165,8 +164,6 @@
         document.getElementById('confirmPromoteDemote').addEventListener('click', () => {
             if (promoteDemoteFormToSubmit) promoteDemoteFormToSubmit.submit();
         });
-
-        // Ban/Unban Modal Logic
         let banUnbanFormToSubmit = null;
         const banUnbanMessage = document.getElementById('banUnbanMessage');
         document.querySelectorAll('.ban-unban-btn').forEach(button => {
@@ -181,8 +178,6 @@
         document.getElementById('confirmBanUnban').addEventListener('click', () => {
             if (banUnbanFormToSubmit) banUnbanFormToSubmit.submit();
         });
-
-        // Archive Modal Logic
         let archiveDeleteFormToSubmit = null;
         const archiveDeleteMessage = document.getElementById('archiveDeleteMessage');
         document.querySelectorAll('.archive-delete-btn').forEach(button => {

@@ -42,7 +42,7 @@ public class UserRoleService : IUserRoleService
                 Email = user.Email!,
                 UserName = user.UserName!,
                 IsManager = isManager,
-                IsBanned = user.IsBanned 
+                IsBanned = user.IsBanned
             });
         }
 
@@ -80,28 +80,18 @@ public class UserRoleService : IUserRoleService
 
         if (user == null || IsAdminUser(user))
             return false;
-
-        // Load orders including their order products
         var orders = await _context.Orders
             .Where(o => o.UserId == userId)
             .ToListAsync();
-
-        // Collect all order product IDs related to these orders
         var orderIds = orders.Select(o => o.Id).ToList();
-
-        // Delete all related order products first
         var orderProducts = await _context.OrdersProducts
             .Where(op => orderIds.Contains(op.OrderId))
             .ToListAsync();
 
         _context.OrdersProducts.RemoveRange(orderProducts);
-
-        // Now delete orders
         _context.Orders.RemoveRange(orders);
 
         await _context.SaveChangesAsync();
-
-        // Finally delete the user
         var result = await _userManager.DeleteAsync(user);
 
         return result.Succeeded;

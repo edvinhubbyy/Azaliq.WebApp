@@ -4,10 +4,8 @@
 
 namespace Azaliq.Data.Migrations
 {
-    /// <inheritdoc />
     public partial class testtest : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
@@ -50,8 +48,6 @@ namespace Azaliq.Data.Migrations
                 oldType: "nvarchar(128)",
                 oldMaxLength: 128);
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(

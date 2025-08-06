@@ -1,7 +1,7 @@
 ﻿using Azaliq.Data.Models.Models.Enum;
 using System.ComponentModel.DataAnnotations;
-using static Azaliq.GCommon.ValidationConstants.Store;
 using static Azaliq.GCommon.ValidationConstants.General;
+using static Azaliq.GCommon.ValidationConstants.Store;
 
 namespace Azaliq.ViewModels.Store
 {
@@ -11,7 +11,7 @@ namespace Azaliq.ViewModels.Store
         [StringLength(NameMaxLength, ErrorMessage = NameLengthErrorMessage)]
         [RegularExpression(StoreNameRegex, ErrorMessage = StoreNameRegexErrorMessage)]
         public string Name { get; set; } = null!;
-        
+
         [Required(ErrorMessage = GoogleMapsErrorMessage)]
         [Url(ErrorMessage = GoogleMapsUrlErrorMessage)]
         [StringLength(GoogleMapsUrlLength, ErrorMessage = GoogleMapsUrlLengthErrorMessage)]

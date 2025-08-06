@@ -1,10 +1,4 @@
-﻿using Azaliq.Data.Models.Models;
-using Azaliq.ViewModels.CartItems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azaliq.ViewModels.CartItems;
 
 namespace Azaliq.Services.Core.Contracts
 {

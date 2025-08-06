@@ -1,14 +1,9 @@
-﻿using Azaliq.ViewModels.Product;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Azaliq.Data;
 using Azaliq.Data.Configurations;
 using Azaliq.Services.Core.Contracts;
-using Microsoft.EntityFrameworkCore;
 using Azaliq.ViewModels.Category;
-using Azaliq.Data;
+using Azaliq.ViewModels.Product;
+using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.Services.Core
 {
@@ -116,8 +111,6 @@ namespace Azaliq.Services.Core
             return true;
         }
 
-        // TEST: Check if a category can be deleted based on associated products
-
         public async Task<(bool CanDelete, List<string> BlockingProducts)> CanDeleteCategoryAsync(int categoryId)
         {
             var products = await _dbContext.Products
@@ -149,7 +142,6 @@ namespace Azaliq.Services.Core
             {
                 Id = category.Id,
                 Name = category.Name,
-                // Add other properties if needed
             };
 
             return model;

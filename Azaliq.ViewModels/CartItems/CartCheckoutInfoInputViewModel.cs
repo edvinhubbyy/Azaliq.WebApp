@@ -32,7 +32,7 @@ namespace Azaliq.ViewModels.CartItems
         [Display(Name = DeliveryOptionDisplayName)]
         public DeliveryOptions? DeliveryOption { get; set; }
 
-        public List<StoreDropDownModel> Stores { get; set; } 
+        public List<StoreDropDownModel> Stores { get; set; }
             = new List<StoreDropDownModel>();
 
         public int? PickupStoreId { get; set; }  // Nullable to allow no selection

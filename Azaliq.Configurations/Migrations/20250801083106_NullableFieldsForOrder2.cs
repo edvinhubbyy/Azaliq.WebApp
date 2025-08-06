@@ -4,10 +4,8 @@
 
 namespace Azaliq.Data.Migrations
 {
-    /// <inheritdoc />
     public partial class NullableFieldsForOrder2 : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
@@ -30,8 +28,6 @@ namespace Azaliq.Data.Migrations
                 oldType: "nvarchar(100)",
                 oldMaxLength: 100);
         }
-
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(

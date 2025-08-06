@@ -24,7 +24,7 @@ namespace Azaliq.Data.Models.Models
         [Comment("Country code of the Store")]
         public CountryCode CountryCode { get; set; }
 
-        public ICollection<Order> PickupOrders { get; set; } 
+        public ICollection<Order> PickupOrders { get; set; }
             = new HashSet<Order>();
 
         [Comment("Indicates if the Store is deleted")]

@@ -65,8 +65,6 @@ namespace Azaliq.Services.Core
                 Email = order.Email ?? order.User.Email,
                 Phone = order.Phone,
                 CountryCode = order.CountryCode,
-
-                // Address only for courier orders
                 Address = order.DeliveryOption == DeliveryOptions.Courier ? order.DeliveryAddress : string.Empty,
                 City = order.DeliveryOption == DeliveryOptions.Courier ? order.City : string.Empty,
                 ZipCode = order.DeliveryOption == DeliveryOptions.Courier ? order.ZipCode : string.Empty,
@@ -75,7 +73,7 @@ namespace Azaliq.Services.Core
                 PickupStoreUrl = order.PickupStore != null
                     ? $"/Store/Map/{order.PickupStore.Id}"
                     : null,
-                
+
                 DeliveryOption = order.DeliveryOption.ToString(),
 
                 Items = order.Products.Select(oi => new OrderItemViewModel
@@ -113,8 +111,6 @@ namespace Azaliq.Services.Core
 
             if (!cartItems.Any())
                 throw new InvalidOperationException("Cart is empty.");
-
-            // Validate stock before placing order
             foreach (var item in cartItems)
             {
                 if (item.Quantity > item.Product.Quantity)
@@ -122,8 +118,6 @@ namespace Azaliq.Services.Core
             }
 
             var deliveryOption = Enum.Parse<DeliveryOptions>(inputModel.DeliveryOption);
-
-            // Validate pickup store if pickup delivery option
             if (deliveryOption == DeliveryOptions.PickupFromStore)
             {
                 if (inputModel.PickupStoreId == null)
@@ -144,8 +138,6 @@ namespace Azaliq.Services.Core
 
                 DeliveryOption = deliveryOption,
                 PickupStoreId = inputModel.PickupStoreId,
-
-                // Use empty string instead of null if not courier
                 DeliveryAddress = deliveryOption == DeliveryOptions.Courier ? inputModel.Address : string.Empty,
                 City = deliveryOption == DeliveryOptions.Courier ? inputModel.City : string.Empty,
                 ZipCode = deliveryOption == DeliveryOptions.Courier ? inputModel.ZipCode : string.Empty,
@@ -163,8 +155,6 @@ namespace Azaliq.Services.Core
                     ProductId = item.ProductId,
                     Quantity = item.Quantity
                 });
-
-                // Decrease stock
                 item.Product.Quantity -= item.Quantity;
             }
 

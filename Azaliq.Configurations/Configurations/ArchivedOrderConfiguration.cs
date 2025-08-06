@@ -11,13 +11,11 @@ namespace Azaliq.Data.Configurations
             builder.HasKey(o => o.Id);
 
             builder.Property(o => o.Id)
-                .ValueGeneratedNever(); // GUID assigned manually
+                .ValueGeneratedNever();
 
-            // Status enum stored as int or string (optional)
             builder.Property(o => o.Status)
                 .IsRequired();
 
-            // Decimal precision for total amount
             builder.Property(o => o.TotalAmount)
                 .HasColumnType("decimal(18,2)")
                 .IsRequired();

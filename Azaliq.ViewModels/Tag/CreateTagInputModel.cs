@@ -9,6 +9,6 @@ namespace Azaliq.ViewModels.Tag
         [Required(ErrorMessage = TagRequiredErrorMessage)]
         [StringLength(NameMaxLength, MinimumLength = NameMinLength, ErrorMessage = TagErrorMessage)]
         public string Name { get; set; } = null!;
-        
+
     }
 }

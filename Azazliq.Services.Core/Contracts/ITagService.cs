@@ -1,10 +1,4 @@
-﻿using Azaliq.ViewModels.Product;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Azaliq.ViewModels.Tag;
 
 namespace Azaliq.Services.Core.Contracts
@@ -13,7 +7,7 @@ namespace Azaliq.Services.Core.Contracts
     {
 
         Task<IEnumerable<TagIndexViewModel>> GetAllTagsAsync(string? search = null);
-        
+
         Task AddTagAsync(CreateTagInputModel model);
 
         Task<TagEditInputModel?> GetTagByIdAsync(int? id);

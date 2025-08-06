@@ -15,7 +15,7 @@ namespace Azaliq.Data.Models.Models
 
         [Comment("Date and time when the Order was placed.")]
         public DateTime OrderDate { get; set; }
-        
+
         [Comment("Optional date and time when the Order is scheduled for pickup.")]
         public DateTime? PickupTime { get; set; }
 
@@ -33,7 +33,7 @@ namespace Azaliq.Data.Models.Models
         public bool IsDelivery { get; set; }
 
         public int? PickupStoreId { get; set; }
-        
+
         public virtual Store? PickupStore { get; set; }
 
         [Comment("Optional delivery address for the Order, if it is a delivery order.")]
@@ -45,17 +45,16 @@ namespace Azaliq.Data.Models.Models
         public bool IsDeleted { get; set; } = false;
 
         [Comment("Added customer/order details:")]
-        // Added customer/order details:
         public string FullName { get; set; } = null!;
-        
+
         public string Email { get; set; } = null!;
-        
+
         public string Phone { get; set; } = null!;
-        
+
         public CountryCode CountryCode { get; set; }
-        
+
         public string? City { get; set; }
-        
+
         public string? ZipCode { get; set; }
 
 

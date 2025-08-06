@@ -30,7 +30,7 @@ namespace Azaliq.Data.Configurations
             entity.HasData(GetSeedCategories());
 
         }
-        
+
         private static Category[] GetSeedCategories()
         {
             return new[]

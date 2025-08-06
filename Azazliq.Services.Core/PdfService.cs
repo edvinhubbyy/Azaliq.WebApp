@@ -17,29 +17,21 @@ namespace Azaliq.Services.Core
             Document doc = new Document(PageSize.A4, 40, 40, 80, 50);
             PdfWriter.GetInstance(doc, ms);
             doc.Open();
-
-            // Colors
             var darkGreen = new BaseColor(0, 100, 0);
             var softPink = new BaseColor(255, 192, 203);
             var deepPurple = new BaseColor(102, 0, 102);
             var lightGray = new BaseColor(230, 230, 230);
-
-            // Fonts
             var titleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 22, darkGreen);
             var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 14, deepPurple);
             var normalFont = FontFactory.GetFont(FontFactory.HELVETICA, 11, BaseColor.BLACK);
             var boldFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 11, BaseColor.BLACK);
             var smallItalicFont = FontFactory.GetFont(FontFactory.HELVETICA_OBLIQUE, 9, BaseColor.GRAY);
-
-            // Flower Shop Title with underline
             var title = new Paragraph("🌸 Azaliq Flower Shop 🌸", titleFont)
             {
                 Alignment = Element.ALIGN_CENTER,
                 SpacingAfter = 15f
             };
             doc.Add(title);
-
-            // Invoice header with soft pink background
             var headerTable = new PdfPTable(1) { WidthPercentage = 100 };
             var headerCell = new PdfPCell(new Phrase("INVOICE", headerFont))
             {
@@ -54,8 +46,6 @@ namespace Azaliq.Services.Core
             doc.Add(new Paragraph($"Invoice Number: #{order.Id}", normalFont));
             doc.Add(new Paragraph($"Date Issued: {order.OrderDate.ToLocalTime():dd.MM.yyyy}", normalFont));
             doc.Add(new Paragraph(" "));
-
-            // Seller Info in a colored box
             var sellerTable = new PdfPTable(1) { WidthPercentage = 50, HorizontalAlignment = Element.ALIGN_LEFT };
             var sellerCell = new PdfPCell
             {
@@ -72,8 +62,6 @@ namespace Azaliq.Services.Core
             doc.Add(sellerTable);
 
             doc.Add(new Paragraph(" "));
-
-            // Buyer Info box with border and padding
             var buyerTable = new PdfPTable(1) { WidthPercentage = 50, HorizontalAlignment = Element.ALIGN_LEFT };
             var buyerCell = new PdfPCell
             {
@@ -89,8 +77,6 @@ namespace Azaliq.Services.Core
             doc.Add(buyerTable);
 
             doc.Add(new Paragraph(" "));
-
-            // Products Table with colorful headers
             PdfPTable productTable = new PdfPTable(5)
             {
                 WidthPercentage = 100,
@@ -129,8 +115,6 @@ namespace Azaliq.Services.Core
                 productTable.AddCell(new PdfPCell(new Phrase(productTotal.ToString("F2"), normalFont)) { HorizontalAlignment = Element.ALIGN_RIGHT, Padding = 5 });
                 productTable.AddCell(new PdfPCell(new Phrase((productTotal / EuroToBgnRate).ToString("F2"), normalFont)) { HorizontalAlignment = Element.ALIGN_RIGHT, Padding = 5 });
             }
-
-            // Total row with different background color
             var totalBgColor = new BaseColor(200, 255, 200); // Light green background
             var totalLabelCell = new PdfPCell(new Phrase("Total:", boldFont))
             {
@@ -155,8 +139,6 @@ namespace Azaliq.Services.Core
             });
 
             doc.Add(productTable);
-
-            // Delivery details section
             var deliveryType = order.DeliveryOption == Data.Models.Models.Enum.DeliveryOptions.Courier
                 ? "Courier Delivery"
                 : "Pickup from Store";
@@ -177,8 +159,6 @@ namespace Azaliq.Services.Core
             {
                 doc.Add(new Paragraph($"Pickup Date & Time: {order.PickupTime.Value.ToLocalTime():dd.MM.yyyy HH:mm}", normalFont));
             }
-
-            // Footer
             var thankYou = new Paragraph("Thank you for choosing Azaliq! 🌷", new Font(Font.FontFamily.HELVETICA, 12, Font.BOLDITALIC, darkGreen))
             {
                 Alignment = Element.ALIGN_CENTER,

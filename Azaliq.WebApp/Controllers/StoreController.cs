@@ -1,10 +1,8 @@
 ﻿using Azaliq.Data;
-using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Store;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.WebApp.Controllers
 {
@@ -19,8 +17,6 @@ namespace Azaliq.WebApp.Controllers
             _storeService = storeService;
             _context = context;
         }
-
-        // GET: /Store
         [HttpGet]
         [AllowAnonymous] // Allow anonymous access to the index page
         public async Task<IActionResult> Index()
@@ -28,14 +24,10 @@ namespace Azaliq.WebApp.Controllers
             var stores = await _storeService.GetAllAsync();
             return View(stores);
         }
-
-        // GET: /Store/Create
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: /Store/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateStoreLocationInputModel inputModel)
@@ -53,8 +45,6 @@ namespace Azaliq.WebApp.Controllers
             await _storeService.AddAsync(inputModel);
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: /Store/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
             var store = await _storeService.GetByIdAsync(id);
@@ -72,8 +62,6 @@ namespace Azaliq.WebApp.Controllers
 
             return View(editModel);
         }
-
-        // POST: /Store/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditStoreLocationInputModel inputModel)
@@ -94,8 +82,6 @@ namespace Azaliq.WebApp.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: /Store/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var store = await _storeService.GetByIdAsync(id);
@@ -104,8 +90,6 @@ namespace Azaliq.WebApp.Controllers
 
             return View(store);
         }
-
-        // POST: /Store/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -120,8 +104,6 @@ namespace Azaliq.WebApp.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: /Store/Map/5
         [AllowAnonymous]
         public async Task<IActionResult> Map(int id)
         {

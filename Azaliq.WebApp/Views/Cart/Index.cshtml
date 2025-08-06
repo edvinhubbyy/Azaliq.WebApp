@@ -161,8 +161,6 @@
                 const priceBgnText = row.querySelector('td:nth-child(4) div:first-child').textContent;
                 const priceBgn = parseFloat(priceBgnText.replace(/[^\d.,-]/g, '').replace(',', '.'));
                 let quantity = parseInt(input.value);
-
-                // Tooltip handling
                 if (isNaN(quantity) || quantity < 1 || quantity > 500) {
                     formValid = false;
                     input.setAttribute('data-bs-title', 'Quantity must be between 1 and 500');
@@ -201,8 +199,6 @@
                 validateAndUpdate();
             });
         });
-
-        // Initialize tooltips only once on page load
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.quantity-input').forEach(input => {
                 new bootstrap.Tooltip(input);

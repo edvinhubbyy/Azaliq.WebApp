@@ -14,8 +14,6 @@ namespace Azaliq.WebApp.Controllers
         {
             _reviewService = reviewService;
         }
-
-        // GET: Reviews/ProductReviews?productId=123
         [HttpGet]
         public async Task<IActionResult> ProductReviews(int productId)
         {
@@ -34,22 +32,16 @@ namespace Azaliq.WebApp.Controllers
 
             return View(model);
         }
-
-        // GET: Reviews/Add?productId=123
         [HttpGet]
         public IActionResult AddReview(int productId)
         {
             var model = new ReviewInputModel { ProductId = productId };
             return View(model);
         }
-
-
-        // POST: Reviews/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(ReviewInputModel model)
         {
-            // Assign UserName and UserId before model validation
             model.UserName = User.Identity?.Name ?? "Anonymous";
             model.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -57,9 +49,6 @@ namespace Azaliq.WebApp.Controllers
 
             return RedirectToAction("Details", "Product", new { id = model.ProductId });
         }
-
-
-        // POST: Reviews/Delete
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]

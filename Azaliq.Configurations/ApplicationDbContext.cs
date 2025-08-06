@@ -1,6 +1,5 @@
 ﻿using Azaliq.Data.Configurations;
 using Azaliq.Data.Models.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -31,10 +30,8 @@ namespace Azaliq.Data
         public virtual DbSet<Favorite> Favorites { get; set; } = null!;
 
         public virtual DbSet<Manager> Managers { get; set; } = null!;
-        
-        public virtual DbSet<Review> Reviews { get; set; } = null!;
 
-        // Archives
+        public virtual DbSet<Review> Reviews { get; set; } = null!;
 
         public DbSet<ArchivedUser> ArchivedUsers { get; set; } = null!;
         public DbSet<ArchivedOrder> ArchivedOrders { get; set; } = null!;

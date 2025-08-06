@@ -1,5 +1,4 @@
-﻿using Azaliq.Services.Core;
-using Azaliq.Services.Core.Contracts;
+﻿using Azaliq.Services.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -15,9 +14,6 @@ namespace Azaliq.WebApp.Controllers
             _orderService = orderService;
             _pdfService = pdfService;
         }
-
-
-        // GET: /Orders/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);
@@ -25,11 +21,8 @@ namespace Azaliq.WebApp.Controllers
             {
                 return NotFound();
             }
-            // Return the order details view with OrderDetailsViewModel
             return View(order);
         }
-
-        // GET: /Orders/MyOrders
         public async Task<IActionResult> MyOrders()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -46,9 +39,6 @@ namespace Azaliq.WebApp.Controllers
             var pdfBytes = await _pdfService.GenerateOrderPdfWithQrAsync(orderEntity);
             return File(pdfBytes, "application/pdf", $"Azaliq_Order_{orderEntity.Id}.pdf");
         }
-
-
-        // POST: /Orders/Reorder
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reorder(int orderId)
@@ -65,8 +55,6 @@ namespace Azaliq.WebApp.Controllers
             TempData["Success"] = "Previous order added to your cart!";
             return RedirectToAction("Index", "Cart");
         }
-
-        // GET: /Orders/History
         public async Task<IActionResult> History()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

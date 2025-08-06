@@ -13,7 +13,7 @@ namespace Azaliq.Data.Configurations
             builder.HasKey(u => u.Id);
 
             builder.Property(u => u.Id)
-                .ValueGeneratedNever(); // Because you'll assign a new GUID manually
+                .ValueGeneratedNever();
 
             builder.Property(u => u.Email)
                 .IsRequired()

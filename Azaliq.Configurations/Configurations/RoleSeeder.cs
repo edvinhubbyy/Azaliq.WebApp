@@ -13,7 +13,7 @@ namespace Azaliq.Data.Configurations
 
             EnsureRoleExists(roleManager, "Admin");
             EnsureRoleExists(roleManager, "Manager");
-            EnsureRoleExists(roleManager, "User"); 
+            EnsureRoleExists(roleManager, "User");
 
             SeedUser(userManager, "admin@example.com", "Admin@123", "Admin");
         }

@@ -1,7 +1,7 @@
 ﻿using Azaliq.Data.Models.Models.Enum;
 using System.ComponentModel.DataAnnotations;
-using static Azaliq.GCommon.ValidationConstants.Store;
 using static Azaliq.GCommon.ValidationConstants.General;
+using static Azaliq.GCommon.ValidationConstants.Store;
 
 namespace Azaliq.ViewModels.Store
 {

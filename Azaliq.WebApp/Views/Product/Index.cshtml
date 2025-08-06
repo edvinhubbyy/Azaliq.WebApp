@@ -125,8 +125,6 @@
             if (parseInt(newVal,10) > 500 || /^0/.test(newVal)) { event.preventDefault(); return false; }
             return true;
         }
-
-        // Toggle mobile search input visibility on button click
         document.getElementById('mobileSearchBtn').addEventListener('click', function () {
             const form = document.getElementById('mobileSearchForm');
             if (form.classList.contains('d-none')) {

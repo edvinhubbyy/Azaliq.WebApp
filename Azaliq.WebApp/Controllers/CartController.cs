@@ -1,4 +1,5 @@
 ﻿using Azaliq.Data;
+using Azaliq.Data.Models.Models;
 using Azaliq.Data.Models.Models.Enum;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.CartItems;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Azaliq.Data.Models.Models;
 
 namespace Azaliq.WebApp.Controllers
 {
@@ -33,8 +33,6 @@ namespace Azaliq.WebApp.Controllers
             _userManager = userManager;
             _emailService = emailService;
         }
-
-        // GET: /Cart
         public async Task<IActionResult> Index()
         {
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -48,8 +46,6 @@ namespace Azaliq.WebApp.Controllers
 
             return View(model);
         }
-
-        // POST: /Cart/Add/{productId}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(int productId, int quantity = 1)
@@ -60,8 +56,6 @@ namespace Azaliq.WebApp.Controllers
 
             return RedirectToAction("Index", "Cart");
         }
-
-        // POST: /Cart/Delete/{productId}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int productId)
@@ -85,14 +79,9 @@ namespace Azaliq.WebApp.Controllers
             }
 
             await _cartService.ClearCartAsync(userId);
-
-            // Redirect back to cart page after clearing
             return RedirectToAction(nameof(Index));
         }
-
-        // POST: /Cart/UpdateAndCheckout
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAndCheckout(List<CartItemViewModel> Items)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -152,8 +141,6 @@ namespace Azaliq.WebApp.Controllers
                     DisplayName = $"{s.Name} - {s.Address}"
                 })
                 .ToListAsync();
-
-            // Optional: Prefill user info if you have it in your user profile
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             var model = new CartCheckoutInfoInputViewModel
@@ -176,7 +163,6 @@ namespace Azaliq.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(CartCheckoutInfoInputViewModel model)
         {
-            // Reload stores if validation fails and view redisplayed
             model.Stores = await _dbContext.StoresLocations
                 .Where(s => !s.IsDeleted)
                 .Select(s => new StoreDropDownModel
@@ -232,8 +218,6 @@ namespace Azaliq.WebApp.Controllers
                 DeliveryOption = deliveryOption.ToString(),
                 PickupStoreId = deliveryOption == DeliveryOptions.PickupFromStore ? model.PickupStoreId : null
             };
-
-            // Place order, get the saved order entity (make sure PlaceOrderAsync returns Order)
             var order = await _orderService.PlaceOrderAsync(orderModel, userId);
 
             if (order == null)
@@ -241,11 +225,7 @@ namespace Azaliq.WebApp.Controllers
                 TempData["Error"] = "There was a problem placing your order.";
                 return RedirectToAction("Index");
             }
-
-            // Generate PDF bytes
             var pdfBytes = await _pdfService.GenerateOrderPdfWithQrAsync(order);
-
-            // Send invoice PDF via email
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null && !string.IsNullOrEmpty(user.Email))
             {

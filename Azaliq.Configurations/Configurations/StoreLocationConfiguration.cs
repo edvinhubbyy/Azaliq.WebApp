@@ -32,5 +32,5 @@ namespace Azaliq.Data.Configurations
                 .HasMaxLength(PhoneMaxLength);
         }
     }
-    
+
 }

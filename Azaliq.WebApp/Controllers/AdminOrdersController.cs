@@ -1,7 +1,5 @@
 ﻿using Azaliq.Data.Models.Models;
-using Azaliq.Services.Core;
 using Azaliq.Services.Core.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,15 +16,11 @@ namespace Azaliq.WebApp.Controllers
             _orderService = orderService;
             _userManager = userManager;
         }
-
-        // GET: /AdminOrders/All
         public async Task<IActionResult> All()
         {
             var orders = await _orderService.GetAllOrdersAsync();
             return View(orders);
         }
-
-        // POST: /AdminOrders/ChangeStatus
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeStatus(int orderId, string newStatus)

@@ -86,8 +86,6 @@ namespace Azaliq.WebApp.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -102,8 +100,6 @@ namespace Azaliq.WebApp.Controllers
 
             return View(model);
         }
-
-        // POST: Categories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditCategoryInputModel inputModel)

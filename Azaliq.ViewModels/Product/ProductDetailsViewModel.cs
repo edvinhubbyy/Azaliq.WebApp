@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Azaliq.ViewModels.Review;
+﻿using Azaliq.ViewModels.Review;
+using System.ComponentModel.DataAnnotations;
 using static Azaliq.GCommon.ValidationConstants.Product;
 
 namespace Azaliq.ViewModels.Product
@@ -16,7 +16,7 @@ namespace Azaliq.ViewModels.Product
         public string? ImageUrl { get; set; }
 
         public string Price { get; set; } = null!;
-        
+
         public int Quantity { get; set; }
 
         public string Category { get; set; } = null!;
@@ -31,10 +31,10 @@ namespace Azaliq.ViewModels.Product
         public ICollection<string> Tags { get; set; }
             = new HashSet<string>();
 
-        public ICollection<ReviewViewModel> Reviews { get; set; } 
+        public ICollection<ReviewViewModel> Reviews { get; set; }
             = new HashSet<ReviewViewModel>();
 
-        public ICollection<ProductIndexViewModel> OtherProducts { get; set; } 
+        public ICollection<ProductIndexViewModel> OtherProducts { get; set; }
             = new HashSet<ProductIndexViewModel>();
 
 

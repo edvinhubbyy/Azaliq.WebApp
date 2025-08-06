@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System.Net;
-using System.Net.Mail;
 
 namespace Azaliq.Services.Core
 {
@@ -12,12 +11,14 @@ namespace Azaliq.Services.Core
         private readonly string _apiKey;
         private readonly string _fromEmail;
         private readonly string _fromName;
+        private readonly ILogger<EmailSender> _logger;
 
-        public EmailSender(IConfiguration config)
+        public EmailSender(IConfiguration config, ILogger<EmailSender> logger)
         {
             _apiKey = config["SendGrid:ApiKey"]!;
             _fromEmail = config["SendGrid:FromEmail"]!;
             _fromName = config["SendGrid:FromName"]!;
+            _logger = logger;
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage)
@@ -31,7 +32,7 @@ namespace Azaliq.Services.Core
             if (!response.IsSuccessStatusCode)
             {
                 var body = await response.Body.ReadAsStringAsync();
-                throw new InvalidOperationException($"SendGrid failed with status {response.StatusCode}: {body}");
+                _logger.LogError($"SendGrid email to {toEmail} failed with status {response.StatusCode}: {body}");
             }
         }
     }

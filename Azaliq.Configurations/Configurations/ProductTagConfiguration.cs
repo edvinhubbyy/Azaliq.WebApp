@@ -14,15 +14,13 @@ namespace Azaliq.Data.Configurations
             entity.Property(t => t.Name)
                 .IsRequired()
                 .HasMaxLength(NameMaxLength);
-
-            // Many-to-many with Product, using EF Core conventions
             entity.HasMany(t => t.Products)
                 .WithMany(p => p.Tags);
 
             entity.HasData(GetSeedTags());
 
         }
-        
+
         private static ProductTag[] GetSeedTags()
         {
             return new[]

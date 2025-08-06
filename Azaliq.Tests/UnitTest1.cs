@@ -5,12 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 [TestFixture]
 public class CartServiceTests
@@ -27,20 +22,12 @@ public class CartServiceTests
     {
         _cartItemsData = new List<CartItem>();
         _productsData = new List<Product>();
-
-        // Setup CartItems DbSet mock backed by list
         _mockCartItems = CreateDbSetMock(_cartItemsData);
-
-        // Setup Products DbSet mock backed by list
         _mockProducts = CreateDbSetMock(_productsData);
-
-        // Setup DbContext mock
         _mockContext = new Mock<ApplicationDbContext>();
         _mockContext.Setup(c => c.CartItems).Returns(_mockCartItems.Object);
         _mockContext.Setup(c => c.Products).Returns(_mockProducts.Object);
         _mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
-
-        // Setup AddAsync to add item to list and return dummy EntityEntry
         _mockCartItems.Setup(m => m.AddAsync(It.IsAny<CartItem>(), It.IsAny<CancellationToken>()))
             .Returns((CartItem entity, CancellationToken token) =>
             {
@@ -51,8 +38,6 @@ public class CartServiceTests
 
         _cartService = new CartService(_mockContext.Object);
     }
-
-    // Helper to create a mock DbSet<T> backed by a List<T>
     private static Mock<DbSet<T>> CreateDbSetMock<T>(List<T> list) where T : class
     {
         var queryable = list.AsQueryable();
@@ -264,8 +249,6 @@ internal class AsyncQueryProvider<TEntity> : IAsyncQueryProvider
 
     public TResult Execute<TResult>(Expression expression)
         => _inner.Execute<TResult>(expression);
-
-    // EF Core 7+ requires this signature, returning TResult directly
     public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         => Execute<TResult>(expression);
 }

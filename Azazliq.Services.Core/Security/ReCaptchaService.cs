@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
-using Azaliq.Services.Core.Security.Contract;
+﻿using Azaliq.Services.Core.Security.Contract;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace Azaliq.Services.Core.Security
 {

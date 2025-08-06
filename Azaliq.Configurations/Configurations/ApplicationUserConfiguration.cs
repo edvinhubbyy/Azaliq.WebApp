@@ -8,17 +8,13 @@ namespace Azaliq.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> entity)
         {
-            
-            // Configure FullName as required with max length
             entity.Property(u => u.FullName)
                 .IsRequired()
                 .HasMaxLength(150);
 
-            // Address is optional, set max length
             entity.Property(u => u.Address)
                 .HasMaxLength(300);
 
-            // One-to-many relation with Orders
             entity
                 .HasMany(u => u.Orders)
                 .WithOne(o => o.User)
@@ -31,5 +27,5 @@ namespace Azaliq.Data.Configurations
 
         }
     }
-    
+
 }
