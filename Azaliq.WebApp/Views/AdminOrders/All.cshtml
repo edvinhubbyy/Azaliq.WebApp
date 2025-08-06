@@ -1,7 +1,9 @@
 ﻿@model IEnumerable<Azaliq.ViewModels.Order.OrderViewModel>
 
+@using System.Globalization
 @{
     ViewData["Title"] = "All";
+    var bgCulture = new CultureInfo("bg-BG");
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -33,7 +35,7 @@
                 <td>
                     <form asp-action="ChangeStatus" method="post" class="d-flex gap-2 align-items-center">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="orderId" value="@order.OrderId"/>
+                        <input type="hidden" name="orderId" value="@order.OrderId" />
                         <select name="newStatus" class="form-select form-select-sm" style="width: auto;">
                             @foreach (var status in Enum.GetValues(typeof(Azaliq.Data.Models.Models.Enum.OrderStatus)).Cast<Azaliq.Data.Models.Models.Enum.OrderStatus>())
                             {
@@ -43,14 +45,14 @@
                         <button type="submit" class="btn btn-primary btn-sm">Change</button>
                     </form>
                 </td>
-                <td>@order.TotalAmount.ToString("C")</td>
+                <td>@order.TotalAmount.ToString("C", bgCulture)</td>
                 <td>
                     <ul>
                         @foreach (var item in order.Items)
                         {
                             var subtotal = item.Price * item.Quantity;
                             <li>
-                                @item.ProductName (@item.Quantity × @item.Price.ToString("C")) = <strong>@subtotal.ToString("C")</strong>
+                                @item.ProductName (@item.Quantity × @item.Price.ToString("C", bgCulture)) = <strong>@subtotal.ToString("C", bgCulture)</strong>
                             </li>
                         }
                     </ul>

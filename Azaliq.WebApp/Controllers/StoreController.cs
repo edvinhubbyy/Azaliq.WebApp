@@ -1,4 +1,5 @@
 ﻿using Azaliq.Data;
+using Azaliq.Data.Models.Models.Enum;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Store;
 using Microsoft.AspNetCore.Authorization;
@@ -57,6 +58,7 @@ namespace Azaliq.WebApp.Controllers
                 Name = store.Name,
                 GoogleMapsUrl = store.GoogleMapsUrl,
                 Address = store.Address,
+                CountryCode = store.CountryCode,
                 Phone = store.Phone
             };
 

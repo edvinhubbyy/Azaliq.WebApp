@@ -1,6 +1,5 @@
 ﻿@using Azaliq.Data.Models.Models.Enum  
 @using Azaliq.Data.Models.Models.Enum.Phone
-<!-- make sure this includes the extension method namespace -->
 @model Azaliq.ViewModels.Store.EditStoreLocationInputModel
 
 @{
@@ -38,9 +37,7 @@
                 <option value="">-- Select Country Code --</option>
                 @foreach (var pref in Enum.GetValues(typeof(CountryCode)).Cast<CountryCode>())
                 {
-                    <option value="@pref" selected="@(Model.CountryCode == pref ? "selected" : null)">
-                        @pref.ToPhonePrefix() (@pref.ToString())
-                    </option>
+                    <option value="@pref">@pref.ToPhonePrefix() (@pref.ToString())</option>
                 }
             </select>
             <span asp-validation-for="CountryCode" class="text-danger"></span>

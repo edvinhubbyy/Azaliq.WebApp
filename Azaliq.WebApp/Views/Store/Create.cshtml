@@ -1,61 +1,64 @@
 ﻿@model Azaliq.ViewModels.Store.CreateStoreLocationInputModel
 
 @using Azaliq.Data.Models.Models.Enum
-@using Microsoft.AspNetCore.Mvc.Rendering
+@using Azaliq.Data.Models.Models.Enum.Phone
 
 @{
     ViewData["Title"] = "Add Store Location";
-    var countryCodeList = Enum.GetValues(typeof(CountryCode))
-        .Cast<CountryCode>()
-        .Select(cc => new SelectListItem
-        {
-            Value = ((int)cc).ToString(),
-            Text = $"{cc} (+{(int)cc})"
-        }).ToList();
 }
 
 <h2>@ViewData["Title"]</h2>
 
 <form asp-action="Create" method="post" novalidate>
     @Html.AntiForgeryToken()
+
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control"/>
+        <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="GoogleMapsUrl" class="form-label"></label>
-        <input asp-for="GoogleMapsUrl" class="form-control"/>
+        <input asp-for="GoogleMapsUrl" class="form-control" />
         <span asp-validation-for="GoogleMapsUrl" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Address" class="form-label"></label>
-        <input asp-for="Address" class="form-control"/>
+        <input asp-for="Address" class="form-control" />
         <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Phone" class="form-label"></label>
-        <div class="input-group">
-            <select asp-for="CountryCode" asp-items="countryCodeList" class="form-select" style="max-width: 120px;">
-                <!-- Keep it compact -->
+    <div class="mb-3 d-flex align-items-center gap-2">
+        <div>
+            <label asp-for="CountryCode" class="form-label"></label>
+            <select asp-for="CountryCode" class="form-select" style="width: 170px;">
+                <option value="">-- Select Country Code --</option>
+                @foreach (var pref in Enum.GetValues(typeof(CountryCode)).Cast<CountryCode>())
+                {
+                    bool selected = Model?.CountryCode == pref;
+                    <option value="@pref" selected="@(selected ? "selected" : null)">
+                        @(pref.ToPhonePrefix() ?? "") (@pref.ToString())
+                    </option>
+                }
             </select>
+            <span asp-validation-for="CountryCode" class="text-danger"></span>
+        </div>
+
+        <div style="flex-grow: 1;">
+            <label asp-for="Phone" class="form-label"></label>
             <input asp-for="Phone"
                    type="tel"
                    class="form-control"
                    placeholder="88 123 4567"
-                   pattern="^\d[\d\s\-().]{7,}\d$"
-                   title="Enter a valid phone number, e.g. 88 123 4567"
-                   autocomplete="tel"/>
+                   pattern="^(\d[\d\s\-().]{6,}\d)$"
+                   title="Enter a valid phone number without country code, e.g. 88 123 4567"
+                   autocomplete="tel" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+            <span id="phoneError" class="text-danger" style="display:none;">Invalid phone number format</span>
         </div>
-        <span asp-validation-for="CountryCode" class="text-danger"></span>
-        <span asp-validation-for="Phone" class="text-danger"></span>
-        <small id="phoneHelp" class="form-text text-muted">Format example: 88 123 4567</small>
-        <span id="phoneError" class="text-danger" style="display:none;">Invalid phone number format</span>
     </div>
-
 
     <button type="submit" class="btn btn-success">Add Store</button>
     <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
@@ -65,15 +68,24 @@
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script>
-        const phoneInput = document.querySelector('input[name="PhoneNumber"]');
+        const form = document.querySelector('form');
+        const phoneInput = form.querySelector('input[name="Phone"]');
         const phoneError = document.getElementById('phoneError');
+        const phonePattern = /^(\d[\d\s\-().]{6,}\d)$/;
 
         phoneInput.addEventListener('input', () => {
-            const pattern = /^\d[\d\s\-().]{7,}\d$/;
-            if (phoneInput.value && !pattern.test(phoneInput.value)) {
+            if (phoneInput.value && !phonePattern.test(phoneInput.value)) {
                 phoneError.style.display = 'inline';
             } else {
                 phoneError.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', (e) => {
+            if (phoneInput.value && !phonePattern.test(phoneInput.value)) {
+                e.preventDefault();
+                phoneError.style.display = 'inline';
+                phoneInput.focus();
             }
         });
     </script>
