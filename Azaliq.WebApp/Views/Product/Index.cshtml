@@ -11,7 +11,18 @@
     <h2>@ViewData["Title"]</h2>
 
     <div class="d-flex align-items-center gap-3">
-        <form asp-action="Index" method="get" class="d-flex">
+        <!-- Mobile search button - visible only on xs -->
+        <button id="mobileSearchBtn" class="btn btn-outline-primary d-sm-none" type="button" aria-label="Toggle Search">
+            <i class="fas fa-search"></i>
+        </button>
+
+        <!-- Mobile search input - hidden initially -->
+        <form asp-action="Index" method="get" id="mobileSearchForm" class="d-none d-sm-none me-2" style="flex-grow: 1;">
+            <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" class="form-control" placeholder="Search flowers..." />
+        </form>
+
+        <!-- Desktop search form - visible on sm and up -->
+        <form asp-action="Index" method="get" class="d-none d-sm-flex">
             <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" class="form-control me-2" placeholder="Search flowers..." style="width: 300px;" />
             <button type="submit" class="btn btn-outline-primary">Search</button>
         </form>
@@ -114,5 +125,16 @@
             if (parseInt(newVal,10) > 500 || /^0/.test(newVal)) { event.preventDefault(); return false; }
             return true;
         }
+
+        // Toggle mobile search input visibility on button click
+        document.getElementById('mobileSearchBtn').addEventListener('click', function () {
+            const form = document.getElementById('mobileSearchForm');
+            if (form.classList.contains('d-none')) {
+                form.classList.remove('d-none');
+                form.querySelector('input[name="searchTerm"]').focus();
+            } else {
+                form.classList.add('d-none');
+            }
+        });
     </script>
 }

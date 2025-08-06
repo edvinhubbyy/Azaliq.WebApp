@@ -1,5 +1,6 @@
 ﻿using Azaliq.Data.Configurations;
 using Azaliq.Data.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -45,6 +46,7 @@ namespace Azaliq.Data
             base.OnModelCreating(builder);
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
         }
     }
 }

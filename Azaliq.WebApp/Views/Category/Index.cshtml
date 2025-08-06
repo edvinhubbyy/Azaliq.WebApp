@@ -7,8 +7,19 @@
 <h2 class="mb-4 text-center fw-bold">@ViewData["Title"]</h2>
 
 <div class="row justify-content-center mb-4">
-    <div class="col-md-6">
-        <form asp-action="Index" method="get" class="d-flex shadow-sm rounded">
+    <div class="col-md-6 d-flex align-items-center">
+        <!-- Mobile search toggle button (visible xs only) -->
+        <button id="mobileSearchBtn" class="btn btn-outline-primary d-sm-none me-2" type="button" aria-label="Toggle Search">
+            <i class="fas fa-search"></i>
+        </button>
+
+        <!-- Mobile search form (hidden initially, xs only) -->
+        <form asp-action="Index" method="get" id="mobileSearchForm" class="d-none d-sm-none flex-grow-1 me-2">
+            <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" class="form-control" placeholder="Search categories..." />
+        </form>
+
+        <!-- Desktop search form (visible sm and up) -->
+        <form asp-action="Index" method="get" class="d-none d-sm-flex flex-grow-1 shadow-sm rounded">
             <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" class="form-control me-2" placeholder="Search categories..." />
             <button type="submit" class="btn btn-outline-primary">Search</button>
         </form>
@@ -61,4 +72,18 @@ else
             </div>
         }
     </div>
+}
+
+@section Scripts {
+    <script>
+        document.getElementById('mobileSearchBtn').addEventListener('click', function () {
+            const form = document.getElementById('mobileSearchForm');
+            if (form.classList.contains('d-none')) {
+                form.classList.remove('d-none');
+                form.querySelector('input[name="searchTerm"]').focus();
+            } else {
+                form.classList.add('d-none');
+            }
+        });
+    </script>
 }
