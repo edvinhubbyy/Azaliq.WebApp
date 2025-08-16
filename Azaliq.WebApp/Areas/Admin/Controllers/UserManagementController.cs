@@ -1,12 +1,12 @@
 ﻿using Azaliq.Data;
-using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
 using Azaliq.ViewModels.Archives;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Azaliq.WebApp.Controllers
+namespace Azaliq.WebApp.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class UserManagementController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Azaliq.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250801081224_NullableFieldsForOrder")]
-    partial class NullableFieldsForOrder
+    [Migration("20250816143043_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -333,7 +333,6 @@ namespace Azaliq.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -398,7 +397,6 @@ namespace Azaliq.Data.Migrations
                         .HasComment("Foreign key to the User who placed the Order.");
 
                     b.Property<string>("ZipCode")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -990,9 +988,6 @@ namespace Azaliq.Data.Migrations
                         .HasColumnType("int")
                         .HasComment("Id of the Product that is being reviewed");
 
-                    b.Property<int?>("ProductId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("Rating")
                         .HasColumnType("int")
                         .HasComment("The rating given in the review, typically from 1 to 5 stars");
@@ -1005,8 +1000,6 @@ namespace Azaliq.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductId1");
 
                     b.HasIndex("UserId");
 
@@ -1224,12 +1217,10 @@ namespace Azaliq.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -1266,12 +1257,10 @@ namespace Azaliq.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -1441,14 +1430,10 @@ namespace Azaliq.Data.Migrations
             modelBuilder.Entity("Azaliq.Data.Models.Models.Review", b =>
                 {
                     b.HasOne("Azaliq.Data.Models.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Azaliq.Data.Models.Models.Product", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("ProductId1");
 
                     b.HasOne("Azaliq.Data.Models.Models.ApplicationUser", "User")
                         .WithMany()

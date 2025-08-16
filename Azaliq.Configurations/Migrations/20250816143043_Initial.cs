@@ -175,8 +175,8 @@ namespace Azaliq.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -220,8 +220,8 @@ namespace Azaliq.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -254,39 +254,6 @@ namespace Azaliq.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 },
                 comment: "Manager in the system");
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false, comment: "Unique identifier for the Order.")
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "Foreign key to the User who placed the Order."),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Date and time when the Order was placed."),
-                    PickupTime = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "Optional date and time when the Order is scheduled for pickup."),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Status of the Order, indicating its current state in the order lifecycle."),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, comment: "Total amount for the Order, calculated based on the products and their quantities."),
-                    IsDelivery = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the Order is for delivery or pickup."),
-                    DeliveryAddress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true, comment: "Optional delivery address for the Order, if it is a delivery order."),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the Order has been deleted or is active."),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "Added customer/order details:"),
-                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
-                    CountryCode = table.Column<int>(type: "int", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ZipCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                },
-                comment: "Order entity represents a customer's order in the system.");
 
             migrationBuilder.CreateTable(
                 name: "Products",
@@ -348,8 +315,8 @@ namespace Azaliq.Data.Migrations
                     Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false, comment: "Address of the Store"),
                     PhoneNumber = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false, comment: "Phone number of the Store"),
                     CountryCode = table.Column<int>(type: "int", nullable: false, comment: "Country code of the Store"),
-                    ManagerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true, comment: "City of the Store"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates if the Store is deleted")
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates if the Store is deleted"),
+                    ManagerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -358,8 +325,7 @@ namespace Azaliq.Data.Migrations
                         name: "FK_StoresLocations_Managers_ManagerId",
                         column: x => x.ManagerId,
                         principalTable: "Managers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 },
                 comment: "Store entity represents a store in the system.");
 
@@ -419,31 +385,6 @@ namespace Azaliq.Data.Migrations
                 comment: "Favorite entity represents a user's favorite product in the system.");
 
             migrationBuilder.CreateTable(
-                name: "OrdersProducts",
-                columns: table => new
-                {
-                    OrderId = table.Column<int>(type: "int", nullable: false, comment: "Primary key for the OrderProduct entity."),
-                    ProductId = table.Column<int>(type: "int", nullable: false, comment: "Primary key for the OrderProduct entity."),
-                    Quantity = table.Column<int>(type: "int", nullable: false, comment: "The quantity of the product in the order.")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrdersProducts", x => new { x.OrderId, x.ProductId });
-                    table.ForeignKey(
-                        name: "FK_OrdersProducts_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrdersProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id");
-                },
-                comment: "OrderProduct a join entity that represents the many-to-many relationship between Order and Product.");
-
-            migrationBuilder.CreateTable(
                 name: "ProductProductTag",
                 columns: table => new
                 {
@@ -478,8 +419,7 @@ namespace Azaliq.Data.Migrations
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true, comment: "The content of the review"),
                     Rating = table.Column<int>(type: "int", nullable: false, comment: "The rating given in the review, typically from 1 to 5 stars"),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "The date and time when the review was created"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the review has been deleted"),
-                    ProductId1 = table.Column<int>(type: "int", nullable: true)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the review has been deleted")
                 },
                 constraints: table =>
                 {
@@ -496,13 +436,74 @@ namespace Azaliq.Data.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                },
+                comment: "Review entity represents a product review in the system.");
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false, comment: "Unique identifier for the Order.")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false, comment: "Foreign key to the User who placed the Order."),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false, comment: "Date and time when the Order was placed."),
+                    PickupTime = table.Column<DateTime>(type: "datetime2", nullable: true, comment: "Optional date and time when the Order is scheduled for pickup."),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "Status of the Order, indicating its current state in the order lifecycle."),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, comment: "Total amount for the Order, calculated based on the products and their quantities."),
+                    IsDelivery = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the Order is for delivery or pickup."),
+                    PickupStoreId = table.Column<int>(type: "int", nullable: true),
+                    DeliveryAddress = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true, comment: "Optional delivery address for the Order, if it is a delivery order."),
+                    DeliveryOption = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, comment: "Indicates whether the Order has been deleted or is active."),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "Added customer/order details:"),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    CountryCode = table.Column<int>(type: "int", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ZipCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reviews_Products_ProductId1",
-                        column: x => x.ProductId1,
+                        name: "FK_Orders_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_StoresLocations_PickupStoreId",
+                        column: x => x.PickupStoreId,
+                        principalTable: "StoresLocations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                },
+                comment: "Order entity represents a customer's order in the system.");
+
+            migrationBuilder.CreateTable(
+                name: "OrdersProducts",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(type: "int", nullable: false, comment: "Primary key for the OrderProduct entity."),
+                    ProductId = table.Column<int>(type: "int", nullable: false, comment: "Primary key for the OrderProduct entity."),
+                    Quantity = table.Column<int>(type: "int", nullable: false, comment: "The quantity of the product in the order.")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdersProducts", x => new { x.OrderId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_OrdersProducts_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdersProducts_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
                 },
-                comment: "Review entity represents a product review in the system.");
+                comment: "OrderProduct a join entity that represents the many-to-many relationship between Order and Product.");
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -653,6 +654,11 @@ namespace Azaliq.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_PickupStoreId",
+                table: "Orders",
+                column: "PickupStoreId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -676,11 +682,6 @@ namespace Azaliq.Data.Migrations
                 name: "IX_Reviews_ProductId",
                 table: "Reviews",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_ProductId1",
-                table: "Reviews",
-                column: "ProductId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_UserId",
@@ -730,9 +731,6 @@ namespace Azaliq.Data.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "StoresLocations");
-
-            migrationBuilder.DropTable(
                 name: "ArchivedOrders");
 
             migrationBuilder.DropTable(
@@ -748,13 +746,16 @@ namespace Azaliq.Data.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Managers");
-
-            migrationBuilder.DropTable(
                 name: "ArchivedUsers");
 
             migrationBuilder.DropTable(
+                name: "StoresLocations");
+
+            migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Managers");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

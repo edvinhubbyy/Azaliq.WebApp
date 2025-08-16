@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azaliq.WebApp.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Azaliq.WebApp.Controllers
+namespace Azaliq.WebApp.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ManagerController : BaseController
     {
         public IActionResult Index()

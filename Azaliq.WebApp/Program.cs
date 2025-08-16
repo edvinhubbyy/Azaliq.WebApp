@@ -13,6 +13,21 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Get port from environment or default
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+
+// Set URLs before building the app
+if (builder.Environment.IsDevelopment())
+{
+    // Use HTTPS with localhost and default dev port
+    builder.WebHost.UseUrls($"https://localhost:{port}");
+}
+else
+{
+    // Azure usually expects HTTP on the assigned port
+    builder.WebHost.UseUrls($"http://*:{port}");
+}
+
 // 1) Configure EF Core and ApplicationDbContext
 var connectionString = builder.Configuration
     .GetConnectionString("DefaultConnection")
@@ -24,26 +39,27 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // 2) Configure Identity with email confirmation & 2FA token providers
-builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
-{
-    // Require confirmed email before login
-    options.SignIn.RequireConfirmedEmail = true;
-    options.SignIn.RequireConfirmedAccount = true;
-    options.SignIn.RequireConfirmedPhoneNumber = false;
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        // Sign-in settings
+        options.SignIn.RequireConfirmedEmail = true;
+        options.SignIn.RequireConfirmedAccount = true;
+        options.SignIn.RequireConfirmedPhoneNumber = false;
 
-    // Password settings
-    options.Password.RequiredLength = 3;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequiredUniqueChars = 0;
-    options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultEmailProvider;
-})
-    .AddRoles<IdentityRole>()
-    .AddTokenProvider<EmailTokenProvider<ApplicationUser>>(TokenOptions.DefaultEmailProvider)
+        // Password settings
+        options.Password.RequiredLength = 3;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredUniqueChars = 0;
+
+        // Token provider settings
+        options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+    })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
 
 // Add Google Authentication
 builder.Services.AddAuthentication()
@@ -52,13 +68,13 @@ builder.Services.AddAuthentication()
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 
-        // Ensure GitHub sends email
+        // Ensure Google sends email claim
         options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
 
         options.Events.OnRemoteFailure = context =>
         {
             context.Response.Redirect("/Identity/Account/Login");
-            context.HandleResponse(); // Prevents the exception
+            context.HandleResponse(); // Prevent exception
             return Task.CompletedTask;
         };
     })
@@ -67,26 +83,23 @@ builder.Services.AddAuthentication()
         options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
 
-        // Ensure GitHub sends email
         options.Scope.Add("user:email");
         options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
 
         options.Events.OnRemoteFailure = context =>
         {
             context.Response.Redirect("/Identity/Account/Login");
-            context.HandleResponse(); // Prevents the exception
+            context.HandleResponse();
             return Task.CompletedTask;
         };
     });
 
-// 3) Map the "Email" token provider for both email confirmation & 2FA
+// 3) Map the "Email" token provider for email confirmation & 2FA
 builder.Services.Configure<IdentityOptions>(opts =>
 {
     opts.Tokens.ProviderMap["Email"] =
         new TokenProviderDescriptor(typeof(EmailTokenProvider<ApplicationUser>));
     opts.Tokens.EmailConfirmationTokenProvider = "Email";
-    // You can also map ChangeEmail, PasswordReset, etc., if needed:
-    // opts.Tokens.ChangeEmailTokenProvider    = "Email";
 });
 
 // 4) Register application services
@@ -110,17 +123,15 @@ builder.Services.AddScoped<IReCaptchaService, ReCaptchaService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 
-builder.Services.AddScoped<IEmailService, EmailService>();
-// (Optional) test email service
-
 // 6) Add MVC + Razor Pages
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
-builder.Services.AddDistributedMemoryCache(); // Use in-memory cache for session storage
+// 7) Add session support
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout as needed
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -129,14 +140,14 @@ var app = builder.Build();
 
 app.UseSession();
 
-// 7) Seed roles on startup
+// Seed roles on startup
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     RoleSeeder.AssignRoles(services);
 }
 
-// 8) Configure the HTTP request pipeline
+// Configure HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -150,7 +161,6 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-
 app.UseRouting();
 
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
@@ -158,10 +168,17 @@ app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 9) Route configuration
+
+// **AREA ROUTE FIRST**
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+);
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();
