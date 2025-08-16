@@ -12,7 +12,7 @@ namespace Azaliq.WebApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmailController : ControllerBase
+    public class EmailController : BaseController
     {
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;

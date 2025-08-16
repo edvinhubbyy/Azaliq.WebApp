@@ -4,7 +4,7 @@ using Azaliq.ViewModels.Archives;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Azaliq.WebApp.Areas.Admin.Controllers
+namespace Azaliq.WebApp.Controllers
 {
     [Area("Admin")]
     public class UserManagementController : Controller

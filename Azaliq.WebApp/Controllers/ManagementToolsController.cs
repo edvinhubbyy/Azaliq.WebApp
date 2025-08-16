@@ -1,10 +1,9 @@
 ﻿using Azaliq.Data;
 using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Contracts;
-using Azaliq.WebApp.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Azaliq.WebApp.Areas.Admin.Controllers
+namespace Azaliq.WebApp.Controllers
 {
     [Area("Admin")]
     public class ManagementToolsController : BaseController

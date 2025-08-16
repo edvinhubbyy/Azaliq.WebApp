@@ -2,7 +2,7 @@
 
 namespace Azaliq.WebApp.Controllers
 {
-    public class ErrorController : Controller
+    public class ErrorController : BaseController
     {
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int statusCode)

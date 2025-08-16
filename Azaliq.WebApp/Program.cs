@@ -19,12 +19,10 @@ var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 // Set URLs before building the app
 if (builder.Environment.IsDevelopment())
 {
-    // Use HTTPS with localhost and default dev port
     builder.WebHost.UseUrls($"https://localhost:{port}");
 }
 else
 {
-    // Azure usually expects HTTP on the assigned port
     builder.WebHost.UseUrls($"http://*:{port}");
 }
 
@@ -40,41 +38,34 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // 2) Configure Identity with email confirmation & 2FA token providers
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-    {
-        // Sign-in settings
-        options.SignIn.RequireConfirmedEmail = true;
-        options.SignIn.RequireConfirmedAccount = true;
-        options.SignIn.RequireConfirmedPhoneNumber = false;
+{
+    options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
 
-        // Password settings
-        options.Password.RequiredLength = 3;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequiredUniqueChars = 0;
+    options.Password.RequiredLength = 3;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredUniqueChars = 0;
 
-        // Token provider settings
-        options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
-    })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
-
-// Add Google Authentication
+// 3) Add Google & GitHub Authentication
 builder.Services.AddAuthentication()
     .AddGoogle(options =>
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-
-        // Ensure Google sends email claim
         options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
-
         options.Events.OnRemoteFailure = context =>
         {
             context.Response.Redirect("/Identity/Account/Login");
-            context.HandleResponse(); // Prevent exception
+            context.HandleResponse();
             return Task.CompletedTask;
         };
     })
@@ -82,10 +73,8 @@ builder.Services.AddAuthentication()
     {
         options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
-
         options.Scope.Add("user:email");
         options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
-
         options.Events.OnRemoteFailure = context =>
         {
             context.Response.Redirect("/Identity/Account/Login");
@@ -94,7 +83,7 @@ builder.Services.AddAuthentication()
         };
     });
 
-// 3) Map the "Email" token provider for email confirmation & 2FA
+// 4) Map Email token provider
 builder.Services.Configure<IdentityOptions>(opts =>
 {
     opts.Tokens.ProviderMap["Email"] =
@@ -102,7 +91,7 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.Tokens.EmailConfirmationTokenProvider = "Email";
 });
 
-// 4) Register application services
+// 5) Register application services
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ITagService, TagService>();
@@ -115,11 +104,9 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IArchivedUserService, ArchivedUserService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 
-// Security
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IReCaptchaService, ReCaptchaService>();
 
-// 5) Register email senders
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 
@@ -162,22 +149,22 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-// **AREA ROUTE FIRST**
+// Area routes
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 );
 
+// Default route
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.MapRazorPages();
 

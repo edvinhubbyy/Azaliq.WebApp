@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Azaliq.WebApp.Controllers
 {
     [Authorize(Roles = "Admin,Manager")]
-    public class TagController : Controller
+    public class TagController : BaseController
     {
 
         private readonly ApplicationDbContext _dbContext;
