@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Azaliq.WebApp.Controllers
 {
-    [Area("Admin")]
     public class UserManagementController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Azaliq.WebApp.Controllers
 {
-    [Area("Admin")]
     public class AdminOrdersController : BaseController
     {
         private readonly IOrderService _orderService;

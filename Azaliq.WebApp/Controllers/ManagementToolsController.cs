@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Azaliq.WebApp.Controllers
 {
-    [Area("Admin")]
     public class ManagementToolsController : BaseController
     {
         private readonly IUserRoleService _userRoleService;

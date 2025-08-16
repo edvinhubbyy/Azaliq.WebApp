@@ -2,7 +2,6 @@
 
 namespace Azaliq.WebApp.Controllers
 {
-    [Area("Admin")]
     public class ManagerController : BaseController
     {
         public IActionResult Index()
