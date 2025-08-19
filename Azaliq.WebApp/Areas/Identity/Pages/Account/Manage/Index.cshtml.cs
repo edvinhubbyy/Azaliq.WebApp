@@ -56,12 +56,9 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [Phone]
             [Display(Name = "Phone number")]
-            [MinLength(9, ErrorMessage = "Length must be 9")]
-            [MaxLength(9, ErrorMessage = "Length must be 9")]
-            [RegularExpression(@"^\+?([1-9][\d\s\-().]{7}\d)$", ErrorMessage = "Try your phone number without the first 0")]
             public string PhoneNumber { get; set; }
-
         }
 
         private async Task LoadAsync(ApplicationUser user)

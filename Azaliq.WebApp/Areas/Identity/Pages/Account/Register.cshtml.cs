@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Azaliq.Services.Core.Security.Contract;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -14,8 +6,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Azaliq.WebApp.Areas.Identity.Pages.Account
 {
@@ -97,32 +90,18 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            //if (!ModelState.IsValid)
-            //{
-            //    // Validation failed (including recaptcha token required)
-            //    return Page();
-            //}
-
-            // Log recaptcha token for debugging (optional)
             _logger.LogInformation($"Recaptcha token: '{RecaptchaToken}'");
-
-            // Verify reCAPTCHA server-side
             if (string.IsNullOrEmpty(RecaptchaToken) || !await _reCaptchaService.VerifyAsync(RecaptchaToken))
             {
                 ModelState.AddModelError("RecaptchaToken", "Please confirm you are not a robot.");
                 return Page();
             }
-
-            // Check if username already exists
             var existingUserByUsername = await _userManager.FindByNameAsync(Input.UserName);
             if (existingUserByUsername != null)
             {
                 ModelState.AddModelError(string.Empty, "Username is already taken.");
                 return Page();
             }
-
-            // Check if email already exists
             var existingUserByEmail = await _userManager.FindByEmailAsync(Input.Email);
             if (existingUserByEmail != null)
             {
@@ -170,8 +149,6 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-
-            // Something failed, redisplay form
             return Page();
         }
 

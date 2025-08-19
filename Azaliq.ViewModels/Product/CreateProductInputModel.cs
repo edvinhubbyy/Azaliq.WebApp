@@ -15,8 +15,6 @@ namespace Azaliq.ViewModels.Product
         public string? Description { get; set; }
 
         [Display(Name = ImageUrlDisplay)]
-        [RegularExpression(ImageUrlRegex,
-            ErrorMessage = ImageUrlRegexErrorMessage)]
         public string? ImageUrl { get; set; }
 
         // Stays with number because of the decimal validation error that occurs with decimal type

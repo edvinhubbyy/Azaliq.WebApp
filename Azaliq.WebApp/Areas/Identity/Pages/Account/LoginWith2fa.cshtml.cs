@@ -1,11 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Azaliq.Data.Models.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace Azaliq.WebApp.Areas.Identity.Pages.Account
 {
@@ -48,8 +47,6 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("./Login");
             }
-
-            // Generate 2FA token using Email provider and send it
             var code = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
             var email = await _userManager.GetEmailAsync(user);
 

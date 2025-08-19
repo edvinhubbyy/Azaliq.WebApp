@@ -23,8 +23,6 @@
             // Product Image
             public const string ImageUrlDisplay = "Image URL";
             public const int ImageUrlMaxLength = 255;
-            public const string ImageUrlRegex = @"^https?:\/\/.*\.(jpg|jpeg|png|gif|bmp|webp)$";
-            public const string ImageUrlRegexErrorMessage = "Only valid image URLs ending in .jpg, .png, etc. are allowed.";
 
             // Product Price
             public const string PriceErrorMessage = "Price must be between 0.01 and 100,000.";

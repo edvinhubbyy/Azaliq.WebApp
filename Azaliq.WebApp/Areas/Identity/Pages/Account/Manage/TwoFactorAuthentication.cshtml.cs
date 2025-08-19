@@ -1,12 +1,9 @@
-﻿// Areas/Identity/Pages/Account/Manage/TwoFactorAuthentication.cshtml.cs
-using System.Threading.Tasks;
-using Azaliq.Data.Models.Models;
+﻿using Azaliq.Data.Models.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace Azaliq.WebApp.Areas.Identity.Pages.Account.Manage
 {
@@ -29,8 +26,6 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account.Manage
             _emailSender = emailSender;
             _logger = logger;
         }
-
-        // Existing flags
         public bool HasAuthenticator { get; set; }
         public bool Is2faEnabled { get; set; }
         public bool IsEmail2faEnabled { get; set; }
@@ -66,8 +61,6 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound($"Unable to load user.");
-
-            // Turn on 2FA if not already
             if (!await _userManager.GetTwoFactorEnabledAsync(user))
                 await _userManager.SetTwoFactorEnabledAsync(user, true);
 
@@ -79,9 +72,6 @@ namespace Azaliq.WebApp.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound($"Unable to load user.");
-
-            // To disable email-2FA alone we'd need to remove email provider from valid list
-            // but Identity doesn’t expose that directly, so here we simply turn off 2FA entirely
             await _userManager.SetTwoFactorEnabledAsync(user, false);
 
             StatusMessage = "Email-based two-factor authentication disabled.";

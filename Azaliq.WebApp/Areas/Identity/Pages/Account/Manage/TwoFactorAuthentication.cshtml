@@ -2,23 +2,12 @@
 @model Azaliq.WebApp.Areas.Identity.Pages.Account.Manage.TwoFactorAuthenticationModel
 @{
     ViewData["Title"] = "Two-factor authentication";
+    Layout = "/Areas/Identity/Pages/Account/Manage/_ManageLayout.cshtml";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <p class="text-success">@Model.StatusMessage</p>
-
-<div class="mb-4">
-    <h4>Authenticator app</h4>
-    @if (Model.HasAuthenticator)
-    {
-        <p>You have an authenticator app configured.</p>
-    }
-    else
-    {
-        <p><a asp-page="./EnableAuthenticator" class="btn btn-primary">Set up authenticator app</a></p>
-    }
-</div>
 
 <div class="mb-4">
     <h4>Email as 2FA</h4>

@@ -37,48 +37,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for (int i = 0; i < Model.Items.Count; i++)
-                            {
-                                var item = Model.Items[i];
-                                var priceBgn = item.Price;
-                                var subtotalBgn = item.Subtotal;
-                                var priceEur = priceBgn * BgnToEurRate;
-                                var subtotalEur = subtotalBgn * BgnToEurRate;
+                        @for (int i = 0; i < Model.Items.Count; i++)
+                        {
+                            var item = Model.Items[i];
+                            var priceBgn = item.Price;
+                            var subtotalBgn = item.Subtotal;
+                            var priceEur = priceBgn * BgnToEurRate;
+                            var subtotalEur = subtotalBgn * BgnToEurRate;
 
-                                <tr>
-                                    <td>@item.ProductName</td>
-                                    <td><img src="@item.ProductImageUrl" alt="@item.ProductName" class="img-fluid rounded shadow-sm" style="width: 70px;" /></td>
-                                    <td style="text-align: center;">
-                                        <input type="number"
-                                               name="Items[@i].Quantity"
-                                               value="@item.Quantity"
-                                               min="1" max="500"
-                                               class="form-control text-center quantity-input"
-                                               data-index="@i"
-                                               aria-label="Quantity for @item.ProductName"
-                                               data-bs-toggle="tooltip"
-                                               data-bs-placement="top"
-                                               title="Quantity must be between 1 and 500."
-                                               style="max-width: 70px; margin: 0 auto; display: block;" />
-                                    </td>
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>
+                                    <img src="@item.ProductImageUrl" alt="@item.ProductName" class="img-fluid rounded shadow-sm" style="width: 70px;" />
+                                </td>
+                                <td style="text-align: center;">
+                                    <input type="hidden" name="Items[@i].ProductId" value="@item.ProductId" />
 
-
-                                    <td>
-                                        <div>@priceBgn.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</div>
-                                        <div class="text-muted small">€@priceEur.ToString("F2")</div>
-                                    </td>
-                                    <td id="subtotal-@i" style="width: 120px; min-width: 120px; text-align: right;">
-                                        <div>@subtotalBgn.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</div>
-                                        <div class="text-muted small">€@subtotalEur.ToString("F2")</div>
-                                    </td>
-
-                                    <td>
-                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteProduct(@item.ProductId)">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
+                                    <input type="number"
+                                           name="Items[@i].Quantity"
+                                           value="@item.Quantity"
+                                           min="1" max="500"
+                                           class="form-control text-center quantity-input"
+                                           data-index="@i"
+                                           aria-label="Quantity for @item.ProductName"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="top"
+                                           title="Quantity must be between 1 and 500."
+                                           style="max-width: 70px; margin: 0 auto; display: block;" />
+                                </td>
+                                <td>
+                                    <div>@priceBgn.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</div>
+                                    <div class="text-muted small">€@priceEur.ToString("F2")</div>
+                                </td>
+                                <td id="subtotal-@i" style="width: 120px; min-width: 120px; text-align: right;">
+                                    <div>@subtotalBgn.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</div>
+                                    <div class="text-muted small">€@subtotalEur.ToString("F2")</div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteProduct(@item.ProductId)">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
                         </tbody>
                         <tfoot>
                             @{

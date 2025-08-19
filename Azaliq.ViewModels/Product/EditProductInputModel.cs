@@ -20,8 +20,6 @@ namespace Azaliq.ViewModels.Product
 
 
         [Display(Name = ImageUrlDisplay)]
-        [RegularExpression(ImageUrlRegex, 
-            ErrorMessage = ImageUrlRegexErrorMessage)]
         public string? ImageUrl { get; set; }
 
 

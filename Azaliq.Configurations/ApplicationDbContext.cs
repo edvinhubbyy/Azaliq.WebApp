@@ -37,7 +37,9 @@ namespace Azaliq.Data
         // Archives
 
         public DbSet<ArchivedUser> ArchivedUsers { get; set; } = null!;
+
         public DbSet<ArchivedOrder> ArchivedOrders { get; set; } = null!;
+
         public DbSet<ArchivedOrderProduct> ArchivedOrderProducts { get; set; } = null!;
 
 

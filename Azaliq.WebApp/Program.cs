@@ -112,7 +112,12 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 
 // 6) Add MVC + Razor Pages
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+
+builder.Services.AddRazorPages()
+    .AddRazorPagesOptions(options =>
+    {
+        options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+    });
 
 // 7) Add session support
 builder.Services.AddDistributedMemoryCache();
@@ -154,7 +159,6 @@ app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"

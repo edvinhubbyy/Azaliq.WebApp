@@ -26,13 +26,15 @@ namespace Azaliq.WebApp.Controllers
             IOrderService orderService,
             IPdfService pdfService,
             IEmailService emailService,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context)
         {
             _emailSender = emailSender;
             _orderService = orderService;
             _pdfService = pdfService;
             _emailService = emailService;
             _userManager = userManager;
+            _context = context;
         }
 
         [HttpPost("send")]

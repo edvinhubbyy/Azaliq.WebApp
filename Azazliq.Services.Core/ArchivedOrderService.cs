@@ -34,6 +34,7 @@ public class ArchivedUserService : IArchivedUserService
             .Include(u => u.Orders)
                 .ThenInclude(o => o.Products)
                     .ThenInclude(op => op.Product)
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
@@ -51,9 +52,11 @@ public class ArchivedUserService : IArchivedUserService
 
         _context.ArchivedUsers.Add(archivedUser);
 
-        foreach (var order in user.Orders)
+        foreach (var order in user.Orders ?? new List<Order>())
         {
-            var totalAmount = order.Products.Sum(p => p.Product.Price * p.Quantity);
+            var totalAmount = order.Products?
+                .Where(p => p.Product != null)
+                .Sum(p => p.Product.Price * p.Quantity) ?? 0;
 
             var archivedOrder = new ArchivedOrder
             {
@@ -71,8 +74,10 @@ public class ArchivedUserService : IArchivedUserService
                 Products = new List<ArchivedOrderProduct>()
             };
 
-            foreach (var product in order.Products)
+            foreach (var product in order.Products ?? new List<OrderProduct>())
             {
+                if (product.Product == null) continue;
+
                 var archivedProduct = new ArchivedOrderProduct
                 {
                     Id = Guid.NewGuid(),
@@ -82,18 +87,23 @@ public class ArchivedUserService : IArchivedUserService
                     Quantity = product.Quantity
                 };
 
-                archivedOrder.Products.Add(archivedProduct); // Add to collection
-                _context.ArchivedOrderProducts.Add(archivedProduct); // Still tracked
+                archivedOrder.Products.Add(archivedProduct);
+                _context.ArchivedOrderProducts.Add(archivedProduct);
             }
 
-            archivedUser.Orders.Add(archivedOrder); // Add to collection
-            _context.ArchivedOrders.Add(archivedOrder); // Still tracked
+            archivedUser.Orders.Add(archivedOrder);
+            _context.ArchivedOrders.Add(archivedOrder);
         }
 
         await _context.SaveChangesAsync();
 
-        _context.OrdersProducts.RemoveRange(user.Orders.SelectMany(o => o.Products));
-        _context.Orders.RemoveRange(user.Orders);
+        if (user.Orders != null)
+        {
+            var allOrderProducts = user.Orders.SelectMany(o => o.Products ?? new List<OrderProduct>());
+            _context.OrdersProducts.RemoveRange(allOrderProducts);
+            _context.Orders.RemoveRange(user.Orders);
+        }
+
         _context.Users.Remove(user);
 
         await _context.SaveChangesAsync();
