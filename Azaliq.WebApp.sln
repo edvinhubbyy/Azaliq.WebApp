@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azaliq.ViewModels", "Azaliq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azaliq.GCommon", "Azaliq.GCommon\Azaliq.GCommon.csproj", "{E15F7EF7-EA98-4AB2-B05B-B61A305CD2F0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{738AD996-9CEB-4021-BE84-5AD053E88DFF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
