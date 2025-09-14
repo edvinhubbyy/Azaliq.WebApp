@@ -71,3 +71,33 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Recently Viewed Products Tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            const product = {
+                id: @Model.Id,
+                name: '@Html.Raw(Html.Encode(Model.Name))',
+                price: @Model.Price,
+                imageUrl: '@Model.ImageUrl',
+                viewedAt: new Date().toISOString()
+            };
+            
+            // Get existing recently viewed products
+            let recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+            
+            // Remove if already exists (to update timestamp)
+            recentlyViewed = recentlyViewed.filter(p => p.id !== product.id);
+            
+            // Add to beginning of array
+            recentlyViewed.unshift(product);
+            
+            // Keep only the latest 10 products
+            recentlyViewed = recentlyViewed.slice(0, 10);
+            
+            // Save back to localStorage
+            localStorage.setItem('recentlyViewedProducts', JSON.stringify(recentlyViewed));
+        });
+    </script>
+}
