@@ -17,8 +17,27 @@ namespace Azaliq.Services.Core
 
         public async Task AddToCartAsync(string userId, int productId, int quantity)
         {
+            // First check if product has enough stock
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null || !product.IsAvailable)
+            {
+                throw new InvalidOperationException("Product is not available.");
+            }
+
             var cartItem = await _context.CartItems
                 .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.ProductId == productId);
+
+            int totalQuantityAfterAdd = quantity;
+            if (cartItem != null)
+            {
+                totalQuantityAfterAdd = cartItem.Quantity + quantity;
+            }
+
+            // Validate stock availability
+            if (totalQuantityAfterAdd > product.Quantity)
+            {
+                throw new InvalidOperationException($"Not enough stock available. Only {product.Quantity} items in stock, but you are trying to add {totalQuantityAfterAdd} items.");
+            }
 
             if (cartItem != null)
             {
@@ -80,6 +99,7 @@ namespace Azaliq.Services.Core
         public async Task UpdateQuantityAsync(string userId, int productId, int quantity)
         {
             var cartItem = await _context.CartItems
+                .Include(ci => ci.Product)
                 .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.ProductId == productId);
 
             if (cartItem != null)
@@ -90,6 +110,11 @@ namespace Azaliq.Services.Core
                 }
                 else
                 {
+                    // Validate stock availability when updating quantity
+                    if (quantity > cartItem.Product.Quantity)
+                    {
+                        throw new InvalidOperationException($"Not enough stock available. Only {cartItem.Product.Quantity} items in stock.");
+                    }
                     cartItem.Quantity = quantity;
                 }
                 await _context.SaveChangesAsync();

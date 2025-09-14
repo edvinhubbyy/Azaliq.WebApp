@@ -32,7 +32,7 @@ var connectionString = builder.Configuration
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlite(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -103,6 +103,7 @@ builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IArchivedUserService, ArchivedUserService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IReCaptchaService, ReCaptchaService>();

@@ -56,7 +56,15 @@ namespace Azaliq.WebApp.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _cartService.AddToCartAsync(userId, productId, quantity);
+            try
+            {
+                await _cartService.AddToCartAsync(userId, productId, quantity);
+                TempData["SuccessMessage"] = "Product added to cart successfully!";
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
 
             return RedirectToAction("Index", "Cart");
         }
