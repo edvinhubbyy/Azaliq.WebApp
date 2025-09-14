@@ -1,0 +1,70 @@
+<div id="recentlyViewedSection" class="mt-5" style="display: none;">
+    <h3 class="mb-3">
+        <i class="fas fa-history me-2"></i>Recently Viewed Products
+    </h3>
+    <div id="recentlyViewedProducts" class="row row-cols-1 row-cols-md-4 g-3">
+        <!-- Products will be dynamically inserted here -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        displayRecentlyViewedProducts();
+    });
+
+    function displayRecentlyViewedProducts() {
+        const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewedProducts') || '[]');
+        const container = document.getElementById('recentlyViewedProducts');
+        const section = document.getElementById('recentlyViewedSection');
+        
+        if (recentlyViewed.length === 0) {
+            section.style.display = 'none';
+            return;
+        }
+        
+        // Show section
+        section.style.display = 'block';
+        
+        // Clear existing content
+        container.innerHTML = '';
+        
+        // Display up to 4 recently viewed products
+        const productsToShow = recentlyViewed.slice(0, 4);
+        
+        productsToShow.forEach(product => {
+            const productCard = `
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <a href="/Product/Details/${product.id}" style="cursor:pointer; display:block;">
+                            <img src="${product.imageUrl || '/images/default-flower.jpg'}" 
+                                 class="card-img-top" 
+                                 alt="${product.name}" 
+                                 style="height: 180px; object-fit: cover;" />
+                        </a>
+                        <div class="card-body">
+                            <h6 class="card-title">${product.name}</h6>
+                            <p class="text-primary fw-bold">$${product.price.toFixed(2)}</p>
+                            <small class="text-muted">Viewed ${timeAgo(product.viewedAt)}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += productCard;
+        });
+    }
+    
+    function timeAgo(dateString) {
+        const now = new Date();
+        const past = new Date(dateString);
+        const diffInMinutes = Math.floor((now - past) / (1000 * 60));
+        
+        if (diffInMinutes < 1) return 'just now';
+        if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+        
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+        
+        const diffInDays = Math.floor(diffInHours / 24);
+        return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+    }
+</script>
